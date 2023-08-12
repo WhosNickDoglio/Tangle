@@ -18,8 +18,8 @@ package tangle.inject.test.utils
 import com.squareup.anvil.compiler.AnvilCommandLineProcessor
 import com.squareup.anvil.compiler.AnvilComponentRegistrar
 import com.squareup.anvil.compiler.internal.capitalize
+import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation
-import com.tschuchort.compiletesting.KotlinCompilation.Result
 import com.tschuchort.compiletesting.PluginOption
 import com.tschuchort.compiletesting.SourceFile
 import dagger.Component
@@ -48,8 +48,8 @@ fun compileTangle(
   useIR: Boolean = true,
   messageOutputStream: OutputStream = System.out,
   workingDir: File? = null,
-  block: Result.() -> Unit = { }
-): Result {
+  block: JvmCompilationResult.() -> Unit = { }
+): JvmCompilationResult {
   return KotlinCompilation()
     .apply {
       componentRegistrars = listOf(AnvilComponentRegistrar())
@@ -215,6 +215,7 @@ fun Any.invokeGet(vararg args: Any?): Any {
   return method.invoke(this, *args)
 }
 
+@Suppress("NewApi")
 fun Any.invokeCreate(vararg args: Any?): Any {
 
   return this::class.java.methods.first { it.name == "create" }

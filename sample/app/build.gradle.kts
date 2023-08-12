@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+import java.util.Locale
+
 plugins {
   androidApplication
   id("com.squareup.anvil")
@@ -144,7 +146,8 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>()
 // adapted from Tivi
 // https://github.com/chrisbanes/tivi/blob/main/app/build.gradle#L213-L223
 androidComponents.onVariants { variant ->
-  val caps = variant.name.capitalize()
+  val caps =
+    variant.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
   tasks.register("open$caps", Exec::class.java) {
     dependsOn("install$caps")
 

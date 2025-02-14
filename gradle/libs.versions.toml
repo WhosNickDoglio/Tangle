@@ -51,7 +51,6 @@ google-ksp = "1.8.20-1.0.10"
 google-material = "1.6.1"
 
 rickBusarow-dependencySync = "0.11.4"
-rickBusarow-moduleCheck = "0.12.3"
 
 square-anvil = "2.4.5"
 square-moshi = "1.13.0"
@@ -75,7 +74,6 @@ ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-gradle" }
 taskTree = { id = "com.dorongold.task-tree", version.ref = "taskTree" }
 
 dependencySync = { id = "com.rickbusarow.gradle-dependency-sync", version.ref = "rickBusarow-dependencySync" }
-moduleCheck = { id = "com.rickbusarow.module-check", version.ref = "rickBusarow-moduleCheck" }
 
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kotlinx-binaryCompatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlinx-binaryCompatibility" }

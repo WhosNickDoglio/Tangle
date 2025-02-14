@@ -108,10 +108,9 @@ fun Project.common() {
 
   tasks.register("format") {
     group = "formatting"
-    description = "ktlintFormat, moduleCheckSortDependenciesAuto, dependencySync"
+    description = "ktlintFormat, dependencySync"
 
     dependsOn("ktlintFormat")
-    dependsOn(rootProject.tasks.getByPath("moduleCheckSortDependencies"))
     dependsOn("moveJavaSrcToKotlin")
 
     val dependencySyncTasks = rootProject

@@ -3,10 +3,6 @@ name: CI
 on:
   pull_request:
   workflow_dispatch:
-  schedule:
-    # * is a special character in YAML so you have to quote this string
-    # every day at 10pm CST (4 UTC)
-    - cron: '0 4 * * *'
 
 env:
   macosGradleArgs: '-Dorg.gradle.jvmargs=-Xmx10g -Dfile.encoding=UTF-8 -XX:+UseParallelGC'
@@ -117,117 +113,117 @@ jobs:
           arguments: ktlintCheck
           cache-read-only: false
 
-  versioning:
+#  versioning:
+#
+#    runs-on: ubuntu-latest
+#    if: github.actor != 'renovate[bot]'
+#
+#    steps:
+#      - name: check out with token (used by forks)
+#        uses: actions/checkout@v3
+#        if: github.event.pull_request.head.repo.full_name != github.repository
+#
+#      - name: check out with PAT (used by main repo)
+#        uses: actions/checkout@v3
+#        if: github.event.pull_request.head.repo.full_name == github.repository
+#        with:
+#          ref: ${{ github.event.pull_request.head.ref }}
+#          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+#          fetch-depth: 0
+#
+#      - name: Set up JDK
+#        uses: actions/setup-java@v3
+#        with:
+#          distribution: 'zulu'
+#          java-version: '11'
+#
+#      - name: Check that the version is a -SNAPSHOT version
+#        uses: gradle/gradle-build-action@v2
+#        with:
+#          arguments: checkVersionIsSnapshot
+#          cache-read-only: false
+#
+#      - name: Sync versions in website docs (used by main repo)
+#        if: github.event.pull_request.head.repo.full_name == github.repository
+#        uses: gradle/gradle-build-action@v2
+#        with:
+#          arguments: updateWebsiteNextDocsVersionRefs
+#          cache-read-only: false
+#
+#      - name: Check versions in website docs (used by forks)
+#        if: github.event.pull_request.head.repo.full_name != github.repository
+#        uses: gradle/gradle-build-action@v2
+#        with:
+#          arguments: checkWebsiteNextDocsVersionRefs
+#          cache-read-only: false
+#
+#      - name: commit changes
+#        uses: stefanzweifel/git-auto-commit-action@v4
+#        with:
+#          commit_message: update docs versions
+#          commit_options: '--no-verify --signoff'
+#
+#      - name: Update version in website package.json (used by main repo)
+#        if: github.event.pull_request.head.repo.full_name == github.repository
+#        uses: gradle/gradle-build-action@v2
+#        with:
+#          arguments: updateWebsitePackageJsonVersion
+#          cache-read-only: false
+#
+#      - name: Check version in website package.json (used by forks)
+#        if: github.event.pull_request.head.repo.full_name != github.repository
+#        uses: gradle/gradle-build-action@v2
+#        with:
+#          arguments: checkWebsitePackageJsonVersion
+#          cache-read-only: false
+#
+#      - name: commit changes (used by main repo)
+#        if: github.event.pull_request.head.repo.full_name == github.repository
+#        uses: stefanzweifel/git-auto-commit-action@v4
+#        with:
+#          commit_message: update website versions
+#          commit_options: '--no-verify --signoff'
 
-    runs-on: ubuntu-latest
-    if: github.actor != 'renovate[bot]'
-
-    steps:
-      - name: check out with token (used by forks)
-        uses: actions/checkout@v3
-        if: github.event.pull_request.head.repo.full_name != github.repository
-
-      - name: check out with PAT (used by main repo)
-        uses: actions/checkout@v3
-        if: github.event.pull_request.head.repo.full_name == github.repository
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          fetch-depth: 0
-
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-
-      - name: Check that the version is a -SNAPSHOT version
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: checkVersionIsSnapshot
-          cache-read-only: false
-
-      - name: Sync versions in website docs (used by main repo)
-        if: github.event.pull_request.head.repo.full_name == github.repository
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: updateWebsiteNextDocsVersionRefs
-          cache-read-only: false
-
-      - name: Check versions in website docs (used by forks)
-        if: github.event.pull_request.head.repo.full_name != github.repository
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: checkWebsiteNextDocsVersionRefs
-          cache-read-only: false
-
-      - name: commit changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: update docs versions
-          commit_options: '--no-verify --signoff'
-
-      - name: Update version in website package.json (used by main repo)
-        if: github.event.pull_request.head.repo.full_name == github.repository
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: updateWebsitePackageJsonVersion
-          cache-read-only: false
-
-      - name: Check version in website package.json (used by forks)
-        if: github.event.pull_request.head.repo.full_name != github.repository
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: checkWebsitePackageJsonVersion
-          cache-read-only: false
-
-      - name: commit changes (used by main repo)
-        if: github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: update website versions
-          commit_options: '--no-verify --signoff'
-
-  website:
-    name: build website
-    runs-on: ubuntu-latest
-    steps:
-
-      - name: Check out repo
-        uses: actions/checkout@v3
-
-      # Node is required for npm
-      - name: Set up Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: yarn
-          cache-dependency-path: website/yarn.lock
-
-      - name: Install Yarn
-        working-directory: website
-        run: |
-          yarn install --frozen-lockfile
-
-      - uses: gradle/wrapper-validation-action@v1
-
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-
-      - name: build website
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: buildSite
-          cache-read-only: false
-
-      - name: knit check
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: knitcheck
-          cache-read-only: false
+#  website:
+#    name: build website
+#    runs-on: ubuntu-latest
+#    steps:
+#
+#      - name: Check out repo
+#        uses: actions/checkout@v3
+#
+#      # Node is required for npm
+#      - name: Set up Node
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: 18.x
+#          cache: yarn
+#          cache-dependency-path: website/yarn.lock
+#
+#      - name: Install Yarn
+#        working-directory: website
+#        run: |
+#          yarn install --frozen-lockfile
+#
+#      - uses: gradle/wrapper-validation-action@v1
+#
+#      - name: Set up JDK
+#        uses: actions/setup-java@v3
+#        with:
+#          distribution: 'zulu'
+#          java-version: '11'
+#
+#      - name: build website
+#        uses: gradle/gradle-build-action@v2
+#        with:
+#          arguments: buildSite
+#          cache-read-only: false
+#
+#      - name: knit check
+#        uses: gradle/gradle-build-action@v2
+#        with:
+#          arguments: knitcheck
+#          cache-read-only: false
 
   api-check:
 

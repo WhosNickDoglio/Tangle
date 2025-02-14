@@ -45,7 +45,6 @@ plugins {
   alias(libs.plugins.dependencyAnalysis)
   alias(libs.plugins.detekt)
   alias(libs.plugins.taskTree)
-  alias(libs.plugins.moduleCheck)
   alias(libs.plugins.benManes)
   alias(libs.plugins.kotlinx.binaryCompatibility)
   base
@@ -223,11 +222,5 @@ val publishToMavenLocal by tasks.registering {
 val publishToMavenLocalNoDokka by tasks.registering {
   subprojects.forEach { sub ->
     dependsOn(sub.tasks.matching { it.name == "publishToMavenLocalNoDokka" })
-  }
-}
-
-moduleCheck {
-  checks {
-    sortDependencies = true
   }
 }

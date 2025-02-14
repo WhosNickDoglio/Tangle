@@ -15,7 +15,7 @@
 
 package tangle.inject.test.utils
 
-import com.tschuchort.compiletesting.KotlinCompilation.Result
+import com.tschuchort.compiletesting.JvmCompilationResult
 import dagger.internal.Factory
 import java.lang.reflect.Executable
 import java.lang.reflect.Member
@@ -56,7 +56,7 @@ fun <T : Any> Class<T>.createStatic(
 fun <T> T.factoryGet(): Any = (this as Factory<*>).get()
 
 @Suppress("UNCHECKED_CAST")
-fun Result.appComponentFactoryCreate(
+fun JvmCompilationResult.appComponentFactoryCreate(
   vararg initargs: Any?
 ): Any {
 
@@ -77,43 +77,43 @@ inline fun <T, E : Executable> E.use(block: (E) -> T): T {
   }
 }
 
-val Result.appComponentFactory: Class<*>
+val JvmCompilationResult.appComponentFactory: Class<*>
   get() = classLoader.loadClass("tangle.inject.tests.AppComponent\$Factory")
 
-val Result.appComponent: KClass<out Any>
+val JvmCompilationResult.appComponent: KClass<out Any>
   get() = classLoader.loadClass("tangle.inject.tests.AppComponent").kotlin
 
-val Result.daggerAppComponent: Class<*>
+val JvmCompilationResult.daggerAppComponent: Class<*>
   get() = classLoader.loadClass("tangle.inject.tests.DaggerAppComponent")
 
-val Result.targetClass: Class<*>
+val JvmCompilationResult.targetClass: Class<*>
   get() = classLoader.loadClass("tangle.inject.tests.Target")
 
-val Result.baseClass: Class<*>
+val JvmCompilationResult.baseClass: Class<*>
   get() = classLoader.loadClass("tangle.inject.tests.Base")
 
-val Result.myViewModelClass: Class<*>
+val JvmCompilationResult.myViewModelClass: Class<*>
   get() = classLoader.loadClass("tangle.inject.tests.MyViewModel")
 
-val Result.myFragmentClass: Class<*>
+val JvmCompilationResult.myFragmentClass: Class<*>
   get() = classLoader.loadClass("tangle.inject.tests.MyFragment")
 
-val Result.myFragmentFactoryImplClass: Class<*>
+val JvmCompilationResult.myFragmentFactoryImplClass: Class<*>
   get() = classLoader.loadClass("tangle.inject.tests.MyFragment_Factory_Impl")
 
-val Result.tangleUnitFragmentModuleClass: Class<*>
+val JvmCompilationResult.tangleUnitFragmentModuleClass: Class<*>
   get() = classLoader.loadClass("tangle.inject.tests.Tangle_Unit_Fragment_Module")
 
-val Result.tangleUnitFragmentInjectModuleClass: Class<*>
+val JvmCompilationResult.tangleUnitFragmentInjectModuleClass: Class<*>
   get() = classLoader.loadClass("tangle.inject.tests.Tangle_Unit_FragmentInject_Module")
 
-val Result.tangleUnitFragmentModuleCompanionClass: Class<*>
+val JvmCompilationResult.tangleUnitFragmentModuleCompanionClass: Class<*>
   get() = classLoader.loadClass("tangle.inject.tests.Tangle_Unit_Fragment_Module\$Companion")
 
-val Result.bindMyFragment: Method
+val JvmCompilationResult.bindMyFragment: Method
   get() = tangleUnitFragmentModuleClass.getDeclaredMethod("bind_MyFragment", myFragmentClass)
 
-val Result.provideMyFragment: Method
+val JvmCompilationResult.provideMyFragment: Method
   get() = tangleUnitFragmentModuleCompanionClass.getDeclaredMethod("provide_MyFragment")
 
 fun Method.annotationClasses() = annotations.map { it.annotationClass }

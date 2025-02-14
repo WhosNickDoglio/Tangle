@@ -15,16 +15,16 @@
 
 package tangle.work
 
-import com.tschuchort.compiletesting.KotlinCompilation.Result
+import com.tschuchort.compiletesting.JvmCompilationResult
 
-val Result.myWorkerClass: Class<*>
+val JvmCompilationResult.myWorkerClass: Class<*>
   get() = classLoader.loadClass("tangle.inject.tests.MyWorker")
 
-val Result.myWorker_FactoryClass: Class<*>
+val JvmCompilationResult.myWorker_FactoryClass: Class<*>
   get() = classLoader.loadClass("tangle.inject.tests.MyWorker_Factory")
 
-val Result.myWorker_AssistedFactoryClass: Class<*>
+val JvmCompilationResult.myWorker_AssistedFactoryClass: Class<*>
   get() = classLoader.loadClass("tangle.inject.tests.MyWorker_AssistedFactory")
 
-val Result.myWorker_AssistedFactory_FactoryClass: Class<*>
+val JvmCompilationResult.myWorker_AssistedFactory_FactoryClass: Class<*>
   get() = classLoader.loadClass("tangle.inject.tests.MyWorker_AssistedFactory_Factory")

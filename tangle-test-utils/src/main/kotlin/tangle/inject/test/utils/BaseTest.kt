@@ -15,7 +15,7 @@
 
 package tangle.inject.test.utils
 
-import com.tschuchort.compiletesting.KotlinCompilation
+import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.COMPILATION_ERROR
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.OK
 import hermit.test.junit.HermitJUnit5
@@ -54,7 +54,7 @@ abstract class BaseTest : HermitJUnit5() {
     @Language("kotlin")
     vararg sources: String,
     shouldFail: Boolean = false,
-    block: KotlinCompilation.Result.() -> Unit = { }
+    block: JvmCompilationResult.() -> Unit = { }
   ) {
     fun String.clean() = replace("[^a-zA-Z0-9]".toRegex(), "_")
 
@@ -83,8 +83,8 @@ abstract class BaseTest : HermitJUnit5() {
     @Language("kotlin")
     vararg sources: String,
     shouldFail: Boolean = false,
-    block: KotlinCompilation.Result.() -> Unit = { }
-  ): KotlinCompilation.Result {
+    block: JvmCompilationResult.() -> Unit = { }
+  ): JvmCompilationResult {
     fun String.clean() = replace("[^a-zA-Z0-9]".toRegex(), "_")
 
     val className = testInfo.testClass.get().simpleName
@@ -109,7 +109,7 @@ abstract class BaseTest : HermitJUnit5() {
     )
   }
 
-  fun KotlinCompilation.Result.checkExitCode(shouldFail: Boolean) = apply {
+  fun JvmCompilationResult.checkExitCode(shouldFail: Boolean) = apply {
     val expectedCode = if (shouldFail) {
       COMPILATION_ERROR
     } else {

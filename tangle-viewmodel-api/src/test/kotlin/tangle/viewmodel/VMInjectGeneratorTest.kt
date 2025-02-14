@@ -17,7 +17,7 @@ package tangle.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.tschuchort.compiletesting.KotlinCompilation.Result
+import com.tschuchort.compiletesting.JvmCompilationResult
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.TestFactory
@@ -382,7 +382,7 @@ class VMInjectGeneratorTest : BaseTest() {
     }
   }
 
-  val Result.provideTargetFunction: KFunction<ViewModel>
+  val JvmCompilationResult.provideTargetFunction: KFunction<ViewModel>
     get() {
       val moduleClass = classLoader
         .loadClass("tangle.inject.tests.TangleViewModelScope_VMInject_Module").kotlin
@@ -400,10 +400,10 @@ class VMInjectGeneratorTest : BaseTest() {
       return providerFunction as KFunction<ViewModel>
     }
 
-  fun Result.provideTarget(vararg args: Any?): Any {
+  fun JvmCompilationResult.provideTarget(vararg args: Any?): Any {
     val moduleClass = classLoader
       .loadClass("tangle.inject.tests.TangleViewModelScope_VMInject_Module").kotlin
 
-    return provideTargetFunction.call(moduleClass.companionObjectInstance, *args)!!
+    return provideTargetFunction.call(moduleClass.companionObjectInstance, *args)
   }
 }

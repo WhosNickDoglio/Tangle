@@ -17,6 +17,7 @@ import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import org.jlleitschuh.gradle.ktlint.tasks.BaseKtLintCheckTask
+import java.util.Locale
 
 buildscript {
   repositories {
@@ -78,7 +79,7 @@ allprojects {
 detekt {
 
   parallel = true
-  config = files("$rootDir/detekt/detekt-config.yml")
+  config.setFrom(files("$rootDir/detekt/detekt-config.yml"))
 }
 
 tasks.withType<DetektCreateBaselineTask> {
@@ -116,7 +117,7 @@ tasks.withType<Detekt> {
 }
 
 fun isNonStable(version: String): Boolean {
-  val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.toUpperCase().contains(it) }
+  val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase(Locale.getDefault()).contains(it) }
   val regex = "^[0-9,.v-]+(-r)?$".toRegex()
   val isStable = stableKeyword || regex.matches(version)
   return isStable.not()

@@ -39,7 +39,6 @@ plugins {
   kotlin("jvm")
   alias(libs.plugins.dependencyAnalysis)
   alias(libs.plugins.detekt)
-  alias(libs.plugins.taskTree)
   alias(libs.plugins.kotlinx.binaryCompatibility)
   base
   dokka

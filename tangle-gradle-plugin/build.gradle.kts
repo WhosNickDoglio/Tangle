@@ -54,6 +54,8 @@ idea {
 
 tasks.named("dokkaHtml").configure {
   dependsOn(tasks.named("pluginDescriptors"))
+  dependsOn(tasks.named("pluginUnderTestMetadata"))
+  dependsOn(tasks.named("test"))
 }
 
 val integrationTestCompile by configurations.registering {

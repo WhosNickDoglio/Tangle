@@ -49,7 +49,6 @@ plugins {
   alias(libs.plugins.benManes)
   alias(libs.plugins.kotlinx.binaryCompatibility)
   base
-  benchmarks
   dokka
   knit
   website

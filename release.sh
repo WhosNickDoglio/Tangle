@@ -36,9 +36,6 @@ trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
 # Publish to Gradle Plugin Portal
 ./gradlew publishPlugins --no-configuration-cache
 
-# Create new website docs version
-./gradlew versionDocs
-
 # Set all versions in the root README to the new version
 ./gradlew updateProjectReadmeVersionRefs --no-configuration-cache
 

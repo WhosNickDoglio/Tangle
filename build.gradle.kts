@@ -36,11 +36,6 @@ buildscript {
   }
 }
 
-// `alias(libs.______)` inside the plugins block throws a false positive warning
-// https://youtrack.jetbrains.com/issue/KTIJ-19369
-// There's also an IntelliJ plugin to disable this warning globally:
-// https://plugins.jetbrains.com/plugin/18949-gradle-libs-error-suppressor
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
   kotlin("jvm")
   alias(libs.plugins.dependencyAnalysis)
@@ -50,7 +45,6 @@ plugins {
   alias(libs.plugins.kotlinx.binaryCompatibility)
   base
   dokka
-  website
 }
 
 allprojects {

@@ -241,8 +241,6 @@ val updateWebsiteApiDocs by tasks.registering(Copy::class) {
     )
   }
 
-  dependsOn(tasks.findByName("knit"))
-
   from(
     fileTree("$buildDir/dokka/htmlMultiModule") {
       exclude("**/styles/*")

@@ -50,7 +50,6 @@ plugins {
   alias(libs.plugins.kotlinx.binaryCompatibility)
   base
   dokka
-  knit
   website
 }
 

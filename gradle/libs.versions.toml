@@ -43,7 +43,6 @@ androidx-work-version = "2.7.1"
 kotlinx-atomicfu = "0.18.3"
 kotlinx-binaryCompatibility = "0.13.2"
 kotlinx-coroutines = "1.6.4"
-kotlinx-knit = "0.4.0"
 
 google-dagger = "2.47"
 google-ksp = "1.9.25-1.0.20"
@@ -76,7 +75,6 @@ dependencySync = { id = "com.rickbusarow.gradle-dependency-sync", version.ref = 
 
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kotlinx-binaryCompatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlinx-binaryCompatibility" }
-kotlinx-knit = { id = "kotlinx-knit", version.ref = "kotlinx-knit" }
 
 [libraries]
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "androidTools" }
@@ -239,8 +237,6 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
-kotlinx-knit-gradle = { module = "org.jetbrains.kotlinx:kotlinx-knit", version.ref = "kotlinx-knit" }
-kotlinx-knit-test = { module = "org.jetbrains.kotlinx:kotlinx-knit-test", version.ref = "kotlinx-knit" }
 
 ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint-gradle" }
 

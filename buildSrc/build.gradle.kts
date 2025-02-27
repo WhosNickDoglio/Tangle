@@ -48,5 +48,4 @@ dependencies {
   implementation(libs.android.gradle)
   implementation(libs.dokka.gradle)
   implementation(libs.dropbox.dependencyGuard)
-  implementation(libs.kotlinx.knit.gradle)
 }

@@ -108,15 +108,10 @@ fun Project.common() {
 
   tasks.register("format") {
     group = "formatting"
-    description = "ktlintFormat, dependencySync"
+    description = "ktlintFormat"
 
     dependsOn("ktlintFormat")
     dependsOn("moveJavaSrcToKotlin")
-
-    val dependencySyncTasks = rootProject
-      .allprojects
-      .mapNotNull { it.tasks.findByPath("dependencySync") }
-    dependsOn(dependencySyncTasks)
   }
 }
 

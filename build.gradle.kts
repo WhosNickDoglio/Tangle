@@ -17,7 +17,6 @@ import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import org.jlleitschuh.gradle.ktlint.tasks.BaseKtLintCheckTask
-import java.util.Locale
 
 buildscript {
   repositories {
@@ -41,7 +40,6 @@ plugins {
   alias(libs.plugins.dependencyAnalysis)
   alias(libs.plugins.detekt)
   alias(libs.plugins.taskTree)
-  alias(libs.plugins.benManes)
   alias(libs.plugins.kotlinx.binaryCompatibility)
   base
   dokka
@@ -106,22 +104,6 @@ tasks.withType<Detekt> {
 
   // Target version of the generated JVM bytecode. It is used for type resolution.
   this.jvmTarget = "1.8"
-}
-
-fun isNonStable(version: String): Boolean {
-  val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase(Locale.getDefault()).contains(it) }
-  val regex = "^[0-9,.v-]+(-r)?$".toRegex()
-  val isStable = stableKeyword || regex.matches(version)
-  return isStable.not()
-}
-
-tasks.named(
-  "dependencyUpdates",
-  com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask::class.java
-).configure {
-  rejectVersionIf {
-    isNonStable(candidate.version) && !isNonStable(currentVersion)
-  }
 }
 
 allprojects {

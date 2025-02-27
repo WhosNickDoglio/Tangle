@@ -45,7 +45,6 @@ fun compileTangle(
   generateDaggerFactoriesOnly: Boolean = false,
   disableComponentMerging: Boolean = false,
   allWarningsAsErrors: Boolean = true,
-  useIR: Boolean = true,
   messageOutputStream: OutputStream = System.out,
   workingDir: File? = null,
   block: JvmCompilationResult.() -> Unit = { }
@@ -53,8 +52,6 @@ fun compileTangle(
   return KotlinCompilation()
     .apply {
       componentRegistrars = listOf(AnvilComponentRegistrar())
-      this.useIR = useIR
-      useOldBackend = !useIR
       inheritClassPath = true
       jvmTarget = JvmTarget.JVM_1_8.description
       verbose = false

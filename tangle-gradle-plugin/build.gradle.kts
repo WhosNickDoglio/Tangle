@@ -52,6 +52,10 @@ idea {
   }
 }
 
+tasks.named("dokkaHtml").configure {
+  dependsOn(tasks.named("pluginDescriptors"))
+}
+
 val integrationTestCompile by configurations.registering {
   extendsFrom(configurations["testCompileOnly"])
 }

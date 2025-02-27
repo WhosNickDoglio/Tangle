@@ -1,7 +1,6 @@
 [versions]
 androidTools = "7.3.1"
 benManes = "0.42.0"
-changeTracker = "0.7.3"
 coil = "2.2.0"
 dependencyAnalysis = "1.13.1"
 dispatch = "1.0.0-beta10"
@@ -9,15 +8,12 @@ detekt = "1.23.1"
 dokka = "1.9.20"
 dropbox-dependencyGuard = "0.3.1"
 gradleDoctor = "0.8.1"
-groovy = "3.0.12"
 hermit = "0.9.6"
 jUnit = "5.9.0"
 kotest = "5.4.2"
 kotlin = "1.9.25"
 ktlint-gradle = "11.0.0"
 
-sonarPlugin = "2.6.1"
-spotless = "5.10.1"
 targetSdk = "30"
 taskTree = "2.1.0"
 
@@ -164,8 +160,6 @@ androidx-work-core = { module = "androidx.work:work-runtime", version.ref = "and
 androidx-work-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work-version" }
 androidx-work-test = { module = "androidx.work:work-testing", version.ref = "androidx-work-version" }
 
-codehaus-groovy-core = { module = "org.codehaus.groovy:groovy", version.ref = "groovy" }
-codehaus-groovy-xml = { module = "org.codehaus.groovy:groovy-xml", version.ref = "groovy" }
 
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coil-core = { module = "io.coil-kt:coil", version.ref = "coil" }
@@ -176,8 +170,6 @@ dokka-gradle = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref
 
 dropbox-dependencyGuard = { module = "com.dropbox.dependency-guard:dependency-guard", version.ref = "dropbox-dependencyGuard" }
 
-google-accompanist-coil = "com.google.accompanist:accompanist-coil:0.15.0"
-
 google-auto-common = "com.google.auto:auto-common:1.2.1"
 
 google-auto-service-annotations = "com.google.auto.service:auto-service-annotations:1.0.1"
@@ -185,10 +177,6 @@ google-auto-service-processor = "com.google.auto.service:auto-service:1.0.1"
 
 google-dagger-api = { module = "com.google.dagger:dagger", version.ref = "google-dagger" }
 google-dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "google-dagger" }
-google-hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "google-dagger" }
-google-hilt-library = { module = "com.google.dagger:hilt-android", version.ref = "google-dagger" }
-google-hilt-pluginGradle = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "google-dagger" }
-google-hilt-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "google-dagger" }
 
 google-ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "google-ksp" }
 
@@ -203,8 +191,6 @@ hermit-mockk = { module = "com.rickbusarow.hermit:hermit-mockk", version.ref = "
 javax-annotation-jsr250-api = "javax.annotation:jsr250-api:1.0"
 
 javax-inject = "javax.inject:javax.inject:1"
-
-jmailen-gradle-kotlinter-gradle = "org.jmailen.gradle:kotlinter-gradle:3.11.1"
 
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "jUnit" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "jUnit" }
@@ -231,11 +217,8 @@ kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", versi
 
 kotlin-compile-testing = "dev.zacsweers.kctfork:core:0.4.1"
 
-kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "kotlinx-atomicfu" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
 ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint-gradle" }
@@ -243,18 +226,11 @@ ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref =
 mockk = "io.mockk:mockk:1.12.7"
 
 rickBusarow-dispatch-core = { module = "com.rickbusarow.dispatch:dispatch-core", version.ref = "dispatch" }
-rickBusarow-dispatch-detekt = { module = "com.rickbusarow.dispatch:dispatch-detekt", version.ref = "dispatch" }
 rickBusarow-dispatch-espresso = { module = "com.rickbusarow.dispatch:dispatch-android-espresso", version.ref = "dispatch" }
 rickBusarow-dispatch-lifecycle = { module = "com.rickbusarow.dispatch:dispatch-android-lifecycle", version.ref = "dispatch" }
 rickBusarow-dispatch-lifecycleExtensions = { module = "com.rickbusarow.dispatch:dispatch-android-lifecycle-extensions", version.ref = "dispatch" }
-rickBusarow-dispatch-test-core = { module = "com.rickbusarow.dispatch:dispatch-test", version.ref = "dispatch" }
-rickBusarow-dispatch-test-jUnit4 = { module = "com.rickbusarow.dispatch:dispatch-test-junit4", version.ref = "dispatch" }
-rickBusarow-dispatch-test-jUnit5 = { module = "com.rickbusarow.dispatch:dispatch-test-junit5", version.ref = "dispatch" }
-rickBusarow-dispatch-viewModel = { module = "com.rickbusarow.dispatch:dispatch-android-viewmodel", version.ref = "dispatch" }
 
 robolectric = "org.robolectric:robolectric:4.9.2"
-
-scabbard = "gradle.plugin.dev.arunkumar:scabbard-gradle-plugin:0.5.0"
 
 square-anvil-annotations = { module = "com.squareup.anvil:annotations", version.ref = "square-anvil" }
 square-anvil-compiler-api = { module = "com.squareup.anvil:compiler-api", version.ref = "square-anvil" }
@@ -276,16 +252,11 @@ square-retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref
 square-retrofit-mock = { module = "com.squareup.retrofit2:retrofit-mock", version.ref = "square-retrofit" }
 square-retrofit-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "square-retrofit" }
 
-swiftzer-semver = "net.swiftzer.semver:semver:1.2.0"
-
 timber = "com.jakewharton.timber:timber:5.0.1"
 
 vanniktech-publish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "vanniktech-publish" }
 
 zacSweers-auto-service-ksp = "dev.zacsweers.autoservice:auto-service-ksp:1.0.0"
-
-zacSweers-moshix-runtime = { module = "dev.zacsweers.moshix:moshi-sealed-runtime", version.ref = "zacSweers-moshix" }
-zacSweers-moshix-sealed = { module = "dev.zacsweers.moshix:moshi-sealed-codegen", version.ref = "zacSweers-moshix" }
 
 [bundles]
 jUnit = ["junit-api", "junit-params", "junit-engine"]

@@ -73,40 +73,14 @@ jobs:
     if: github.actor != 'renovate[bot]'
 
     steps:
-      - name: check out with token (used by forks)
+      - name: check out with token
         uses: actions/checkout@v3
-        if: github.event.pull_request.head.repo.full_name != github.repository
-
-      - name: check out with PAT (used by main repo)
-        uses: actions/checkout@v3
-        if: github.event.pull_request.head.repo.full_name == github.repository
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          fetch-depth: 0
-
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
-
-      - name: KtLint format (used by main repo)
-        if: github.event.pull_request.head.repo.full_name == github.repository
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: ktlintformat
-          cache-read-only: false
-
-      # If KtLint generated changes, commit and push those changes.
-      - name: commit changes (used by main repo)
-        if: github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Apply KtLint format
-          commit_options: '--no-verify --signoff'
-
-      - name: KtLint check (used by forks)
+      - name: KtLint check
         if: github.event.pull_request.head.repo.full_name != github.repository
         uses: gradle/gradle-build-action@v2
         with:

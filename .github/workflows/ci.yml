@@ -3,6 +3,9 @@ name: CI
 on:
   pull_request:
   workflow_dispatch:
+  push:
+    branches:
+      - 'main'
 
 env:
   macosGradleArgs: '-Dorg.gradle.jvmargs=-Xmx10g -Dfile.encoding=UTF-8 -XX:+UseParallelGC'

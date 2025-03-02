@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package tangle.builds
+package dev.whosnickdoglio.convention.tangle.builds
 
 const val GROUP = "com.rickbusarow.tangle"
 const val PLUGIN_ID = "com.rickbusarow.tangle"

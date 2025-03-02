@@ -21,9 +21,9 @@ import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost.Companion.DEFAULT
 import com.vanniktech.maven.publish.tasks.JavadocJar
 import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
-import tangle.builds.GROUP
-import tangle.builds.SOURCE_WEBSITE
-import tangle.builds.VERSION_NAME
+import dev.whosnickdoglio.convention.tangle.builds.GROUP
+import dev.whosnickdoglio.convention.tangle.builds.SOURCE_WEBSITE
+import dev.whosnickdoglio.convention.tangle.builds.VERSION_NAME
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 

@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import tangle.builds.GROUP
-import tangle.builds.VERSION_NAME
+import dev.whosnickdoglio.convention.tangle.builds.GROUP
+import dev.whosnickdoglio.convention.tangle.builds.VERSION_NAME
 
 plugins {
   javaLibrary

@@ -15,12 +15,7 @@
 
 plugins {
   `kotlin-dsl`
-}
-
-repositories {
-  mavenCentral()
-  google()
-  maven("https://plugins.gradle.org/m2/")
+  `java-gradle-plugin`
 }
 
 dependencies {

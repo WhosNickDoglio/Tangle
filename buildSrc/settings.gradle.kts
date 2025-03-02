@@ -13,11 +13,25 @@
  * limitations under the License.
  */
 
-rootProject.name = "buildSrc"
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+rootProject.name = "build-logic"
+
+pluginManagement {
+  repositories {
+    mavenCentral()
+    google()
+    gradlePluginPortal()
+    mavenLocal()
+  }
+}
 
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
+  repositories {
+    mavenCentral()
+    google()
+    gradlePluginPortal()
+  }
+
   versionCatalogs {
     create("libs") {
       from(files("../gradle/libs.versions.toml"))

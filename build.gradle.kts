@@ -41,7 +41,7 @@ plugins {
   alias(libs.plugins.detekt)
   alias(libs.plugins.kotlinx.binaryCompatibility)
   base
-  dokka
+  id("dev.whosnickdoglio.convention.tangle.dokka")
 }
 
 allprojects {

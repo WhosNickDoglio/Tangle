@@ -16,7 +16,7 @@
 import java.util.Locale
 
 plugins {
-  androidApplication
+  id("dev.whosnickdoglio.convention.tangle.androidApplication")
   id("com.squareup.anvil")
   kotlin("kapt")
 }

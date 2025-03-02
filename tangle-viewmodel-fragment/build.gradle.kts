@@ -14,8 +14,8 @@
  */
 
 plugins {
-  androidLibrary
-  published
+  id("dev.whosnickdoglio.convention.tangle.androidLibrary")
+  id("dev.whosnickdoglio.convention.tangle.published")
 }
 
 tanglePublishing {

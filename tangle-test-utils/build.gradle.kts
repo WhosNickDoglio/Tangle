@@ -13,8 +13,10 @@
  * limitations under the License.
  */
 
+import dev.whosnickdoglio.convention.tangle.experimentalAnvil
+
 plugins {
-  javaLibrary
+  id("dev.whosnickdoglio.convention.tangle.javaLibrary")
   kotlin("kapt")
 }
 

@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+package dev.whosnickdoglio.convention.tangle
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {

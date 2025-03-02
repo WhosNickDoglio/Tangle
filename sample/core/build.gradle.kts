@@ -14,7 +14,7 @@
  */
 
 plugins {
-  androidLibrary
+  id("dev.whosnickdoglio.convention.tangle.androidLibrary")
   id("com.squareup.anvil")
 }
 

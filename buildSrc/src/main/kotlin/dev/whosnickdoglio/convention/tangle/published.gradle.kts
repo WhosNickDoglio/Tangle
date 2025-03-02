@@ -14,6 +14,8 @@
  */
 @file:Suppress("UndocumentedPublicProperty")
 
+package dev.whosnickdoglio.convention.tangle
+
 import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
 import com.vanniktech.maven.publish.JavadocJar.Dokka
 import com.vanniktech.maven.publish.KotlinJvm
@@ -29,8 +31,8 @@ import kotlin.reflect.KProperty
 
 plugins {
   id("com.vanniktech.maven.publish.base")
-  id("dokka")
-  id("dependency-guard")
+  id("dev.whosnickdoglio.convention.tangle.dokka")
+  id("dev.whosnickdoglio.convention.tangle.dependency-guard")
 }
 
 @Suppress("UnnecessaryAbstractClass")

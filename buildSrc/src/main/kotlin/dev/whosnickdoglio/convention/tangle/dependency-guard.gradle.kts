@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+package dev.whosnickdoglio.convention.tangle
+
 plugins {
   id("com.dropbox.dependency-guard")
 }

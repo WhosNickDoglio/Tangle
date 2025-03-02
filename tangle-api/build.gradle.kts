@@ -14,8 +14,8 @@
  */
 
 plugins {
-  javaLibrary
-  published
+  id("dev.whosnickdoglio.convention.tangle.javaLibrary")
+  id("dev.whosnickdoglio.convention.tangle.published")
 }
 
 tanglePublishing {

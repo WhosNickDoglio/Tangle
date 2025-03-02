@@ -17,10 +17,10 @@ import dev.whosnickdoglio.convention.tangle.builds.GROUP
 import dev.whosnickdoglio.convention.tangle.builds.VERSION_NAME
 
 plugins {
-  javaLibrary
+  id("dev.whosnickdoglio.convention.tangle.javaLibrary")
   id("java-gradle-plugin")
   id("com.gradle.plugin-publish") version "1.1.0"
-  published
+  id("dev.whosnickdoglio.convention.tangle.published")
   idea
 }
 

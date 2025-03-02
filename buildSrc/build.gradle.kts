@@ -23,26 +23,16 @@ repositories {
   maven("https://plugins.gradle.org/m2/")
 }
 
-val kotlinVersion = libs.versions.kotlin.get()
-
 dependencies {
   implementation(platform(libs.kotlin.bom))
 
   compileOnly(gradleApi())
 
-  implementation(libs.kotlin.reflect)
-  implementation(libs.kotlin.stdlib.jdk8)
   implementation(libs.kotlin.annotation.processing)
   implementation(libs.kotlin.compiler)
+  implementation(libs.kotlin.gradle.plug)
   implementation(libs.kotlin.gradle.pluginApi)
   implementation(libs.ktlint.gradle)
-
-  implementation(kotlin("gradle-plugin", version = kotlinVersion))
-  implementation(kotlin("stdlib", version = kotlinVersion))
-  implementation(kotlin("stdlib-common", version = kotlinVersion))
-  implementation(kotlin("stdlib-jdk7", version = kotlinVersion))
-  implementation(kotlin("stdlib-jdk8", version = kotlinVersion))
-  implementation(kotlin("reflect", version = kotlinVersion))
 
   implementation(libs.vanniktech.publish)
   implementation(libs.android.gradle)

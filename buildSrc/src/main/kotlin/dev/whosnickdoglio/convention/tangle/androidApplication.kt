@@ -15,14 +15,18 @@
 
 package dev.whosnickdoglio.convention.tangle
 
-plugins {
-  id("com.android.application")
-  id("kotlin-android")
-  kotlin("kapt")
-}
+import com.android.build.api.dsl.ApplicationExtension
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
-android {
-
-  commonAndroid(project)
-  common()
+class AndroidAppPlugin : Plugin<Project> {
+  override fun apply(target: Project): Unit = with(target) {
+    pluginManager.apply("com.android.application")
+    pluginManager.apply("kotlin-android")
+    pluginManager.apply("org.jetbrains.kotlin.kapt")
+    extensions.configure(ApplicationExtension::class.java) {
+      commonAndroid(this@with)
+      common()
+    }
+  }
 }

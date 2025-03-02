@@ -18,6 +18,16 @@ plugins {
   `java-gradle-plugin`
 }
 
+gradlePlugin {
+  plugins {
+    register("androidApplication") {
+      id = "dev.whosnickdoglio.convention.tangle.androidApplication"
+      implementationClass = "dev.whosnickdoglio.convention.tangle.AndroidAppPlugin"
+    }
+  }
+}
+
+
 dependencies {
   implementation(platform(libs.kotlin.bom))
 

@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import dev.whosnickdoglio.convention.tangle.builds.GROUP
 import dev.whosnickdoglio.convention.tangle.builds.VERSION_NAME
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   id("dev.whosnickdoglio.convention.tangle.javaLibrary")
@@ -131,7 +131,7 @@ val generateBuildProperties by tasks.registering {
     "tangle/inject/gradle/BuildProperties.kt"
   )
 
-  inputs.file(rootProject.file("buildSrc/src/main/kotlin/tangle/builds/Versions.kt"))
+  inputs.file(rootProject.file("buildSrc/src/main/kotlin/dev/whosnickdoglio/convention/tangle/builds/Versions.kt"))
   inputs.properties(mapOf("version" to version, "group" to group))
   outputs.file(buildPropertiesFile)
 
@@ -167,7 +167,7 @@ val generateTestVersions by tasks.registering {
   val testVersionsDir = File(generatedTestDirPath)
   val testVersionsFile = File(testVersionsDir, "tangle/inject/gradle/TestVersions.kt")
 
-  inputs.file(rootProject.file("buildSrc/src/main/kotlin/tangle/builds/Versions.kt"))
+  inputs.file(rootProject.file("buildSrc/src/main/kotlin/dev/whosnickdoglio/convention/tangle/builds/Versions.kt"))
   inputs.file(rootProject.file("gradle/libs.versions.toml"))
   outputs.file(testVersionsFile)
 

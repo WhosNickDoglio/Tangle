@@ -300,7 +300,7 @@ jobs:
           script: ./gradlew connectedCheck
 
       - name: Upload results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: instrumented-test-results

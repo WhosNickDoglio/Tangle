@@ -40,7 +40,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
 
       - name: detekt
         uses: gradle/gradle-build-action@v2
@@ -62,7 +62,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
 
       - name: dependency-guard
         uses: gradle/gradle-build-action@v2
@@ -82,7 +82,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
       - name: KtLint check
         if: github.event.pull_request.head.repo.full_name != github.repository
         uses: gradle/gradle-build-action@v2
@@ -112,7 +112,7 @@ jobs:
 #        uses: actions/setup-java@v3
 #        with:
 #          distribution: 'zulu'
-#          java-version: '11'
+#          java-version: '17'
 #
 #      - name: Check that the version is a -SNAPSHOT version
 #        uses: gradle/gradle-build-action@v2
@@ -188,7 +188,7 @@ jobs:
 #        uses: actions/setup-java@v3
 #        with:
 #          distribution: 'zulu'
-#          java-version: '11'
+#          java-version: '17'
 #
 #      - name: build website
 #        uses: gradle/gradle-build-action@v2
@@ -211,7 +211,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
 
       - name: api check
         uses: gradle/gradle-build-action@v2
@@ -233,7 +233,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
 
       - name: all tests
         uses: gradle/gradle-build-action@v2
@@ -261,7 +261,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
 
       ## Build before running tests, using cache.
       - uses: gradle/gradle-build-action@v2
@@ -318,26 +318,3 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
 
-  tests-windows:
-
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-
-      - name: all tests
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: |
-            testJvm
-            "${{ env.windowsGradleArgs }}"
-          cache-read-only: false

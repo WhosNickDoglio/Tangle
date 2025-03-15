@@ -23,6 +23,7 @@ anvil {
 }
 
 android {
+  namespace = "tangle.sample.ui"
 
   buildFeatures {
     viewBinding = true

@@ -33,6 +33,8 @@ class ComposePluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
+
 
         defaultConfig {
           minSdk = 23
@@ -72,6 +74,7 @@ class ComposePluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23

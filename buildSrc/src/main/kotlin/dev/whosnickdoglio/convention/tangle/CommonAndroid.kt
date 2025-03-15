@@ -17,27 +17,23 @@ package dev.whosnickdoglio.convention.tangle
 
 import com.android.build.api.dsl.ApplicationBaseFlavor
 import com.android.build.api.dsl.CommonExtension
-import com.android.build.api.dsl.LibraryBaseFlavor
-import org.gradle.api.JavaVersion.VERSION_1_8
+import org.gradle.api.JavaVersion.VERSION_11
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 @Suppress("UnstableApiUsage", "MagicNumber")
-fun CommonExtension<*, *, *, *>.commonAndroid(target: Project) {
+fun CommonExtension<*, *, *, *, *>.commonAndroid(target: Project) {
 
   val publishedAsArtifact = target.extensions.findByName("com.vanniktech.maven.publish") != null
 
   compileSdk = 33
-
-  buildToolsVersion = "31.0.0"
 
   defaultConfig {
     minSdk = 21
 
     // `targetSdk` doesn't have a single base interface, as of AGP 7.1.0
     when (this@defaultConfig) {
-      is LibraryBaseFlavor -> targetSdk = 33
       is ApplicationBaseFlavor -> targetSdk = 33
     }
 
@@ -54,8 +50,8 @@ fun CommonExtension<*, *, *, *>.commonAndroid(target: Project) {
   }
 
   compileOptions {
-    sourceCompatibility = VERSION_1_8
-    targetCompatibility = VERSION_1_8
+    sourceCompatibility = VERSION_11
+    targetCompatibility = VERSION_11
   }
 
   sourceSets {
@@ -79,7 +75,7 @@ fun CommonExtension<*, *, *, *>.commonAndroid(target: Project) {
     unitTests.isReturnDefaultValues = true
     animationsDisabled = true
   }
-  target.tasks.create("lintMain") {
+  target.tasks.register("lintMain") {
     doFirst {
       target.tasks.withType<KotlinCompile>()
         .configureEach {
@@ -96,12 +92,12 @@ fun CommonExtension<*, *, *, *>.commonAndroid(target: Project) {
     finalizedBy("lintDebug")
   }
 
-  target.tasks.create("testJvm") {
+  target.tasks.register("testJvm") {
 
     dependsOn("testDebugUnitTest")
   }
 
-  target.tasks.create("buildTests") {
+  target.tasks.register("buildTests") {
 
     dependsOn("assembleDebugUnitTest")
   }

@@ -19,6 +19,10 @@ plugins {
   id("com.google.devtools.ksp")
 }
 
+android {
+  namespace = "tangle.sample.data"
+}
+
 anvil {
   generateDaggerFactories.set(true)
 }

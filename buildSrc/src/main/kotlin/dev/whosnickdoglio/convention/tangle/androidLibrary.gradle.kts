@@ -20,6 +20,10 @@ plugins {
   id("kotlin-android")
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 android {
 
   commonAndroid(project)

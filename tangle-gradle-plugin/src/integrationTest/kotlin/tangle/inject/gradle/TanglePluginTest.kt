@@ -34,6 +34,7 @@ class TanglePluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23
@@ -77,6 +78,7 @@ class TanglePluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23
@@ -125,6 +127,7 @@ class TanglePluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23

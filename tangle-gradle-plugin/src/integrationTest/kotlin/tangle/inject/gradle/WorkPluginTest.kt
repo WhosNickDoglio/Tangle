@@ -32,6 +32,7 @@ class WorkPluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23
@@ -82,6 +83,7 @@ class WorkPluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23

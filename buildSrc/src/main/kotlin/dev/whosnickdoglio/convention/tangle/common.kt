@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,7 +21,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.File
 
@@ -33,7 +33,7 @@ fun Project.common() {
       compilerOptions {
         allWarningsAsErrors.set(false)
 
-        jvmTarget.set(JVM_1_8)
+        jvmTarget.set(JVM_11)
 
         freeCompilerArgs.set(
           freeCompilerArgs.get() + listOf(
@@ -51,6 +51,7 @@ fun Project.common() {
     }
   tasks.withType<Test> {
     useJUnitPlatform()
+    // https://github.com/ZacSweers/kotlin-compile-testing?tab=readme-ov-file#java-16-compatibility
     jvmArgs(
       "--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
       "--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",

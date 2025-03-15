@@ -22,6 +22,8 @@ tanglePublishing {
   artifactId.set("tangle-fragment-api")
 }
 
+android { namespace = "tangle.fragment.api" }
+
 dependencies {
 
   api(libs.androidx.fragment.core)

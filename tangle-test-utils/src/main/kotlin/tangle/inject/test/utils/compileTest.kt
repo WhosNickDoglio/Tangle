@@ -53,7 +53,7 @@ fun compileTangle(
     .apply {
       componentRegistrars = listOf(AnvilComponentRegistrar())
       inheritClassPath = true
-      jvmTarget = JvmTarget.JVM_1_8.description
+      jvmTarget = JvmTarget.JVM_11.description
       verbose = false
       this.allWarningsAsErrors = allWarningsAsErrors
       this.messageOutputStream = messageOutputStream

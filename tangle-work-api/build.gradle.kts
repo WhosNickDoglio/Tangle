@@ -18,6 +18,8 @@ plugins {
   id("dev.whosnickdoglio.convention.tangle.published")
 }
 
+android { namespace = "tangle.work.api" }
+
 tanglePublishing {
   artifactId.set("tangle-work-api")
 }

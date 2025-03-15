@@ -15,9 +15,7 @@
   -->
 
 <manifest
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  package="tangle.sample.ui"
-  >
+  xmlns:android="http://schemas.android.com/apk/res/android">
 
   <application>
     <activity android:name=".composeWithActivities.breedDetail.BreedDetailActivity"/>

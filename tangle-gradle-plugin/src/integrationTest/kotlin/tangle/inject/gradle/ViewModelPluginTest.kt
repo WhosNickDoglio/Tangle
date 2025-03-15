@@ -33,6 +33,7 @@ class ViewModelPluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23
@@ -70,6 +71,7 @@ class ViewModelPluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23
@@ -109,6 +111,7 @@ class ViewModelPluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23
@@ -149,6 +152,7 @@ class ViewModelPluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23
@@ -198,6 +202,7 @@ class ViewModelPluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23
@@ -251,6 +256,7 @@ class ViewModelPluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23

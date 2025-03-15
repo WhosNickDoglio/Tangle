@@ -18,6 +18,8 @@ plugins {
   id("dev.whosnickdoglio.convention.tangle.published")
 }
 
+android { namespace = "tangle.viewmodel.api" }
+
 tanglePublishing {
   artifactId.set("tangle-viewmodel-api")
 }

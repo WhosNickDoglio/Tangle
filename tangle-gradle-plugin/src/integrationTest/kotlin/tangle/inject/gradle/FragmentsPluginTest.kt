@@ -32,6 +32,7 @@ class FragmentsPluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23
@@ -82,6 +83,7 @@ class FragmentsPluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23
@@ -119,6 +121,7 @@ class FragmentsPluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23
@@ -156,6 +159,7 @@ class FragmentsPluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23
@@ -197,6 +201,7 @@ class FragmentsPluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23
@@ -236,6 +241,7 @@ class FragmentsPluginTest : BasePluginTest() {
 
       android {
         compileSdk = 30
+        namespace = "foo"
 
         defaultConfig {
           minSdk = 23

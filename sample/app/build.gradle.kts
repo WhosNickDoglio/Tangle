@@ -21,6 +21,10 @@ plugins {
   kotlin("kapt")
 }
 
+kotlin {
+  jvmToolchain(17)
+}
+
 android {
   /*
   This sample app requires an api key.  You can get a free one here: https://thedogapi.com/signup
@@ -41,14 +45,17 @@ android {
     testInstrumentationRunner = "tangle.sample.app.support.TangleTestRunner"
   }
 
+  namespace = "tangle.sample.app"
+
   buildFeatures {
     viewBinding = true
     compose = true
+    buildConfig = true
   }
   composeOptions {
     kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
   }
-  packagingOptions {
+  packaging {
     resources.excludes.add("META-INF/*.kotlin_module")
     resources.excludes.add("META-INF/AL2.0")
     resources.excludes.add("META-INF/DEPENDENCIES")

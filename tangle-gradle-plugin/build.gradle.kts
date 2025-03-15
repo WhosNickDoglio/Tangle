@@ -97,7 +97,7 @@ gradlePlugin {
   }
 }
 
-tasks.create("setupPluginUploadFromEnvironment") {
+tasks.register("setupPluginUploadFromEnvironment") {
   doLast {
     val key = System.getenv("GRADLE_PUBLISH_KEY")
     val secret = System.getenv("GRADLE_PUBLISH_SECRET")
@@ -113,7 +113,8 @@ tasks.create("setupPluginUploadFromEnvironment") {
   }
 }
 
-val generatedDirPath = "$buildDir/generated/sources/build-properties/kotlin/main"
+val generatedDirPath =
+  "${layout.buildDirectory.get().asFile.path}/generated/sources/build-properties/kotlin/main"
 sourceSets {
   main.configure {
     java.srcDir(project.file(generatedDirPath))
@@ -153,7 +154,7 @@ val generateBuildProperties by tasks.registering {
   }
 }
 
-val generatedTestDirPath = "$buildDir/generated/sources/build-properties/kotlin/test"
+val generatedTestDirPath = "${layout.buildDirectory.asFile.get().path}/generated/sources/build-properties/kotlin/test"
 sourceSets {
   test.configure {
     java.srcDir(project.file(generatedTestDirPath))

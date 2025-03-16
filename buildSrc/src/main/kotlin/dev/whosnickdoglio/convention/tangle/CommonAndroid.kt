@@ -23,7 +23,7 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 @Suppress("UnstableApiUsage", "MagicNumber")
-fun CommonExtension<*, *, *, *, *>.commonAndroid(target: Project) {
+fun CommonExtension<*, *, *, *, *, *>.commonAndroid(target: Project) {
 
   val publishedAsArtifact = target.extensions.findByName("com.vanniktech.maven.publish") != null
 

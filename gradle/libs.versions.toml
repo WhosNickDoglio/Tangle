@@ -37,7 +37,7 @@ androidx-work-version = "2.7.1"
 kotlinx-binaryCompatibility = "0.13.2"
 kotlinx-coroutines = "1.6.4"
 
-google-dagger = "2.47"
+google-dagger = "2.53"
 google-ksp = "1.9.25-1.0.20"
 google-material = "1.6.1"
 

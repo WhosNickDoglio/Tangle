@@ -17,8 +17,10 @@ androidx.startup:startup-runtime:1.0.0
 androidx.tracing:tracing:1.0.0
 androidx.versionedparcelable:versionedparcelable:1.1.1
 androidx.work:work-runtime:2.7.1
-com.google.dagger:dagger:2.47
+com.google.dagger:dagger:2.53
 com.google.guava:listenablefuture:1.0
+jakarta.inject:jakarta.inject-api:2.0.1
 javax.inject:javax.inject:1
 org.jetbrains.kotlin:kotlin-stdlib:1.9.25
 org.jetbrains:annotations:13.0
+org.jspecify:jspecify:1.0.0

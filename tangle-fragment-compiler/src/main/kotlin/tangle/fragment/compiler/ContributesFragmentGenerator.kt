@@ -201,7 +201,10 @@ class ContributesFragmentGenerator : TangleCodeGenerator() {
                 .build()
             )
           } else {
-            receiver(fragmentClassName)
+            addParameter(
+              ParameterSpec.builder("fragment", fragmentClassName)
+                .build()
+            )
           }
         }
         .addAnnotation(ClassNames.binds)

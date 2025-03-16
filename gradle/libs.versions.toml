@@ -42,7 +42,7 @@ google-ksp = "1.9.25-1.0.20"
 google-material = "1.6.1"
 
 
-square-anvil = "2.4.7"
+square-anvil = "2.4.9"
 square-moshi = "1.13.0"
 square-okhttp = "4.10.0"
 square-retrofit = "2.9.0"

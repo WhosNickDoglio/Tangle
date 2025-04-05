@@ -45,17 +45,8 @@ plugins {
 }
 
 allprojects {
-
-  repositories {
-    google()
-    mavenLocal()
-    mavenCentral()
-    maven("https://androidx.dev/storage/compose-compiler/repository/")
-    maven("https://oss.sonatype.org/content/repositories/snapshots")
-  }
   configurations.all {
     resolutionStrategy {
-
       eachDependency {
         when {
           requested.group == "org.jetbrains.kotlin" -> useVersion(libs.versions.kotlin.get())

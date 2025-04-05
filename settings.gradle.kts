@@ -21,6 +21,15 @@ pluginManagement {
   }
 }
 
+dependencyResolutionManagement {
+  repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
+  repositories {
+    google()
+    mavenLocal()
+    mavenCentral()
+  }
+}
+
 plugins {
   id("com.gradle.develocity") version "3.19.2"
   id("com.gradle.common-custom-user-data-gradle-plugin") version "2.2.1"

@@ -18,7 +18,6 @@ package tangle.inject.test.utils
 import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.COMPILATION_ERROR
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.OK
-import hermit.test.junit.HermitJUnit5
 import io.kotest.assertions.asClue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -31,7 +30,7 @@ import kotlin.properties.Delegates
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
-abstract class BaseTest : HermitJUnit5() {
+abstract class BaseTest {
 
   private var testInfo: TestInfo by Delegates.notNull()
 

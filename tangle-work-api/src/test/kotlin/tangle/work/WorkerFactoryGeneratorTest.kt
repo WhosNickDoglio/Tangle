@@ -17,9 +17,12 @@ package tangle.work
 
 import android.content.Context
 import androidx.work.WorkerParameters
-import hermit.test.mockk.resetsMockk
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
+import io.mockk.MockK
+import io.mockk.mockk
+import io.mockk.unmockkAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.TestFactory
 import tangle.inject.test.utils.BaseTest
 import tangle.inject.test.utils.createInstance
@@ -29,8 +32,13 @@ import javax.inject.Provider
 
 class WorkerFactoryGeneratorTest : BaseTest() {
 
-  val context by resetsMockk<Context>()
-  val workerParameters by resetsMockk<WorkerParameters>()
+  val context = mockk<Context>()
+  val workerParameters = mockk<WorkerParameters>()
+
+  @AfterEach
+  fun tearDown() {
+    unmockkAll()
+  }
 
   @TestFactory
   fun `Worker factory is generated without any additional arguments`() = test {

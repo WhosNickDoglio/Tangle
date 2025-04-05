@@ -43,7 +43,6 @@ dependencies {
   implementation(libs.square.anvil.annotations)
   implementation(libs.square.anvil.compiler.utils)
 
-  testImplementation(libs.bundles.hermit)
   testImplementation(libs.bundles.kotest)
   testImplementation(libs.google.dagger.compiler)
   testImplementation(libs.kotlin.compile.testing)

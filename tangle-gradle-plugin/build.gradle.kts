@@ -72,11 +72,9 @@ dependencies {
 
   implementation(libs.kotlin.stdlib.jdk8)
 
-  "integrationTestImplementation"(libs.bundles.hermit)
   "integrationTestImplementation"(libs.bundles.jUnit)
   "integrationTestImplementation"(libs.bundles.kotest)
 
-  testImplementation(libs.bundles.hermit)
   testImplementation(libs.bundles.jUnit)
   testImplementation(libs.bundles.kotest)
 }

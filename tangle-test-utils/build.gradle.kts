@@ -26,7 +26,6 @@ dependencies {
 
   kapt(libs.google.dagger.compiler)
 
-  api(libs.bundles.hermit)
   api(libs.bundles.jUnit)
   api(libs.bundles.kotest)
   api(libs.google.dagger.api)

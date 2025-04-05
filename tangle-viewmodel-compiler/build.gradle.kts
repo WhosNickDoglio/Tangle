@@ -44,7 +44,6 @@ dependencies {
   implementation(libs.google.dagger.api)
   implementation(libs.square.anvil.annotations)
 
-  testImplementation(libs.bundles.hermit)
   testImplementation(libs.bundles.kotest)
   testImplementation(libs.google.dagger.compiler)
   testImplementation(libs.kotlin.compile.testing)

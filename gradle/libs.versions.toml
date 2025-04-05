@@ -7,7 +7,6 @@ detekt = "1.23.8"
 dokka = "1.9.20"
 dropbox-dependencyGuard = "0.3.1"
 gradleDoctor = "0.10.0"
-hermit = "0.9.6"
 jUnit = "5.9.0"
 kotest = "5.4.2"
 kotlin = "1.9.25"
@@ -175,12 +174,6 @@ google-ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin
 
 google-material-android = { module = "com.google.android.material:material", version.ref = "google-material" }
 
-hermit-core = { module = "com.rickbusarow.hermit:hermit-core", version.ref = "hermit" }
-hermit-coroutines = { module = "com.rickbusarow.hermit:hermit-coroutines", version.ref = "hermit" }
-hermit-jUnit4 = { module = "com.rickbusarow.hermit:hermit-junit4", version.ref = "hermit" }
-hermit-jUnit5 = { module = "com.rickbusarow.hermit:hermit-junit5", version.ref = "hermit" }
-hermit-mockk = { module = "com.rickbusarow.hermit:hermit-mockk", version.ref = "hermit" }
-
 javax-annotation-jsr250-api = "javax.annotation:jsr250-api:1.0"
 
 javax-inject = "javax.inject:javax.inject:1"
@@ -254,4 +247,3 @@ zacSweers-auto-service-ksp = "dev.zacsweers.autoservice:auto-service-ksp:1.0.0"
 [bundles]
 jUnit = ["junit-api", "junit-params", "junit-engine"]
 kotest = ["kotest-assertions", "kotest-properties"]
-hermit = ["hermit-core", "hermit-jUnit5"]

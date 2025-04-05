@@ -15,7 +15,6 @@
 
 package tangle.inject.gradle
 
-import hermit.test.junit.HermitJUnit5
 import io.kotest.matchers.string.shouldContain
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
@@ -33,7 +32,7 @@ val anvilVersions = setOf(TestVersions.ANVIL)
 val gradleVersions = setOf(TestVersions.GRADLE)
 val kotlinVersions = setOf(TestVersions.KOTLIN, "1.7.0", "1.7.10")
 
-abstract class BasePluginTest : HermitJUnit5() {
+abstract class BasePluginTest {
 
   protected val activities = "api(\"androidx.activity:activity:${TestVersions.ACTIVITY}\")"
   protected val compose = "api(\"androidx.compose.ui:ui:${TestVersions.COMPOSE}\")"

@@ -35,7 +35,6 @@ dependencies {
 
   testCompileOnly(libs.google.auto.service.processor)
 
-  testImplementation(libs.hermit.mockk)
   testImplementation(libs.mockk)
 
   testImplementation(projects.tangleApi)

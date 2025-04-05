@@ -17,8 +17,10 @@ package tangle.work
 
 import android.content.Context
 import androidx.work.WorkerParameters
-import hermit.test.mockk.resetsMockk
 import io.kotest.matchers.shouldBe
+import io.mockk.mockk
+import io.mockk.unmockkAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import tangle.inject.InternalTangleApi
 import tangle.inject.TangleGraph
@@ -33,8 +35,13 @@ interface WorkerComponent {
 @OptIn(InternalTangleApi::class)
 class WorkerIntegrationTest : BaseTest() {
 
-  val context by resetsMockk<Context>()
-  val workerParameters by resetsMockk<WorkerParameters>()
+  val context = mockk<Context>()
+  val workerParameters = mockk<WorkerParameters>()
+
+  @AfterEach
+  fun tearDown() {
+    unmockkAll()
+  }
 
   @Test
   fun `worker is multi-bound into TangleAppScope`() = compileWithDagger(

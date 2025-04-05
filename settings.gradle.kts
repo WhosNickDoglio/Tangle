@@ -22,32 +22,17 @@ pluginManagement {
 }
 
 plugins {
-  id("com.gradle.enterprise").version("3.5.2")
+  id("com.gradle.develocity") version "3.19.2"
+  id("com.gradle.common-custom-user-data-gradle-plugin") version "2.2.1"
 }
 
-gradleEnterprise {
+val isCI = providers.environmentVariable("CI").isPresent
+
+develocity {
   buildScan {
-
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
-
-    publishAlways()
-
-    tag(if (System.getenv("CI").isNullOrBlank()) "Local" else "CI")
-
-    val githubActionID = System.getenv("GITHUB_ACTION")
-
-    if (!githubActionID.isNullOrBlank()) {
-      link(
-        "WorkflowURL",
-        "https://github.com/" +
-          System.getenv("GITHUB_REPOSITORY") +
-          "/pull/" +
-          System.getenv("PR_NUMBER") +
-          "/checks?check_run_id=" +
-          System.getenv("GITHUB_RUN_ID")
-      )
-    }
+    termsOfUseUrl = "https://gradle.com/terms-of-service"
+    termsOfUseAgree = "yes"
+    uploadInBackground = !isCI
   }
 }
 

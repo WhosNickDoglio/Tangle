@@ -18,6 +18,12 @@ package dev.whosnickdoglio.convention.tangle
 import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.jvm.toolchain.JvmVendorSpec
+import org.gradle.kotlin.dsl.assign
+import org.gradle.kotlin.dsl.getByType
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
 class AndroidAppPlugin : Plugin<Project> {
   override fun apply(target: Project): Unit = with(target) {
@@ -27,6 +33,18 @@ class AndroidAppPlugin : Plugin<Project> {
     extensions.configure(ApplicationExtension::class.java) {
       commonAndroid(this@with)
       common()
+    }
+
+    val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+    val kotlinExtension = extensions.getByType<KotlinAndroidProjectExtension>()
+    kotlinExtension.jvmToolchain {
+      languageVersion.set(
+        JavaLanguageVersion.of(
+          libs.findVersion("jdk")
+            .get().requiredVersion.toInt()
+        )
+      )
+      vendor = JvmVendorSpec.AZUL
     }
   }
 }

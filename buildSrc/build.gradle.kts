@@ -18,6 +18,13 @@ plugins {
   `java-gradle-plugin`
 }
 
+kotlin {
+  jvmToolchain {
+    languageVersion.set(JavaLanguageVersion.of(libs.versions.jdk.get().toInt()))
+    vendor = JvmVendorSpec.AZUL
+  }
+}
+
 gradlePlugin {
   plugins {
     register("androidApplication") {

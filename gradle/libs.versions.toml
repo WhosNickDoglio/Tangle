@@ -12,6 +12,7 @@ jUnit = "5.9.0"
 kotest = "5.4.2"
 kotlin = "1.9.25"
 ktlint-gradle = "11.0.0"
+jdk = "17"
 
 targetSdk = "30"
 

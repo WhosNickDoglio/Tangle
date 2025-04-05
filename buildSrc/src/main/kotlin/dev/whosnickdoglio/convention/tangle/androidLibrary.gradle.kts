@@ -20,8 +20,18 @@ plugins {
   id("kotlin-android")
 }
 
+val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+
 kotlin {
-    jvmToolchain(17)
+  jvmToolchain {
+    languageVersion.set(
+      JavaLanguageVersion.of(
+        libs.findVersion("jdk")
+          .get().requiredVersion.toInt()
+      )
+    )
+    vendor = JvmVendorSpec.AZUL
+  }
 }
 
 android {

@@ -17,7 +17,7 @@ import dev.whosnickdoglio.convention.tangle.experimentalAnvil
 
 plugins {
   id("dev.whosnickdoglio.convention.tangle.javaLibrary")
-  kotlin("kapt")
+  alias(libs.plugins.kotlin.kapt)
 }
 
 experimentalAnvil()

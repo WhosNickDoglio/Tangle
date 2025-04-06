@@ -19,9 +19,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   id("dev.whosnickdoglio.convention.tangle.javaLibrary")
-  id("java-gradle-plugin")
-  id("com.gradle.plugin-publish") version "1.1.0"
   id("dev.whosnickdoglio.convention.tangle.published")
+  `java-gradle-plugin`
   idea
 }
 

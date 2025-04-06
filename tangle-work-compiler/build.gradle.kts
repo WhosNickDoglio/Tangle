@@ -18,7 +18,7 @@ import dev.whosnickdoglio.convention.tangle.experimentalAnvil
 plugins {
   id("dev.whosnickdoglio.convention.tangle.javaLibrary")
   id("dev.whosnickdoglio.convention.tangle.published")
-  kotlin("kapt")
+  alias(libs.plugins.kotlin.kapt)
 }
 
 tanglePublishing {

@@ -15,7 +15,7 @@
 
 plugins {
   id("dev.whosnickdoglio.convention.tangle.androidLibrary")
-  id("com.squareup.anvil")
+  alias(libs.plugins.anvil)
 }
 
 anvil {

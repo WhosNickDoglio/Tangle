@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   kotlin("jvm")
+  id("com.autonomousapps.dependency-analysis")
 }
 
 val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")

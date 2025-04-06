@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import com.autonomousapps.tasks.CodeSourceExploderTask
 import dev.whosnickdoglio.convention.tangle.builds.GROUP
 import dev.whosnickdoglio.convention.tangle.builds.VERSION_NAME
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -189,6 +190,11 @@ val generateTestVersions by tasks.registering {
     )
   }
 }
+
+tasks.withType<CodeSourceExploderTask>().configureEach {
+  dependsOn(generateBuildProperties, generateTestVersions)
+}
+
 
 tasks.withType<KotlinCompile>().configureEach {
   dependsOn(generateBuildProperties)

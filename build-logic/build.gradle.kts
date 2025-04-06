@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2022 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,5 +49,6 @@ dependencies {
 
   implementation(libs.vanniktech.publish)
   implementation(libs.android.gradle)
+  implementation(libs.dependencyAnalysis.gradle)
   implementation(libs.dropbox.dependencyGuard)
 }

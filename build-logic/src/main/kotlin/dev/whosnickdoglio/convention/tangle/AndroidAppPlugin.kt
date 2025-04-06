@@ -30,6 +30,7 @@ class AndroidAppPlugin : Plugin<Project> {
     pluginManager.apply("com.android.application")
     pluginManager.apply("kotlin-android")
     pluginManager.apply("org.jetbrains.kotlin.kapt")
+    pluginManager.apply("com.autonomousapps.dependency-analysis")
     extensions.configure(ApplicationExtension::class.java) {
       commonAndroid(this@with)
       common()

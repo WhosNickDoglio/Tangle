@@ -37,7 +37,7 @@ kotlinx-coroutines = "1.6.4"
 
 google-dagger = "2.53"
 google-ksp = "1.9.25-1.0.20"
-google-material = "1.6.1"
+google-material = "1.12.0"
 
 
 square-anvil = "2.4.9"

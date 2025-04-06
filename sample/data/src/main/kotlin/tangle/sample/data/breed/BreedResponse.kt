@@ -47,7 +47,6 @@ data class BreedResponse(
   @Json(name = "weight")
   val weight: WeightResponse
 ) {
-
   @JsonClass(generateAdapter = true)
   data class ImageResponse(
     @Json(name = "height")
@@ -77,19 +76,22 @@ data class BreedResponse(
   )
 }
 
-fun BreedResponse.toBreedEntity() = BreedEntity(
-  id = id,
-  name = name,
-  bredFor = bredFor,
-  breedGroup = breedGroup,
-  lifeSpan = lifeSpan,
-  referenceImageId = referenceImageId,
-  temperament = temperament,
-  image = image.toImageEntity(),
-  height = height.toHeightEntity(),
-  weight = weight.toWeightEntity()
-)
+fun BreedResponse.toBreedEntity() =
+  BreedEntity(
+    id = id,
+    name = name,
+    bredFor = bredFor,
+    breedGroup = breedGroup,
+    lifeSpan = lifeSpan,
+    referenceImageId = referenceImageId,
+    temperament = temperament,
+    image = image.toImageEntity(),
+    height = height.toHeightEntity(),
+    weight = weight.toWeightEntity()
+  )
 
 fun ImageResponse.toImageEntity() = Image(height, id, url, width)
+
 fun HeightResponse.toHeightEntity() = Height(imperial, metric)
+
 fun WeightResponse.toWeightEntity() = Weight(imperial, metric)

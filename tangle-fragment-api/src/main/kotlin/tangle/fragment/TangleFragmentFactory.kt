@@ -22,10 +22,13 @@ import javax.inject.Provider
 public class TangleFragmentFactory(
   private val providerMap: Map<Class<out Fragment>, Provider<@JvmSuppressWildcards Fragment>>,
   @TangleFragmentProviderMap
-  private val assistedProviderMap: Map<Class<out Fragment>, Provider<@JvmSuppressWildcards Fragment>>
+  private val assistedProviderMap:
+    Map<Class<out Fragment>, Provider<@JvmSuppressWildcards Fragment>>
 ) : FragmentFactory() {
-
-  override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
+  override fun instantiate(
+    classLoader: ClassLoader,
+    className: String
+  ): Fragment {
     val fragmentClass = loadFragmentClass(classLoader, className)
 
     return providerMap[fragmentClass]?.get()

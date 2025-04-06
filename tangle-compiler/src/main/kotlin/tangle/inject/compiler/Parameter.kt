@@ -47,7 +47,6 @@ data class ConstructorInjectParameter(
 ) : Parameter()
 
 data class MemberInjectParameter(
-
   override val name: String,
   override val typeName: TypeName,
   override val providerTypeName: ParameterizedTypeName,
@@ -59,12 +58,18 @@ data class MemberInjectParameter(
   val memberInjectorClass: ClassName
 ) : Parameter()
 
-fun List<ConstructorInjectParameter>.uniqueName(base: String, attempt: Int = 0): String {
+fun List<ConstructorInjectParameter>.uniqueName(
+  base: String,
+  attempt: Int = 0
+): String {
   return map { it.name }.uniqueName(base, attempt)
 }
 
 @JvmName("uniqueNameStrings")
-fun List<String>.uniqueName(base: String, attempt: Int = 0): String {
+fun List<String>.uniqueName(
+  base: String,
+  attempt: Int = 0
+): String {
   val maybeName = if (attempt == 0) base else "$base$attempt"
   val unique = none { it == maybeName }
   return if (unique) maybeName else uniqueName(base, attempt + 1)

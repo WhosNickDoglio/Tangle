@@ -25,20 +25,22 @@ import tangle.sample.core.TextToSpeechDelegate
 import tangle.sample.data.breed.BreedDao
 import tangle.viewmodel.VMInject
 
-class BreedDetailViewModel @VMInject constructor(
-  private val breedDao: BreedDao,
-  @TangleParam("breedId")
-  private val breedId: Int,
-  private val textToSpeechDelegate: TextToSpeechDelegate,
-  coroutineScope: MainCoroutineScope
-) : ViewModel() {
+class BreedDetailViewModel
+  @VMInject
+  constructor(
+    private val breedDao: BreedDao,
+    @TangleParam("breedId")
+    private val breedId: Int,
+    private val textToSpeechDelegate: TextToSpeechDelegate,
+    coroutineScope: MainCoroutineScope
+  ) : ViewModel() {
+    val detailFlow =
+      flow {
+        val summary = breedDao.getById(breedId)
+        emit(summary)
+      }.stateIn(coroutineScope, SharingStarted.Eagerly, initialValue = null)
 
-  val detailFlow = flow {
-    val summary = breedDao.getById(breedId)
-    emit(summary)
-  }.stateIn(coroutineScope, SharingStarted.Eagerly, initialValue = null)
-
-  fun onTextSelected(text: String) {
-    textToSpeechDelegate.speak(text)
+    fun onTextSelected(text: String) {
+      textToSpeechDelegate.speak(text)
+    }
   }
-}

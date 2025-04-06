@@ -18,9 +18,8 @@ package tangle.sample.core
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transformLatest
 
-fun <T> Flow<T>.onEachLatest(
-  action: suspend (T) -> Unit
-) = transformLatest { value ->
-  action(value)
-  return@transformLatest emit(value)
-}
+fun <T> Flow<T>.onEachLatest(action: suspend (T) -> Unit) =
+  transformLatest { value ->
+    action(value)
+    return@transformLatest emit(value)
+  }

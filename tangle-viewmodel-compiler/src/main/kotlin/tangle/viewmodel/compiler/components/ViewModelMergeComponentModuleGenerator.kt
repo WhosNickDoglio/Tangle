@@ -35,31 +35,31 @@ class ViewModelMergeComponentModuleGenerator : FileGenerator<MergeComponentParam
     codeGenDir: File,
     params: MergeComponentParams
   ): GeneratedFileWithSources {
-
     val packageName = params.packageName
 
     val className = params.mergeComponentModuleClassName
     val classNameString = className.simpleName
 
-    val content = FileSpec.buildFile(packageName, classNameString) {
-      TypeSpec.interfaceBuilder(className)
-        .addAnnotation(ClassNames.module)
-        .addContributesTo(params.scopeClassName)
-        .addFunction("bindTangleViewModelProviderMapKeySet") {
-          addAnnotation(ClassNames.multibinds)
-          addAnnotation(ClassNames.tangleViewModelProviderMapKeySet)
-          addModifiers(ABSTRACT)
-          returns(ClassNames.viewModelClassSet)
-        }
-        .addFunction("bindTangleViewModelProviderMap") {
-          addAnnotation(ClassNames.multibinds)
-          addAnnotation(ClassNames.tangleViewModelProviderMap)
-          addModifiers(ABSTRACT)
-          returns(ClassNames.viewModelMap)
-        }
-        .build()
-        .let { addType(it) }
-    }
+    val content =
+      FileSpec.buildFile(packageName, classNameString) {
+        TypeSpec.interfaceBuilder(className)
+          .addAnnotation(ClassNames.module)
+          .addContributesTo(params.scopeClassName)
+          .addFunction("bindTangleViewModelProviderMapKeySet") {
+            addAnnotation(ClassNames.multibinds)
+            addAnnotation(ClassNames.tangleViewModelProviderMapKeySet)
+            addModifiers(ABSTRACT)
+            returns(ClassNames.viewModelClassSet)
+          }
+          .addFunction("bindTangleViewModelProviderMap") {
+            addAnnotation(ClassNames.multibinds)
+            addAnnotation(ClassNames.tangleViewModelProviderMap)
+            addModifiers(ABSTRACT)
+            returns(ClassNames.viewModelMap)
+          }
+          .build()
+          .let { addType(it) }
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir,

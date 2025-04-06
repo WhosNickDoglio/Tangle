@@ -33,33 +33,27 @@ val Member.isStatic: Boolean
  * class only declares a single constructor.
  */
 @Suppress("UNCHECKED_CAST", "NewApi")
-fun <T : Any> Class<T>.createInstance(
-  vararg initargs: Any?
-): T = declaredConstructors.single()
-  .use { it.newInstance(*initargs) } as T
+fun <T : Any> Class<T>.createInstance(vararg initargs: Any?): T =
+  declaredConstructors.single()
+    .use { it.newInstance(*initargs) } as T
 
 @Suppress("UNCHECKED_CAST")
-fun <T : Any> Class<T>.newInstanceStatic(
-  vararg initargs: Any?
-): T = declaredMethods.filter { it.isStatic }
-  .single { it.name == "newInstance" }
-  .invoke(null, *initargs) as T
+fun <T : Any> Class<T>.newInstanceStatic(vararg initargs: Any?): T =
+  declaredMethods.filter { it.isStatic }
+    .single { it.name == "newInstance" }
+    .invoke(null, *initargs) as T
 
 @Suppress("UNCHECKED_CAST")
-fun <T : Any> Class<T>.createStatic(
-  vararg initargs: Any?
-): T = declaredMethods.filter { it.isStatic }
-  .single { it.name == "create" }
-  .invoke(null, *initargs) as T
+fun <T : Any> Class<T>.createStatic(vararg initargs: Any?): T =
+  declaredMethods.filter { it.isStatic }
+    .single { it.name == "create" }
+    .invoke(null, *initargs) as T
 
 @Suppress("UNCHECKED_CAST")
 fun <T> T.factoryGet(): Any = (this as Factory<*>).get()
 
 @Suppress("UNCHECKED_CAST")
-fun JvmCompilationResult.appComponentFactoryCreate(
-  vararg initargs: Any?
-): Any {
-
+fun JvmCompilationResult.appComponentFactoryCreate(vararg initargs: Any?): Any {
   return daggerAppComponent.factoryFunction()
     .invoke(null)
     .invokeCreate(*initargs)
@@ -117,9 +111,12 @@ val JvmCompilationResult.provideMyFragment: Method
   get() = tangleUnitFragmentModuleCompanionClass.getDeclaredMethod("provide_MyFragment")
 
 fun Method.annotationClasses() = annotations.map { it.annotationClass }
+
 fun Class<*>.annotationClasses() = annotations.map { it.annotationClass }
-fun <T : Any> KClass<T>.property(name: String) = memberProperties
-  .first { it.name == name }
+
+fun <T : Any> KClass<T>.property(name: String) =
+  memberProperties
+    .first { it.name == name }
 
 fun <T> Any.propertyValue(name: String): T {
   val property = this::class.property(name)

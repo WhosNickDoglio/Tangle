@@ -31,15 +31,15 @@ import tangle.inject.test.utils.myViewModelClass
 @OptIn(InternalTangleApi::class)
 @Execution(ExecutionMode.SAME_THREAD)
 class TangleGraphTest : BaseTest() {
-
   @BeforeEach
   fun beforeEach() {
     clearTangleGraph()
   }
 
   @Test
-  fun `should hold viewModel keys`() = compileWithDagger(
-    """
+  fun `should hold viewModel keys`() =
+    compileWithDagger(
+      """
       package tangle.inject.tests
 
       import com.squareup.anvil.annotations.MergeComponent
@@ -54,24 +54,26 @@ class TangleGraphTest : BaseTest() {
       @MergeComponent(Unit::class)
       interface AppComponent
      """
-  ) {
+    ) {
+      val component =
+        daggerAppComponent.createFunction()
+          .invoke(null)!!
 
-    val component = daggerAppComponent.createFunction()
-      .invoke(null)!!
+      TangleGraph.add(component)
 
-    TangleGraph.add(component)
+      val keys =
+        TangleGraph.get<TangleViewModelComponent>()
+          .tangleViewModelKeysSubcomponentFactory
+          .create()
+          .viewModelKeys
 
-    val keys = TangleGraph.get<TangleViewModelComponent>()
-      .tangleViewModelKeysSubcomponentFactory
-      .create()
-      .viewModelKeys
-
-    keys shouldBe setOf(myViewModelClass)
-  }
+      keys shouldBe setOf(myViewModelClass)
+    }
 
   @Test
-  fun `should provide ViewModel map subcomponent factory`() = compileWithDagger(
-    """
+  fun `should provide ViewModel map subcomponent factory`() =
+    compileWithDagger(
+      """
       package tangle.inject.tests
 
       import com.squareup.anvil.annotations.MergeComponent
@@ -86,16 +88,17 @@ class TangleGraphTest : BaseTest() {
       @MergeComponent(Unit::class)
       interface AppComponent
      """
-  ) {
+    ) {
+      val component =
+        daggerAppComponent.createFunction()
+          .invoke(null)!!
 
-    val component = daggerAppComponent.createFunction()
-      .invoke(null)!!
+      TangleGraph.add(component)
 
-    TangleGraph.add(component)
+      val factory =
+        TangleGraph.get<TangleViewModelComponent>()
+          .tangleViewModelMapSubcomponentFactory
 
-    val factory = TangleGraph.get<TangleViewModelComponent>()
-      .tangleViewModelMapSubcomponentFactory
-
-    factory.shouldBeInstanceOf<TangleViewModelMapSubcomponent.Factory>()
-  }
+      factory.shouldBeInstanceOf<TangleViewModelMapSubcomponent.Factory>()
+    }
 }

@@ -51,11 +51,13 @@ enum class BundleSafe(val fqName: FqName, val className: TypeName) {
   SIZE_F(FqNames.sizeF, ClassNames.sizeF);
 
   companion object {
-
     private val typeNames = values().associateBy { it.className }
     private val fqNames = values().associateBy { it.fqName }
+
     fun fromTypeNameOrNull(typeName: TypeName): BundleSafe? = typeNames[typeName]
+
     fun contains(typeName: TypeName): Boolean = typeNames[typeName] != null
+
     fun contains(fqName: FqName): Boolean = fqNames[fqName] != null
   }
 }

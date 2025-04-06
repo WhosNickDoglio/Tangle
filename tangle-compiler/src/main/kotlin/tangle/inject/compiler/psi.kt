@@ -49,9 +49,10 @@ fun ClassReference.injectConstructor(): MemberFunctionReference? {
 internal fun ClassReference.annotatedConstructorOrNull(
   annotationFqName: FqName
 ): MemberFunctionReference? {
-  val constructors = constructors.filter {
-    it.hasAnnotation(annotationFqName)
-  }
+  val constructors =
+    constructors.filter {
+      it.hasAnnotation(annotationFqName)
+    }
 
   return when (constructors.size) {
     0 -> null
@@ -81,12 +82,16 @@ fun List<ParameterReference>.mapToParameters(
     val isWrappedInProvider = typeFqName == FqNames.provider
     val isWrappedInLazy = typeFqName == FqNames.daggerLazy
 
-    val unwrappedTypeOrSelf = if (isWrappedInLazy || isWrappedInProvider) {
-      type.unwrappedTypes.first()
-    } else type
+    val unwrappedTypeOrSelf =
+      if (isWrappedInLazy || isWrappedInProvider) {
+        type.unwrappedTypes.first()
+      } else {
+        type
+      }
 
-    val typeName = unwrappedTypeOrSelf.asTypeName()
-      .withJvmSuppressWildcardsIfNeeded(module, unwrappedTypeOrSelf)
+    val typeName =
+      unwrappedTypeOrSelf.asTypeName()
+        .withJvmSuppressWildcardsIfNeeded(module, unwrappedTypeOrSelf)
 
     val tangleParamName = parameter.tangleParamNameOrNull()
 
@@ -94,11 +99,12 @@ fun List<ParameterReference>.mapToParameters(
 
     val baseName = parameter.name
 
-    val name = when {
-      isWrappedInLazy -> "${baseName}Lazy"
-      isWrappedInProvider -> "${baseName}Provider"
-      else -> baseName
-    }
+    val name =
+      when {
+        isWrappedInLazy -> "${baseName}Lazy"
+        isWrappedInProvider -> "${baseName}Provider"
+        else -> baseName
+      }
 
     val isDaggerAssisted = annotations.any { it.fqName == FqNames.daggerAssisted }
 
@@ -129,11 +135,12 @@ fun TypeName.wrapInLazy(): ParameterizedTypeName {
  *
  * This will hopefully prevent Tangle bugs getting reported to Anvil as Anvil bugs.
  */
-internal inline fun <T, R> T.delegateToAnvilUnsafe(action: T.() -> R): R = try {
-  action()
-} catch (e: AnvilCompilationException) {
-  throw TangleCompilationException(e.message!!, e.cause, e.element)
-}
+internal inline fun <T, R> T.delegateToAnvilUnsafe(action: T.() -> R): R =
+  try {
+    action()
+  } catch (e: AnvilCompilationException) {
+    throw TangleCompilationException(e.message!!, e.cause, e.element)
+  }
 
 /**
  * Converts the parameter list to comma separated argument list that can be used to call other
@@ -172,7 +179,9 @@ fun List<Parameter>.asArgumentList(
             else -> "${parameter.name}.get()"
           }
         }
-      } else list.map { it.name }
+      } else {
+        list.map { it.name }
+      }
     }
     .let {
       if (includeModule) {

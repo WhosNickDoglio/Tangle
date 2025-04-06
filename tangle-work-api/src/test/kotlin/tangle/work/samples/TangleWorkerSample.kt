@@ -28,16 +28,17 @@ import tangle.work.TangleWorker
 class TangleWorkerSample {
   @Sample
   fun tangleWorkerSample() {
-
     @TangleWorker
-    class MyWorker @AssistedInject constructor(
-      @Assisted context: Context,
-      @Assisted params: WorkerParameters,
-      val repository: MyRepository
-    ) : ListenableWorker(context, params) {
-      override fun startWork(): ListenableFuture<Result> {
-        TODO()
+    class MyWorker
+      @AssistedInject
+      constructor(
+        @Assisted context: Context,
+        @Assisted params: WorkerParameters,
+        val repository: MyRepository
+      ) : ListenableWorker(context, params) {
+        override fun startWork(): ListenableFuture<Result> {
+          TODO()
+        }
       }
-    }
   }
 }

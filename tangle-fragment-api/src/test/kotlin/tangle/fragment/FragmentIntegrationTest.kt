@@ -35,7 +35,6 @@ interface FragmentComponent {
 }
 
 class FragmentIntegrationTest : BaseTest() {
-
   @Test
   fun `fragment with FragmentInjectFactory is multi-bound into TangleFragmentProviderMap`() =
     compileWithDagger(
@@ -62,9 +61,9 @@ class FragmentIntegrationTest : BaseTest() {
       interface AppComponent : FragmentComponent
      """
     ) {
-
-      val component = daggerAppComponent.createFunction()
-        .invoke(null) as FragmentComponent
+      val component =
+        daggerAppComponent.createFunction()
+          .invoke(null) as FragmentComponent
 
       val fragment = component.tangleProviderMap[myFragmentClass]!!
 
@@ -97,9 +96,9 @@ class FragmentIntegrationTest : BaseTest() {
       interface AppComponent : FragmentComponent
      """
     ) {
-
-      val component = daggerAppComponent.createFunction()
-        .invoke(null) as FragmentComponent
+      val component =
+        daggerAppComponent.createFunction()
+          .invoke(null) as FragmentComponent
 
       val factory = component.fragmentFactory
 
@@ -138,7 +137,6 @@ class FragmentIntegrationTest : BaseTest() {
      """,
       shouldFail = true
     ) {
-
       messages shouldContain "[Dagger/MissingBinding] tangle.inject.tests.MyFragment " +
         "cannot be provided without an @Inject constructor or an @Provides-annotated method."
     }
@@ -163,9 +161,9 @@ class FragmentIntegrationTest : BaseTest() {
       interface AppComponent : FragmentComponent
      """
     ) {
-
-      val component = daggerAppComponent.createFunction()
-        .invoke(null) as FragmentComponent
+      val component =
+        daggerAppComponent.createFunction()
+          .invoke(null) as FragmentComponent
 
       val fragment = component.providerMap[myFragmentClass]!!
 
@@ -192,9 +190,9 @@ class FragmentIntegrationTest : BaseTest() {
       interface AppComponent : FragmentComponent
      """
     ) {
-
-      val component = daggerAppComponent.createFunction()
-        .invoke(null) as FragmentComponent
+      val component =
+        daggerAppComponent.createFunction()
+          .invoke(null) as FragmentComponent
 
       val factory = component.fragmentFactory
 
@@ -226,16 +224,17 @@ class FragmentIntegrationTest : BaseTest() {
       }
      """
     ) {
-
-      val component = daggerAppComponent.createFunction()
-        .invoke(null)
+      val component =
+        daggerAppComponent.createFunction()
+          .invoke(null)
 
       requireNotNull(component)
 
-      val provider: Provider<Fragment> = appComponent.getPrivateFieldByName(
-        "myFragmentProvider",
-        component
-      )
+      val provider: Provider<Fragment> =
+        appComponent.getPrivateFieldByName(
+          "myFragmentProvider",
+          component
+        )
 
       val fragment = provider.get()
 
@@ -243,8 +242,9 @@ class FragmentIntegrationTest : BaseTest() {
     }
 
   @Test
-  fun `empty multibindings are created if no Fragments are bound`() = compileWithDagger(
-    """
+  fun `empty multibindings are created if no Fragments are bound`() =
+    compileWithDagger(
+      """
       package tangle.inject.tests
 
       import com.squareup.anvil.annotations.MergeComponent
@@ -254,7 +254,7 @@ class FragmentIntegrationTest : BaseTest() {
       @MergeComponent(Unit::class)
       interface AppComponent
      """
-  )
+    )
 
   @Test
   fun `two components in classpath with same scope should not get duplicate bindings`() =

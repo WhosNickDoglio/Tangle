@@ -25,14 +25,14 @@ import javax.inject.Inject
 
 @TangleScope(AppScope::class)
 class TangleApplication : Application() {
-
   @Inject lateinit var appPlugins: Set<@JvmSuppressWildcards AppPlugin>
 
   override fun onCreate() {
     super.onCreate()
 
-    val component = DaggerAppComponent.factory()
-      .create(this)
+    val component =
+      DaggerAppComponent.factory()
+        .create(this)
 
     Components.add(component)
     TangleGraph.add(component)

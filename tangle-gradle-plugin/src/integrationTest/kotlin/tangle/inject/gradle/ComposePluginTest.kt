@@ -18,114 +18,114 @@ package tangle.inject.gradle
 import org.junit.jupiter.api.TestFactory
 
 class ComposePluginTest : BasePluginTest() {
-
   @TestFactory
   fun `viewmodel compose api should be automatically enabled with androidx viewmodel and compose dependencies`() =
     test {
-
       module(
         """
-      plugins {
-        id("com.android.library")
-        kotlin("android")
-        id("com.rickbusarow.tangle")
-      }
-
-      android {
-        compileSdk = 30
-        namespace = "foo"
-
-
-        defaultConfig {
-          minSdk = 23
-          targetSdk = 30
+        plugins {
+          id("com.android.library")
+          kotlin("android")
+          id("com.rickbusarow.tangle")
         }
-      }
 
-      dependencies {
-        $compose
-        $viewModels
-      }
+        android {
+          compileSdk = 30
+          namespace = "foo"
 
-      ${listDepsTasks()}
+
+          defaultConfig {
+            minSdk = 23
+            targetSdk = 30
+          }
+        }
+
+        dependencies {
+          $compose
+          $viewModels
+        }
+
+        ${listDepsTasks()}
         """.trimIndent()
       )
 
-      build("deps").tangleDeps() shouldBe listOf(
-        "anvil com.rickbusarow.tangle:tangle-compiler",
-        "anvil com.rickbusarow.tangle:tangle-viewmodel-compiler",
-        "implementation com.rickbusarow.tangle:tangle-api",
-        "implementation com.rickbusarow.tangle:tangle-viewmodel-api",
-        "implementation com.rickbusarow.tangle:tangle-viewmodel-compose"
-      )
+      build("deps").tangleDeps() shouldBe
+        listOf(
+          "anvil com.rickbusarow.tangle:tangle-compiler",
+          "anvil com.rickbusarow.tangle:tangle-viewmodel-compiler",
+          "implementation com.rickbusarow.tangle:tangle-api",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-api",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-compose"
+        )
     }
 
   @TestFactory
   fun `disabling viewModels compose in config should disable the viewmodel compose api dependency`() =
     test {
-
       module(
         """
-      plugins {
-        id("com.android.library")
-        kotlin("android")
-        id("com.rickbusarow.tangle")
-      }
-
-      android {
-        compileSdk = 30
-        namespace = "foo"
-
-        defaultConfig {
-          minSdk = 23
-          targetSdk = 30
+        plugins {
+          id("com.android.library")
+          kotlin("android")
+          id("com.rickbusarow.tangle")
         }
-      }
 
-      tangle {
-        viewModelOptions {
-          composeEnabled = false // default is null
+        android {
+          compileSdk = 30
+          namespace = "foo"
+
+          defaultConfig {
+            minSdk = 23
+            targetSdk = 30
+          }
         }
-      }
 
-      dependencies {
-        $activities
-        $fragments
-        $viewModels
-        $compose
-        $workManager
-      }
+        tangle {
+          viewModelOptions {
+            composeEnabled = false // default is null
+          }
+        }
 
-      ${listDepsTasks()}
+        dependencies {
+          $activities
+          $fragments
+          $viewModels
+          $compose
+          $workManager
+        }
+
+        ${listDepsTasks()}
         """.trimIndent()
       )
 
-      build("deps").tangleDeps() shouldBe listOf(
-        "anvil com.rickbusarow.tangle:tangle-compiler",
-        "anvil com.rickbusarow.tangle:tangle-fragment-compiler",
-        "anvil com.rickbusarow.tangle:tangle-viewmodel-compiler",
-        "anvil com.rickbusarow.tangle:tangle-work-compiler",
-        "implementation com.rickbusarow.tangle:tangle-api",
-        "implementation com.rickbusarow.tangle:tangle-fragment-api",
-        "implementation com.rickbusarow.tangle:tangle-viewmodel-activity",
-        "implementation com.rickbusarow.tangle:tangle-viewmodel-api",
-        "implementation com.rickbusarow.tangle:tangle-viewmodel-fragment",
-        "implementation com.rickbusarow.tangle:tangle-work-api"
-      )
+      build("deps").tangleDeps() shouldBe
+        listOf(
+          "anvil com.rickbusarow.tangle:tangle-compiler",
+          "anvil com.rickbusarow.tangle:tangle-fragment-compiler",
+          "anvil com.rickbusarow.tangle:tangle-viewmodel-compiler",
+          "anvil com.rickbusarow.tangle:tangle-work-compiler",
+          "implementation com.rickbusarow.tangle:tangle-api",
+          "implementation com.rickbusarow.tangle:tangle-fragment-api",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-activity",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-api",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-fragment",
+          "implementation com.rickbusarow.tangle:tangle-work-api"
+        )
     }
 
-  fun listDepsTasks() = """
-  tasks.register("deps") {
-    doLast {
-      listOf("anvil", "api", "implementation")
-        .forEach { config ->
-          project.configurations
-            .named(config)
-            .get()
-            .dependencies
-            .forEach { println("${'$'}config ${'$'}{it.group}:${'$'}{it.name}") }
-        }
+  fun listDepsTasks() =
+    """
+    tasks.register("deps") {
+      doLast {
+        listOf("anvil", "api", "implementation")
+          .forEach { config ->
+            project.configurations
+              .named(config)
+              .get()
+              .dependencies
+              .forEach { println("${'$'}config ${'$'}{it.group}:${'$'}{it.name}") }
+          }
+      }
     }
-  }
-  """.trimIndent()
+    """.trimIndent()
 }

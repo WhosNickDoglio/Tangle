@@ -32,12 +32,12 @@ import kotlin.LazyThreadSafetyMode.NONE
 @OptIn(InternalTangleApi::class)
 public inline fun <reified VM : ViewModel> Fragment.tangleViewModel(): Lazy<VM> =
   lazy(NONE) {
-
-    val viewModelFactory = TangleViewModelFactory(
-      owner = this,
-      defaultArgs = arguments,
-      defaultFactory = defaultViewModelProviderFactory
-    )
+    val viewModelFactory =
+      TangleViewModelFactory(
+        owner = this,
+        defaultArgs = arguments,
+        defaultFactory = defaultViewModelProviderFactory
+      )
 
     ViewModelLazy(VM::class, { viewModelStore }, { viewModelFactory }).value
   }

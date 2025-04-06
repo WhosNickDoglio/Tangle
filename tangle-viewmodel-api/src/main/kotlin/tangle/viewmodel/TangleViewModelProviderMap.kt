@@ -36,7 +36,6 @@ import javax.inject.Qualifier
   AnnotationTarget.VALUE_PARAMETER
 )
 public annotation class TangleViewModelProviderMap {
-
   /**
    * Qualifier for all the keys contained in [TangleViewModelProviderMap].
    * [TangleViewModelProviderMap] is only provided by [TangleViewModelMapSubcomponent],

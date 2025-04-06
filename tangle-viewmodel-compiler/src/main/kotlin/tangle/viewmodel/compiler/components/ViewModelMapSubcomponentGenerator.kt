@@ -36,40 +36,40 @@ class ViewModelMapSubcomponentGenerator : FileGenerator<MergeComponentParams> {
     codeGenDir: File,
     params: MergeComponentParams
   ): GeneratedFileWithSources {
-
     val packageName = params.packageName
 
     val className = params.mapSubcomponentClassName
 
-    val content = FileSpec.buildFile(packageName, className.simpleName) {
-      TypeSpec.interfaceBuilder(className)
-        .addSuperinterface(ClassNames.tangleViewModelMapSubcomponent)
-        .addAnnotation(
-          AnnotationSpec.builder(ClassNames.mergeSubcomponent)
-            .addMember("%T::class", ClassNames.tangleViewModelScope)
-            .build()
-        )
-        .addType(
-          TypeSpec.interfaceBuilder("Factory")
-            .addSuperinterface(ClassNames.tangleViewModelMapSubcomponentFactory)
-            .addAnnotation(ClassNames.subcomponentFactory)
-            .addFunction("create") {
-              returns(className)
-              addModifiers(KModifier.ABSTRACT, KModifier.OVERRIDE)
-              addParameter(
-                ParameterSpec.builder(
-                  "savedStateHandle",
-                  ClassNames.androidxSavedStateHandle
+    val content =
+      FileSpec.buildFile(packageName, className.simpleName) {
+        TypeSpec.interfaceBuilder(className)
+          .addSuperinterface(ClassNames.tangleViewModelMapSubcomponent)
+          .addAnnotation(
+            AnnotationSpec.builder(ClassNames.mergeSubcomponent)
+              .addMember("%T::class", ClassNames.tangleViewModelScope)
+              .build()
+          )
+          .addType(
+            TypeSpec.interfaceBuilder("Factory")
+              .addSuperinterface(ClassNames.tangleViewModelMapSubcomponentFactory)
+              .addAnnotation(ClassNames.subcomponentFactory)
+              .addFunction("create") {
+                returns(className)
+                addModifiers(KModifier.ABSTRACT, KModifier.OVERRIDE)
+                addParameter(
+                  ParameterSpec.builder(
+                    "savedStateHandle",
+                    ClassNames.androidxSavedStateHandle
+                  )
+                    .addAnnotation(ClassNames.bindsInstance)
+                    .build()
                 )
-                  .addAnnotation(ClassNames.bindsInstance)
-                  .build()
-              )
-            }
-            .build()
-        )
-        .build()
-        .let { addType(it) }
-    }
+              }
+              .build()
+          )
+          .build()
+          .let { addType(it) }
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir,

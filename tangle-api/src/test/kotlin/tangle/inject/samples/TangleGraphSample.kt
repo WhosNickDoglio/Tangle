@@ -21,16 +21,15 @@ import tangle.inject.test.utils.DaggerAppComponent
 import tangle.inject.test.utils.Sample
 
 class TangleGraphSample {
-
   @Sample
   fun tangleGraphSample() {
     class MyApplication : Application() {
-
       override fun onCreate() {
         super.onCreate()
 
-        val appComponent = DaggerAppComponent.factory()
-          .create(this)
+        val appComponent =
+          DaggerAppComponent.factory()
+            .create(this)
 
         TangleGraph.add(appComponent)
       }

@@ -25,7 +25,6 @@ import tangle.inject.InternalTangleApi
  * @since 0.10.0
  */
 public interface TangleViewModelKeysSubcomponent {
-
   /**
    * Copy of all the keys contained in [TangleViewModelProviderMap].
    * [TangleViewModelProviderMap] is only provided by [TangleViewModelMapSubcomponent],

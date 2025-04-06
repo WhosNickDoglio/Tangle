@@ -30,20 +30,21 @@ import tangle.inject.TangleGraph
  * @since 0.12.0
  */
 public class TangleWorkerFactory : WorkerFactory() {
-
   @OptIn(InternalTangleApi::class)
-  internal val workerFactories = TangleGraph.get<TangleWorkerComponent>()
-    .tangleWorkerMapSubcomponentFactory
-    .create()
-    .workerFactoryMap
+  internal val workerFactories =
+    TangleGraph.get<TangleWorkerComponent>()
+      .tangleWorkerMapSubcomponentFactory
+      .create()
+      .workerFactoryMap
 
   override fun createWorker(
     appContext: Context,
     workerClassName: String,
     workerParameters: WorkerParameters
   ): ListenableWorker? {
-    val workerFactory = workerFactories[workerClassName]
-      ?: return null
+    val workerFactory =
+      workerFactories[workerClassName]
+        ?: return null
 
     return workerFactory.create(appContext, workerParameters)
   }

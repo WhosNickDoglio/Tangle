@@ -20,7 +20,6 @@ import android.content.Context
 import androidx.test.runner.AndroidJUnitRunner
 
 class TangleTestRunner : AndroidJUnitRunner() {
-
   override fun newApplication(
     cl: ClassLoader,
     className: String,

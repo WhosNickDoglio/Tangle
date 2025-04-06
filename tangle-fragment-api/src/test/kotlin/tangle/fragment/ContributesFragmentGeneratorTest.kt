@@ -34,11 +34,11 @@ import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.functions
 
 class ContributesFragmentGeneratorTest : BaseTest() {
-
   @TestFactory
-  fun `regular inject annotation gets unqualified map binding`() = test {
-    compile(
-      """
+  fun `regular inject annotation gets unqualified map binding`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -48,21 +48,23 @@ class ContributesFragmentGeneratorTest : BaseTest() {
       @ContributesFragment(Unit::class)
       class MyFragment @Inject constructor() : Fragment()
       """
-    ) {
-      bindMyFragment.annotationClasses() shouldContainExactly listOf(
-        Binds::class,
-        IntoMap::class,
-        FragmentKey::class
-      )
+      ) {
+        bindMyFragment.annotationClasses() shouldContainExactly
+          listOf(
+            Binds::class,
+            IntoMap::class,
+            FragmentKey::class
+          )
 
-      bindMyFragment.getAnnotation(FragmentKey::class.java)!!.value shouldBe myFragmentClass.kotlin
+        bindMyFragment.getAnnotation(FragmentKey::class.java)!!.value shouldBe myFragmentClass.kotlin
+      }
     }
-  }
 
   @TestFactory
-  fun `FragmentInject annotation gets qualified map binding`() = test {
-    compile(
-      """
+  fun `FragmentInject annotation gets qualified map binding`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -78,22 +80,24 @@ class ContributesFragmentGeneratorTest : BaseTest() {
         }
       }
       """
-    ) {
-      bindMyFragment.annotationClasses() shouldContainExactly listOf(
-        Binds::class,
-        IntoMap::class,
-        FragmentKey::class,
-        TangleFragmentProviderMap::class
-      )
+      ) {
+        bindMyFragment.annotationClasses() shouldContainExactly
+          listOf(
+            Binds::class,
+            IntoMap::class,
+            FragmentKey::class,
+            TangleFragmentProviderMap::class
+          )
 
-      bindMyFragment.getAnnotation(FragmentKey::class.java)!!.value shouldBe myFragmentClass.kotlin
+        bindMyFragment.getAnnotation(FragmentKey::class.java)!!.value shouldBe myFragmentClass.kotlin
+      }
     }
-  }
 
   @TestFactory
-  fun `FragmentInject annotation gets provider function`() = test {
-    compile(
-      """
+  fun `FragmentInject annotation gets provider function`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -109,24 +113,26 @@ class ContributesFragmentGeneratorTest : BaseTest() {
         }
       }
       """
-    ) {
-      provideMyFragment.annotationClasses() shouldContainExactly listOf(
-        Provides::class,
-        TangleFragmentProviderMap::class
-      )
+      ) {
+        provideMyFragment.annotationClasses() shouldContainExactly
+          listOf(
+            Provides::class,
+            TangleFragmentProviderMap::class
+          )
 
-      val moduleClass = tangleUnitFragmentModuleClass.kotlin
+        val moduleClass = tangleUnitFragmentModuleClass.kotlin
 
-      moduleClass.companionObject!!.functions
-        .first { it.name == "provide_MyFragment" }
-        .call(moduleClass.companionObjectInstance)!!::class.java shouldBe myFragmentClass
+        moduleClass.companionObject!!.functions
+          .first { it.name == "provide_MyFragment" }
+          .call(moduleClass.companionObjectInstance)!!::class.java shouldBe myFragmentClass
+      }
     }
-  }
 
   @TestFactory
-  fun `module scope should match contributed scope`() = test {
-    compile(
-      """
+  fun `module scope should match contributed scope`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -136,22 +142,24 @@ class ContributesFragmentGeneratorTest : BaseTest() {
       @ContributesFragment(Unit::class)
       class MyFragment @Inject constructor() : Fragment()
       """
-    ) {
-      tangleUnitFragmentModuleClass.annotationClasses() shouldContainExactly listOf(
-        Module::class,
-        ContributesTo::class,
-        Metadata::class
-      )
+      ) {
+        tangleUnitFragmentModuleClass.annotationClasses() shouldContainExactly
+          listOf(
+            Module::class,
+            ContributesTo::class,
+            Metadata::class
+          )
 
-      tangleUnitFragmentModuleClass
-        .getAnnotation(ContributesTo::class.java)!!.scope shouldBe Unit::class
+        tangleUnitFragmentModuleClass
+          .getAnnotation(ContributesTo::class.java)!!.scope shouldBe Unit::class
+      }
     }
-  }
 
   @TestFactory
-  fun `annotated class may extend an abstract base fragment`() = test {
-    compile(
-      """
+  fun `annotated class may extend an abstract base fragment`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -163,22 +171,24 @@ class ContributesFragmentGeneratorTest : BaseTest() {
 
       abstract class BaseFragment : Fragment()
       """
-    ) {
-      tangleUnitFragmentModuleClass.annotationClasses() shouldContainExactly listOf(
-        Module::class,
-        ContributesTo::class,
-        Metadata::class
-      )
+      ) {
+        tangleUnitFragmentModuleClass.annotationClasses() shouldContainExactly
+          listOf(
+            Module::class,
+            ContributesTo::class,
+            Metadata::class
+          )
 
-      tangleUnitFragmentModuleClass
-        .getAnnotation(ContributesTo::class.java)!!.scope shouldBe Unit::class
+        tangleUnitFragmentModuleClass
+          .getAnnotation(ContributesTo::class.java)!!.scope shouldBe Unit::class
+      }
     }
-  }
 
   @TestFactory
-  fun `annotated class must extend fragment`() = test {
-    compile(
-      """
+  fun `annotated class must extend fragment`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -188,11 +198,11 @@ class ContributesFragmentGeneratorTest : BaseTest() {
       @ContributesFragment(Unit::class)
       class Subject @Inject constructor()
       """,
-      shouldFail = true
-    ) {
-      messages shouldContainIgnoringWhitespaces "The annotation " +
-        "`@ContributesFragment(Unit::class)` can only be applied " +
-        "to classes which extend androidx.fragment.app.Fragment"
+        shouldFail = true
+      ) {
+        messages shouldContainIgnoringWhitespaces "The annotation " +
+          "`@ContributesFragment(Unit::class)` can only be applied " +
+          "to classes which extend androidx.fragment.app.Fragment"
+      }
     }
-  }
 }

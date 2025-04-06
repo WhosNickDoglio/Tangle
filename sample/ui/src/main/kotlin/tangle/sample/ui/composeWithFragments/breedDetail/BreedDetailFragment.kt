@@ -28,28 +28,31 @@ import tangle.viewmodel.compose.tangleViewModel
 import java.util.Locale
 
 @ContributesFragment(AppScope::class)
-class BreedDetailFragment @FragmentInject constructor() : BaseComposeFragment() {
-  override val ui = @Composable {
+class BreedDetailFragment
+  @FragmentInject
+  constructor() : BaseComposeFragment() {
+    override val ui = @Composable {
 
-    val viewModel = tangleViewModel<BreedDetailViewModel>()
+      val viewModel = tangleViewModel<BreedDetailViewModel>()
 
-    val breedDetail = viewModel.detailFlow
-      .collectAsState()
-      .value
+      val breedDetail =
+        viewModel.detailFlow
+          .collectAsState()
+          .value
 
-    if (breedDetail != null) {
-      BreedDetail(
-        Locale.getDefault().isMetric(),
-        breedDetail
-      ) { viewModel.onTextSelected(it) }
+      if (breedDetail != null) {
+        BreedDetail(
+          Locale.getDefault().isMetric(),
+          breedDetail
+        ) { viewModel.onTextSelected(it) }
+      }
+    }
+
+    @FragmentInjectFactory
+    interface Factory {
+      fun create(
+        @TangleParam("breedId")
+        breedId: Int
+      ): BreedDetailFragment
     }
   }
-
-  @FragmentInjectFactory
-  interface Factory {
-    fun create(
-      @TangleParam("breedId")
-      breedId: Int
-    ): BreedDetailFragment
-  }
-}

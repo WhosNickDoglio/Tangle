@@ -33,56 +33,53 @@ import tangle.inject.compiler.generateSimpleNameString
 import java.io.File
 
 object AssistedWorkerFactoryModuleGenerator : FileGenerator<TangleAppScopeModule> {
-
   override fun generate(
     codeGenDir: File,
     params: TangleAppScopeModule
   ): GeneratedFileWithSources {
-
     val packageName = params.packageName
 
     val moduleName = "${ClassNames.tangleAppScope.simpleName}_AssistedFactory_Module"
 
-    val content = FileSpec.buildFile(packageName, moduleName) {
-      addType(
-        TypeSpec
-          .interfaceBuilder(ClassName(packageName, moduleName))
-          .addAnnotation(ClassNames.module)
-          .addContributesTo(ClassNames.tangleAppScope)
-          .applyEach(params.workerParamsList) { workerParams ->
+    val content =
+      FileSpec.buildFile(packageName, moduleName) {
+        addType(
+          TypeSpec
+            .interfaceBuilder(ClassName(packageName, moduleName))
+            .addAnnotation(ClassNames.module)
+            .addContributesTo(ClassNames.tangleAppScope)
+            .applyEach(params.workerParamsList) { workerParams ->
 
-            addFunction(
-              "multibind_${workerParams.assistedFactoryClassName.generateSimpleNameString()}"
-            ) {
-
-              addModifiers(ABSTRACT)
-              addParameter("factory", workerParams.assistedFactoryClassName)
-              returns(
-                ClassNames.assistedWorkerFactory
-                  .parameterizedBy(
-                    TypeVariableName("out·${ClassNames.androidxListenableWorker.canonicalName}")
-                  )
-              )
-              addAnnotation(ClassNames.binds)
-              addAnnotation(ClassNames.intoMap)
-              addAnnotation(
-                AnnotationSpec.builder(ClassNames.stringKey)
-                  .addMember(
-                    "%S",
-                    workerParams
-                      .workerClassName
-                      .canonicalName
-                      .replace("..", ".")
-                  )
-                  .build()
-              )
-              addAnnotation(ClassNames.tangleAssistedWorkerFactoryMap)
+              addFunction(
+                "multibind_${workerParams.assistedFactoryClassName.generateSimpleNameString()}"
+              ) {
+                addModifiers(ABSTRACT)
+                addParameter("factory", workerParams.assistedFactoryClassName)
+                returns(
+                  ClassNames.assistedWorkerFactory
+                    .parameterizedBy(
+                      TypeVariableName("out·${ClassNames.androidxListenableWorker.canonicalName}")
+                    )
+                )
+                addAnnotation(ClassNames.binds)
+                addAnnotation(ClassNames.intoMap)
+                addAnnotation(
+                  AnnotationSpec.builder(ClassNames.stringKey)
+                    .addMember(
+                      "%S",
+                      workerParams
+                        .workerClassName
+                        .canonicalName
+                        .replace("..", ".")
+                    )
+                    .build()
+                )
+                addAnnotation(ClassNames.tangleAssistedWorkerFactoryMap)
+              }
             }
-          }
-          .build()
-
-      )
-    }
+            .build()
+        )
+      }
     return createGeneratedFileWithSources(
       codeGenDir,
       packageName,

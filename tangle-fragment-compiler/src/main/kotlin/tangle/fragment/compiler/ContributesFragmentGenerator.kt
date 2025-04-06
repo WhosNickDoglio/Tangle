@@ -79,50 +79,53 @@ import java.io.File
 @Suppress("unused")
 @AutoService(CodeGenerator::class)
 class ContributesFragmentGenerator : TangleCodeGenerator() {
-
   override fun generateTangleCode(
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
   ): Collection<GeneratedFileWithSources> {
-    val bindings = projectFiles
-      .classAndInnerClassReferences(module)
-      .mapNotNull { clazz ->
+    val bindings =
+      projectFiles
+        .classAndInnerClassReferences(module)
+        .mapNotNull { clazz ->
 
-        val annotation = clazz.annotations.find(FqNames.contributesFragment)
-          ?: return@mapNotNull null
+          val annotation =
+            clazz.annotations.find(FqNames.contributesFragment)
+              ?: return@mapNotNull null
 
-        require(clazz.isFragment(), clazz) {
-          "The annotation `${annotation.annotation.text}` can only be applied " +
-            "to classes which extend ${FqNames.androidxFragment.asString()}"
+          require(clazz.isFragment(), clazz) {
+            "The annotation `${annotation.annotation.text}` can only be applied " +
+              "to classes which extend ${FqNames.androidxFragment.asString()}"
+          }
+
+          val packageName =
+            clazz.packageFqName
+              .safePackageString(dotSuffix = false)
+
+          var fragmentInject = false
+
+          val constructor =
+            clazz.fragmentInjectConstructor()
+              ?.also { fragmentInject = true }
+              ?: clazz.injectConstructor()
+
+          require(constructor != null, clazz) {
+            "Classes annotated with `${annotation.fqName}` must have a constructor annotated with " +
+              "`@${FqNames.inject.asString()}` or `@${FqNames.fragmentInject.asString()}`."
+          }
+
+          val injectedParams = Fragment.create(module, clazz, constructor).constructorParams
+
+          Binding(
+            injectedParams = injectedParams,
+            packageName = packageName,
+            scopeName = annotation.scope().fqName,
+            fragmentClass = clazz,
+            fragmentClassName = clazz.asClassName(),
+            fragmentInject = fragmentInject
+          )
         }
-
-        val packageName = clazz.packageFqName
-          .safePackageString(dotSuffix = false)
-
-        var fragmentInject = false
-
-        val constructor = clazz.fragmentInjectConstructor()
-          ?.also { fragmentInject = true }
-          ?: clazz.injectConstructor()
-
-        require(constructor != null, clazz) {
-          "Classes annotated with `${annotation.fqName}` must have a constructor annotated with " +
-            "`@${FqNames.inject.asString()}` or `@${FqNames.fragmentInject.asString()}`."
-        }
-
-        val injectedParams = Fragment.create(module, clazz, constructor).constructorParams
-
-        Binding(
-          injectedParams = injectedParams,
-          packageName = packageName,
-          scopeName = annotation.scope().fqName,
-          fragmentClass = clazz,
-          fragmentClassName = clazz.asClassName(),
-          fragmentInject = fragmentInject
-        )
-      }
-      .toList()
+        .toList()
 
     return bindings
       .groupBy { it.packageName }
@@ -150,45 +153,52 @@ class ContributesFragmentGenerator : TangleCodeGenerator() {
 
     val fragmentInjected = bindingList.filter { it.fragmentInject }
 
-    val companionObject = if (fragmentInjected.isNotEmpty()) {
-      TypeSpec.companionObjectBuilder()
-        .applyEach(fragmentInjected) { binding ->
+    val companionObject =
+      if (fragmentInjected.isNotEmpty()) {
+        TypeSpec.companionObjectBuilder()
+          .applyEach(fragmentInjected) { binding ->
 
-          val args = binding.injectedParams.asArgumentList(
-            asProvider = false,
-            includeModule = false
-          )
-
-          val fragmentFactoryClassName = binding.fragmentClass
-            .generateClassName(suffix = "_Factory")
-            .asClassName()
-
-          addFunction("provide_${binding.fragmentClassName.generateSimpleNameString()}") {
-            addAnnotation(ClassNames.provides)
-            addAnnotation(ClassNames.tangleFragmentProviderMap)
-            applyEach(binding.injectedParams) { argument ->
-              val paramType = when {
-                argument.isWrappedInLazy -> argument.lazyTypeName
-                else -> argument.typeName
-              }
-              addParameter(
-                ParameterSpec.builder(argument.name, paramType)
-                  .applyEach(argument.qualifiers) { addAnnotation(it) }
-                  .build()
+            val args =
+              binding.injectedParams.asArgumentList(
+                asProvider = false,
+                includeModule = false
               )
+
+            val fragmentFactoryClassName =
+              binding.fragmentClass
+                .generateClassName(suffix = "_Factory")
+                .asClassName()
+
+            addFunction("provide_${binding.fragmentClassName.generateSimpleNameString()}") {
+              addAnnotation(ClassNames.provides)
+              addAnnotation(ClassNames.tangleFragmentProviderMap)
+              applyEach(binding.injectedParams) { argument ->
+                val paramType =
+                  when {
+                    argument.isWrappedInLazy -> argument.lazyTypeName
+                    else -> argument.typeName
+                  }
+                addParameter(
+                  ParameterSpec.builder(argument.name, paramType)
+                    .applyEach(argument.qualifiers) { addAnnotation(it) }
+                    .build()
+                )
+              }
+              returns(binding.fragmentClassName)
+              addStatement("return·%T.newInstance($args)", fragmentFactoryClassName)
             }
-            returns(binding.fragmentClassName)
-            addStatement("return·%T.newInstance($args)", fragmentFactoryClassName)
+              .build()
           }
-            .build()
-        }
-        .build()
-    } else null
+          .build()
+      } else {
+        null
+      }
 
     fun Binding.bindingFunSpec(): FunSpec {
-      val fragmentKeySpec = AnnotationSpec.builder(ClassNames.tangleFragmentKey)
-        .addMember("%T::class", fragmentClassName)
-        .build()
+      val fragmentKeySpec =
+        AnnotationSpec.builder(ClassNames.tangleFragmentKey)
+          .addMember("%T::class", fragmentClassName)
+          .build()
 
       return FunSpec.builder(name = "bind_${fragmentClassName.generateSimpleNameString()}")
         .addModifiers(KModifier.ABSTRACT)
@@ -216,22 +226,23 @@ class ContributesFragmentGenerator : TangleCodeGenerator() {
         .build()
     }
 
-    val content = FileSpec.buildFile(packageName, moduleName) {
-      addType(
-        TypeSpec.interfaceBuilder(ClassName(packageName, moduleName))
-          .addAnnotation(ClassNames.module)
-          .addContributesTo(scopeClassName)
-          .applyEach(bindingList) { binding ->
-            addFunction(binding.bindingFunSpec())
-          }
-          .apply {
-            if (companionObject != null) {
-              addType(companionObject)
+    val content =
+      FileSpec.buildFile(packageName, moduleName) {
+        addType(
+          TypeSpec.interfaceBuilder(ClassName(packageName, moduleName))
+            .addAnnotation(ClassNames.module)
+            .addContributesTo(scopeClassName)
+            .applyEach(bindingList) { binding ->
+              addFunction(binding.bindingFunSpec())
             }
-          }
-          .build()
-      )
-    }
+            .apply {
+              if (companionObject != null) {
+                addType(companionObject)
+              }
+            }
+            .build()
+        )
+      }
 
     return createGeneratedFile(
       codeGenDir = codeGenDir,

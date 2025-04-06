@@ -28,28 +28,29 @@ import java.io.File
 @Suppress("UNUSED")
 @AutoService(CodeGenerator::class)
 class WorkerMergeComponentCodeGenerator : TangleCodeGenerator() {
-
-  val fileGenerators = listOf(
-    WorkerMapSubcomponentGenerator,
-    WorkerMergeComponentModuleGenerator,
-    WorkerSubcomponentFactoryModuleGenerator,
-    WorkerFactoryModuleGenerator,
-    WorkerComponentGenerator
-  )
+  val fileGenerators =
+    listOf(
+      WorkerMapSubcomponentGenerator,
+      WorkerMergeComponentModuleGenerator,
+      WorkerSubcomponentFactoryModuleGenerator,
+      WorkerFactoryModuleGenerator,
+      WorkerComponentGenerator
+    )
 
   override fun generateTangleCode(
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
-  ): Collection<GeneratedFileWithSources> = projectFiles
-    .classAndInnerClassReferences(module)
-    .filter { it.isAnnotatedWith(FqNames.mergeComponent) }
-    .map { MergeComponentParams.create(it, module) }
-    .distinctBy { it.scopeFqName }
-    .flatMap { params ->
-      fileGenerators.mapNotNull { generator ->
-        generator.generate(codeGenDir, params)
+  ): Collection<GeneratedFileWithSources> =
+    projectFiles
+      .classAndInnerClassReferences(module)
+      .filter { it.isAnnotatedWith(FqNames.mergeComponent) }
+      .map { MergeComponentParams.create(it, module) }
+      .distinctBy { it.scopeFqName }
+      .flatMap { params ->
+        fileGenerators.mapNotNull { generator ->
+          generator.generate(codeGenDir, params)
+        }
       }
-    }
-    .toList()
+      .toList()
 }

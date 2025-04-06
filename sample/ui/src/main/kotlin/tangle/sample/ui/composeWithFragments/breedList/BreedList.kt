@@ -51,9 +51,9 @@ internal fun BreedList(
   viewModel: BreedListViewModel = tangleViewModel(),
   onClick: (BreedSummary) -> Unit
 ) {
-
-  val breedListItems = viewModel.pagingDataFlow
-    .collectAsLazyPagingItems()
+  val breedListItems =
+    viewModel.pagingDataFlow
+      .collectAsLazyPagingItems()
 
   Surface(
     modifier = Modifier.fillMaxSize()
@@ -68,7 +68,8 @@ internal fun BreedList(
           tangle.sample.ui.composeWithActivities.breedList.BreedListItem(
             Locale.getDefault()
               .isMetric(),
-            summary, onClick
+            summary,
+            onClick
           )
         }
       }
@@ -121,11 +122,12 @@ internal fun BreedListItem(
           )
         }
 
-        val (height, weight) = if (useMetric) {
-          breedSummary.heightMetric to breedSummary.weightMetric
-        } else {
-          breedSummary.heightImperial to breedSummary.weightImperial
-        }
+        val (height, weight) =
+          if (useMetric) {
+            breedSummary.heightMetric to breedSummary.weightMetric
+          } else {
+            breedSummary.heightImperial to breedSummary.weightImperial
+          }
 
         if (height != null) {
           Text(
@@ -156,16 +158,17 @@ fun Preview() {
   MaterialTheme {
     tangle.sample.ui.composeWithActivities.breedList.BreedListItem(
       useMetric = false,
-      breedSummary = BreedSummary(
-        id = 1,
-        name = "Collie",
-        breedGroup = "herding",
-        imageUrl = "",
-        heightImperial = "24-28 inches",
-        heightMetric = "10-20 cm",
-        weightImperial = "150-170 lbs",
-        weightMetric = "150-170 kg"
-      )
+      breedSummary =
+        BreedSummary(
+          id = 1,
+          name = "Collie",
+          breedGroup = "herding",
+          imageUrl = "",
+          heightImperial = "24-28 inches",
+          heightMetric = "10-20 cm",
+          weightImperial = "150-170 lbs",
+          weightMetric = "150-170 kg"
+        )
     ) {}
   }
 }

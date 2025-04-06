@@ -30,23 +30,23 @@ object WorkerComponentGenerator : FileGenerator<MergeComponentParams> {
     codeGenDir: File,
     params: MergeComponentParams
   ): GeneratedFileWithSources {
-
     val packageName = params.packageName
 
     val className = params.componentClassName
     val classNameString = className.simpleName
 
-    val content = FileSpec.buildFile(packageName, classNameString) {
-      TypeSpec.interfaceBuilder(className)
-        .addSuperinterface(ClassNames.tangleWorkerComponent)
-        .addAnnotation(
-          AnnotationSpec(ClassNames.contributesTo) {
-            addMember("%T::class", params.scopeClassName)
-          }
-        )
-        .build()
-        .let { addType(it) }
-    }
+    val content =
+      FileSpec.buildFile(packageName, classNameString) {
+        TypeSpec.interfaceBuilder(className)
+          .addSuperinterface(ClassNames.tangleWorkerComponent)
+          .addAnnotation(
+            AnnotationSpec(ClassNames.contributesTo) {
+              addMember("%T::class", params.scopeClassName)
+            }
+          )
+          .build()
+          .let { addType(it) }
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir,

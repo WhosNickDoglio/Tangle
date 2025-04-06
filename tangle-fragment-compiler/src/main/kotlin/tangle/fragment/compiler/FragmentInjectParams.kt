@@ -70,38 +70,48 @@ internal sealed class FragmentInjectParams {
         fragmentClass: ClassReference,
         constructor: MemberFunctionReference
       ): Fragment {
-        val packageName = fragmentClass.packageFqName
-          .safePackageString(dotSuffix = false)
+        val packageName =
+          fragmentClass.packageFqName
+            .safePackageString(dotSuffix = false)
 
         val fragmentClassDescriptor = fragmentClass
 
         val fragmentFactoryClassID = fragmentClass.generateClassName(suffix = "_Factory")
-        val fragmentFactoryClassName = fragmentFactoryClassID
-          .asClassName()
+        val fragmentFactoryClassName =
+          fragmentFactoryClassID
+            .asClassName()
 
-        val contributesFragmentAnnotation = fragmentClass.annotations
-          .find(FqNames.contributesFragment)!!
+        val contributesFragmentAnnotation =
+          fragmentClass.annotations
+            .find(FqNames.contributesFragment)!!
 
         val scopeName = contributesFragmentAnnotation.scope().fqName
 
         val memberInjectParameters = fragmentClassDescriptor.memberInjectedParameters()
 
-        val allFragmentConstructorParams = constructor.parameters
-          .mapToParameters(module)
+        val allFragmentConstructorParams =
+          constructor.parameters
+            .mapToParameters(module)
 
         val typeParameters = fragmentClass.typeParameters
 
-        val fragmentClassSimpleName = fragmentClass.asClassName()
-          .simpleNames
-          .joinToString("_")
+        val fragmentClassSimpleName =
+          fragmentClass.asClassName()
+            .simpleNames
+            .joinToString("_")
 
         val fragmentClassName = fragmentClass.asClassName()
 
-        val fragmentTypeName = fragmentClassName.let {
-          if (typeParameters.isEmpty()) it else it.parameterizedBy(
-            typeParameters.map { it.typeVariableName }
-          )
-        }
+        val fragmentTypeName =
+          fragmentClassName.let {
+            if (typeParameters.isEmpty()) {
+              it
+            } else {
+              it.parameterizedBy(
+                typeParameters.map { it.typeVariableName }
+              )
+            }
+          }
         return Fragment(
           packageName = packageName,
           scopeName = scopeName,
@@ -162,8 +172,9 @@ internal sealed class FragmentInjectParams {
         val scopeClass = fragmentClass.annotations.find(FqNames.contributesFragment)!!.scope()
         val scopeName = scopeClass.fqName
 
-        val fragmentFactoryClassName = fragmentClass.generateClassName(suffix = "_Factory")
-          .asClassName()
+        val fragmentFactoryClassName =
+          fragmentClass.generateClassName(suffix = "_Factory")
+            .asClassName()
 
         val functions = factoryInterface.functions
 
@@ -184,14 +195,15 @@ internal sealed class FragmentInjectParams {
           "${factoryInterfaceClassName.generateSimpleNameString()}_Impl"
         val factoryImplClassName = ClassName(packageName, factoryImplSimpleName)
 
-        val tangleParams = functionParameters.map {
-          TangleParameter(
-            it.requireTangleParamName(),
-            it.name,
-            it.type(),
-            it.type().asTypeName()
-          )
-        }
+        val tangleParams =
+          functionParameters.map {
+            TangleParameter(
+              it.requireTangleParamName(),
+              it.name,
+              it.type(),
+              it.type().asTypeName()
+            )
+          }
 
         tangleParams.checkForBundleSafe(factoryInterface)
 
@@ -215,33 +227,37 @@ internal sealed class FragmentInjectParams {
         )
       }
 
-      private fun ClassDescriptor.functions(): List<FunctionDescriptor> = unsubstitutedMemberScope
-        .getContributedDescriptors(DescriptorKindFilter.FUNCTIONS)
-        .asSequence()
-        .filterIsInstance<FunctionDescriptor>()
-        .filter { it.modality == ABSTRACT }
-        .filter {
-          it.visibility == DescriptorVisibilities.PUBLIC ||
-            it.visibility == DescriptorVisibilities.PROTECTED
-        }
-        .toList()
+      private fun ClassDescriptor.functions(): List<FunctionDescriptor> =
+        unsubstitutedMemberScope
+          .getContributedDescriptors(DescriptorKindFilter.FUNCTIONS)
+          .asSequence()
+          .filterIsInstance<FunctionDescriptor>()
+          .filter { it.modality == ABSTRACT }
+          .filter {
+            it.visibility == DescriptorVisibilities.PUBLIC ||
+              it.visibility == DescriptorVisibilities.PROTECTED
+          }
+          .toList()
 
       internal fun List<TangleParameter>.checkForBundleSafe(classReference: ClassReference) {
-        fun TangleParameter.superTypeFqNames() = type.asClassReference()
-          .allSuperTypeClassReferences(false)
-          .map { it.fqName }
+        fun TangleParameter.superTypeFqNames() =
+          type.asClassReference()
+            .allSuperTypeClassReferences(false)
+            .map { it.fqName }
 
-        val notBundleSafe = filter { tangleParameter ->
-          !BundleSafe.contains(tangleParameter.typeName) &&
-            tangleParameter.superTypeFqNames().none { BundleSafe.contains(it) }
-        }
+        val notBundleSafe =
+          filter { tangleParameter ->
+            !BundleSafe.contains(tangleParameter.typeName) &&
+              tangleParameter.superTypeFqNames().none { BundleSafe.contains(it) }
+          }
 
         if (notBundleSafe.isNotEmpty()) {
-          val listString = notBundleSafe.joinToString(
-            separator = ",\n",
-            prefix = "[",
-            postfix = "]"
-          ) { "${it.name}: ${it.typeName}" }
+          val listString =
+            notBundleSafe.joinToString(
+              separator = ",\n",
+              prefix = "[",
+              postfix = "]"
+            ) { "${it.name}: ${it.typeName}" }
 
           throw TangleCompilationException(
             classReference,

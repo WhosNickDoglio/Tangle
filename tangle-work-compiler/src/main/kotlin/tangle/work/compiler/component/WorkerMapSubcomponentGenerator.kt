@@ -33,32 +33,32 @@ object WorkerMapSubcomponentGenerator : FileGenerator<MergeComponentParams> {
     codeGenDir: File,
     params: MergeComponentParams
   ): GeneratedFileWithSources {
-
     val packageName = params.packageName
 
     val className = params.mapSubcomponentClassName
 
-    val content = FileSpec.buildFile(packageName, className.simpleName) {
-      TypeSpec.interfaceBuilder(className)
-        .addSuperinterface(ClassNames.tangleWorkerFactoryMapSubcomponent)
-        .addAnnotation(
-          AnnotationSpec.builder(ClassNames.mergeSubcomponent)
-            .addMember("%T::class", ClassNames.tangleAppScope)
-            .build()
-        )
-        .addType(
-          TypeSpec.interfaceBuilder("Factory")
-            .addSuperinterface(ClassNames.tangleWorkerFactoryMapSubcomponentFactory)
-            .addAnnotation(ClassNames.subcomponentFactory)
-            .addFunction("create") {
-              returns(className)
-              addModifiers(KModifier.ABSTRACT, KModifier.OVERRIDE)
-            }
-            .build()
-        )
-        .build()
-        .let { addType(it) }
-    }
+    val content =
+      FileSpec.buildFile(packageName, className.simpleName) {
+        TypeSpec.interfaceBuilder(className)
+          .addSuperinterface(ClassNames.tangleWorkerFactoryMapSubcomponent)
+          .addAnnotation(
+            AnnotationSpec.builder(ClassNames.mergeSubcomponent)
+              .addMember("%T::class", ClassNames.tangleAppScope)
+              .build()
+          )
+          .addType(
+            TypeSpec.interfaceBuilder("Factory")
+              .addSuperinterface(ClassNames.tangleWorkerFactoryMapSubcomponentFactory)
+              .addAnnotation(ClassNames.subcomponentFactory)
+              .addFunction("create") {
+                returns(className)
+                addModifiers(KModifier.ABSTRACT, KModifier.OVERRIDE)
+              }
+              .build()
+          )
+          .build()
+          .let { addType(it) }
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir,

@@ -30,7 +30,6 @@ import tangle.inject.test.utils.invokeGet
 import javax.inject.Provider
 
 class WorkerFactoryGeneratorTest : BaseTest() {
-
   val context = mockk<Context>()
   val workerParameters = mockk<WorkerParameters>()
 
@@ -40,9 +39,10 @@ class WorkerFactoryGeneratorTest : BaseTest() {
   }
 
   @TestFactory
-  fun `Worker factory is generated without any additional arguments`() = test {
-    compile(
-      """
+  fun `Worker factory is generated without any additional arguments`() =
+    test {
+      compile(
+        """
     package tangle.inject.tests
 
     import android.content.Context
@@ -62,20 +62,20 @@ class WorkerFactoryGeneratorTest : BaseTest() {
       }
     }
     """
-    ) {
+      ) {
+        val factory = myWorker_FactoryClass.createInstance()
+        val assistedFactory = myWorker_AssistedFactoryClass.createInstance()
 
-      val factory = myWorker_FactoryClass.createInstance()
-      val assistedFactory = myWorker_AssistedFactoryClass.createInstance()
-
-      factory.invokeGet(context, workerParameters)::class.java shouldBe myWorkerClass
-      assistedFactory.invokeCreate(context, workerParameters)::class.java shouldBe myWorkerClass
+        factory.invokeGet(context, workerParameters)::class.java shouldBe myWorkerClass
+        assistedFactory.invokeCreate(context, workerParameters)::class.java shouldBe myWorkerClass
+      }
     }
-  }
 
   @TestFactory
-  fun `Worker assisted arguments may have any name`() = test {
-    compile(
-      """
+  fun `Worker assisted arguments may have any name`() =
+    test {
+      compile(
+        """
     package tangle.inject.tests
 
     import android.content.Context
@@ -95,20 +95,20 @@ class WorkerFactoryGeneratorTest : BaseTest() {
       }
     }
     """
-    ) {
+      ) {
+        val factory = myWorker_FactoryClass.createInstance()
+        val assistedFactory = myWorker_AssistedFactoryClass.createInstance()
 
-      val factory = myWorker_FactoryClass.createInstance()
-      val assistedFactory = myWorker_AssistedFactoryClass.createInstance()
-
-      factory.invokeGet(context, workerParameters)::class.java shouldBe myWorkerClass
-      assistedFactory.invokeCreate(context, workerParameters)::class.java shouldBe myWorkerClass
+        factory.invokeGet(context, workerParameters)::class.java shouldBe myWorkerClass
+        assistedFactory.invokeCreate(context, workerParameters)::class.java shouldBe myWorkerClass
+      }
     }
-  }
 
   @TestFactory
-  fun `Worker assisted arguments may be in any order`() = test {
-    compile(
-      """
+  fun `Worker assisted arguments may be in any order`() =
+    test {
+      compile(
+        """
     package tangle.inject.tests
 
     import android.content.Context
@@ -128,20 +128,20 @@ class WorkerFactoryGeneratorTest : BaseTest() {
       }
     }
     """
-    ) {
+      ) {
+        val factory = myWorker_FactoryClass.createInstance()
+        val assistedFactory = myWorker_AssistedFactoryClass.createInstance()
 
-      val factory = myWorker_FactoryClass.createInstance()
-      val assistedFactory = myWorker_AssistedFactoryClass.createInstance()
-
-      factory.invokeGet(workerParameters, context)::class.java shouldBe myWorkerClass
-      assistedFactory.invokeCreate(context, workerParameters)::class.java shouldBe myWorkerClass
+        factory.invokeGet(workerParameters, context)::class.java shouldBe myWorkerClass
+        assistedFactory.invokeCreate(context, workerParameters)::class.java shouldBe myWorkerClass
+      }
     }
-  }
 
   @TestFactory
-  fun `Worker factory is generated with an injected argument`() = test {
-    compile(
-      """
+  fun `Worker factory is generated with an injected argument`() =
+    test {
+      compile(
+        """
     package tangle.inject.tests
 
     import android.content.Context
@@ -162,20 +162,20 @@ class WorkerFactoryGeneratorTest : BaseTest() {
       }
     }
     """
-    ) {
+      ) {
+        val factory = myWorker_FactoryClass.createInstance(Provider { "string" })
+        val assistedFactory = myWorker_AssistedFactoryClass.createInstance(Provider { "string" })
 
-      val factory = myWorker_FactoryClass.createInstance(Provider { "string" })
-      val assistedFactory = myWorker_AssistedFactoryClass.createInstance(Provider { "string" })
-
-      factory.invokeGet(context, workerParameters)::class.java shouldBe myWorkerClass
-      assistedFactory.invokeCreate(context, workerParameters)::class.java shouldBe myWorkerClass
+        factory.invokeGet(context, workerParameters)::class.java shouldBe myWorkerClass
+        assistedFactory.invokeCreate(context, workerParameters)::class.java shouldBe myWorkerClass
+      }
     }
-  }
 
   @TestFactory
-  fun `Worker may not have additional assisted args`() = test {
-    compile(
-      """
+  fun `Worker may not have additional assisted args`() =
+    test {
+      compile(
+        """
     package tangle.inject.tests
 
     import android.content.Context
@@ -196,10 +196,9 @@ class WorkerFactoryGeneratorTest : BaseTest() {
       }
     }
     """,
-      shouldFail = true
-    ) {
-
-      messages shouldContainIgnoringWhitespaces """
+        shouldFail = true
+      ) {
+        messages shouldContainIgnoringWhitespaces """
         @TangleWorker-annotated classes may only have Context and WorkerParameters as @Assisted-annotated parameters.
 
           required assisted constructor parameters
@@ -211,13 +210,14 @@ class WorkerFactoryGeneratorTest : BaseTest() {
           	params: androidx.work.WorkerParameters
           	string: kotlin.String
           """
+      }
     }
-  }
 
   @TestFactory
-  fun `Worker must have WorkerParameters assisted args`() = test {
-    compile(
-      """
+  fun `Worker must have WorkerParameters assisted args`() =
+    test {
+      compile(
+        """
     package tangle.inject.tests
 
     import android.content.Context
@@ -237,10 +237,9 @@ class WorkerFactoryGeneratorTest : BaseTest() {
       }
     }
     """,
-      shouldFail = true
-    ) {
-
-      messages shouldContainIgnoringWhitespaces """
+        shouldFail = true
+      ) {
+        messages shouldContainIgnoringWhitespaces """
         @TangleWorker-annotated classes may only have Context and WorkerParameters as @Assisted-annotated parameters.
 
           required assisted constructor parameters
@@ -250,13 +249,14 @@ class WorkerFactoryGeneratorTest : BaseTest() {
           actual assisted constructor parameters
           	context: android.content.Context
           """
+      }
     }
-  }
 
   @TestFactory
-  fun `Worker must have Context assisted args`() = test {
-    compile(
-      """
+  fun `Worker must have Context assisted args`() =
+    test {
+      compile(
+        """
     package tangle.inject.tests
 
     import android.content.Context
@@ -276,10 +276,9 @@ class WorkerFactoryGeneratorTest : BaseTest() {
       }
     }
     """,
-      shouldFail = true
-    ) {
-
-      messages shouldContainIgnoringWhitespaces """
+        shouldFail = true
+      ) {
+        messages shouldContainIgnoringWhitespaces """
         @TangleWorker-annotated classes may only have Context and WorkerParameters as @Assisted-annotated parameters.
 
           required assisted constructor parameters
@@ -289,13 +288,14 @@ class WorkerFactoryGeneratorTest : BaseTest() {
           actual assisted constructor parameters
           	params: androidx.work.WorkerParameters
           """
+      }
     }
-  }
 
   @TestFactory
-  fun `qualified inject parameter propagates qualifiers`() = test {
-    compile(
-      """
+  fun `qualified inject parameter propagates qualifiers`() =
+    test {
+      compile(
+        """
     package tangle.inject.tests
 
     import android.content.Context
@@ -322,17 +322,19 @@ class WorkerFactoryGeneratorTest : BaseTest() {
       }
     }
     """
-    ) {
-      val clazz = classLoader.loadClass("tangle.inject.tests.SomeQualifier")
+      ) {
+        val clazz = classLoader.loadClass("tangle.inject.tests.SomeQualifier")
 
-      val constructor = myWorker_AssistedFactoryClass.kotlin.constructors
-        .single()
+        val constructor =
+          myWorker_AssistedFactoryClass.kotlin.constructors
+            .single()
 
-      val annotationClasses = constructor.parameters
-        .single { it.name == "qualified" }
-        .annotations.map { it.annotationClass }
+        val annotationClasses =
+          constructor.parameters
+            .single { it.name == "qualified" }
+            .annotations.map { it.annotationClass }
 
-      annotationClasses shouldContain clazz.kotlin
+        annotationClasses shouldContain clazz.kotlin
+      }
     }
-  }
 }

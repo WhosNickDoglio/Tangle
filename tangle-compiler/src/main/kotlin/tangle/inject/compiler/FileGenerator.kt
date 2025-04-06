@@ -20,8 +20,10 @@ import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import java.io.File
 
 fun interface FileGenerator<T> {
-
-  fun generate(codeGenDir: File, params: T): GeneratedFileWithSources?
+  fun generate(
+    codeGenDir: File,
+    params: T
+  ): GeneratedFileWithSources?
 
   /**
    * Write [content] into a new file for the given [packageName] and [fileName]. [fileName] usually

@@ -42,58 +42,57 @@ import java.io.File
  * ```
  */
 internal object TangleInjectorGenerator : FileGenerator<MemberInjectParams> {
-
   override fun generate(
     codeGenDir: File,
     params: MemberInjectParams
   ): GeneratedFileWithSources {
-
     val packageName = params.packageName
 
-    val content = FileSpec.buildFile(packageName, params.injectorName) {
-      addType(
-        TypeSpec.classBuilder(params.injectorClassName)
-          .primaryConstructor(
-            FunSpec.constructorBuilder()
-              .addAnnotation(ClassNames.inject)
-              .apply {
-                if (params.hasInjectedMembers) {
-                  addParameter(
-                    ParameterSpec.Companion.builder(
-                      "injector",
-                      ClassNames.memberInjector.parameterizedBy(params.injectedClassName)
+    val content =
+      FileSpec.buildFile(packageName, params.injectorName) {
+        addType(
+          TypeSpec.classBuilder(params.injectorClassName)
+            .primaryConstructor(
+              FunSpec.constructorBuilder()
+                .addAnnotation(ClassNames.inject)
+                .apply {
+                  if (params.hasInjectedMembers) {
+                    addParameter(
+                      ParameterSpec.Companion.builder(
+                        "injector",
+                        ClassNames.memberInjector.parameterizedBy(params.injectedClassName)
+                      )
+                        .build()
                     )
-                      .build()
+                  }
+                }
+                .build()
+            ).apply {
+              if (params.hasInjectedMembers) {
+                addProperty(
+                  PropertySpec.builder(
+                    "injector",
+                    ClassNames.memberInjector.parameterizedBy(params.injectedClassName)
                   )
-                }
-              }
-              .build()
-          ).apply {
-            if (params.hasInjectedMembers) {
-              addProperty(
-                PropertySpec.builder(
-                  "injector",
-                  ClassNames.memberInjector.parameterizedBy(params.injectedClassName)
+                    .initializer("injector")
+                    .addModifiers(KModifier.INTERNAL)
+                    .build()
                 )
-                  .initializer("injector")
-                  .addModifiers(KModifier.INTERNAL)
-                  .build()
-              )
-            }
-          }
-          .addSuperinterface(ClassNames.tangleInjector.parameterizedBy(params.injectedClassName))
-          .addFunction("inject") {
-            addParameter("target", params.injectedClassName)
-            addModifiers(OVERRIDE)
-              .apply {
-                if (params.hasInjectedMembers) {
-                  addStatement("injector.injectMembers(target)")
-                }
               }
-          }
-          .build()
-      )
-    }
+            }
+            .addSuperinterface(ClassNames.tangleInjector.parameterizedBy(params.injectedClassName))
+            .addFunction("inject") {
+              addParameter("target", params.injectedClassName)
+              addModifiers(OVERRIDE)
+                .apply {
+                  if (params.hasInjectedMembers) {
+                    addStatement("injector.injectMembers(target)")
+                  }
+                }
+            }
+            .build()
+        )
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir = codeGenDir,

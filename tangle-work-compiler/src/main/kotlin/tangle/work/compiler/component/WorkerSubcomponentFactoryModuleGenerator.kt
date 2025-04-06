@@ -33,12 +33,10 @@ import tangle.work.compiler.tangleWorkerFactoryMapSubcomponentFactory
 import java.io.File
 
 object WorkerSubcomponentFactoryModuleGenerator : FileGenerator<MergeComponentParams> {
-
   override fun generate(
     codeGenDir: File,
     params: MergeComponentParams
   ): GeneratedFileWithSources? {
-
     val moduleFqName =
       FqName(
         "${params.subcomponentModulePackageName}.${params.subcomponentModuleClassName.simpleName}"
@@ -47,11 +45,12 @@ object WorkerSubcomponentFactoryModuleGenerator : FileGenerator<MergeComponentPa
     // If the (Dagger) Module for this scope already exists in a different Gradle module,
     // it can't be created again here without creating a duplicate binding
     // for the WorkerSubcomponentFactory.
-    val alreadyCreated = listOf(params.module)
-      .plus(params.module.allDependencyModules)
-      .any { depMod ->
-        depMod.resolveClassByFqName(moduleFqName, NoLookupLocation.FROM_BACKEND) != null
-      }
+    val alreadyCreated =
+      listOf(params.module)
+        .plus(params.module.allDependencyModules)
+        .any { depMod ->
+          depMod.resolveClassByFqName(moduleFqName, NoLookupLocation.FROM_BACKEND) != null
+        }
 
     if (alreadyCreated) {
       return null
@@ -63,29 +62,30 @@ object WorkerSubcomponentFactoryModuleGenerator : FileGenerator<MergeComponentPa
 
     val mapSubcomponentClassName = params.mapSubcomponentClassName
 
-    val content = FileSpec.buildFile(packageName, className.simpleName) {
-      TypeSpec.interfaceBuilder(className)
-        .addContributesTo(params.scopeClassName)
-        .addAnnotation(
-          AnnotationSpec.builder(ClassNames.module)
-            .addMember(
-              "subcomponents·=·[%T::class]",
-              mapSubcomponentClassName
-            )
-            .build()
-        )
-        .addFunction(
-          "bind_${params.mapSubcomponentFactoryClassName.generateSimpleNameString()}"
-        ) {
-          addModifiers(KModifier.ABSTRACT)
-          returns(ClassNames.tangleWorkerFactoryMapSubcomponentFactory)
-          addParameter("factory", params.mapSubcomponentFactoryClassName)
-          addAnnotation(ClassNames.binds)
-          build()
-        }
-        .build()
-        .let { addType(it) }
-    }
+    val content =
+      FileSpec.buildFile(packageName, className.simpleName) {
+        TypeSpec.interfaceBuilder(className)
+          .addContributesTo(params.scopeClassName)
+          .addAnnotation(
+            AnnotationSpec.builder(ClassNames.module)
+              .addMember(
+                "subcomponents·=·[%T::class]",
+                mapSubcomponentClassName
+              )
+              .build()
+          )
+          .addFunction(
+            "bind_${params.mapSubcomponentFactoryClassName.generateSimpleNameString()}"
+          ) {
+            addModifiers(KModifier.ABSTRACT)
+            returns(ClassNames.tangleWorkerFactoryMapSubcomponentFactory)
+            addParameter("factory", params.mapSubcomponentFactoryClassName)
+            addAnnotation(ClassNames.binds)
+            build()
+          }
+          .build()
+          .let { addType(it) }
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir,

@@ -22,55 +22,62 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 @Suppress("UnnecessaryAbstractClass") // Gradle optimization
-public abstract class TangleExtension @Inject constructor(
-  objectFactory: ObjectFactory
-) {
+public abstract class TangleExtension
+  @Inject
+  constructor(
+    objectFactory: ObjectFactory
+  ) {
+    /**
+     * Fragment code generation and API's enabled
+     *
+     * If this property is set, then Tangle will use that setting regardless of what Androidx
+     * dependencies are in the classpath.
+     *
+     * If this property is not set, Tangle will automatically enable its Fragment dependencies if the
+     * module declares any `androidx.fragment` group dependencies.
+     */
+    public var fragmentsEnabled: Boolean? by objectFactory.property()
 
-  /**
-   * Fragment code generation and API's enabled
-   *
-   * If this property is set, then Tangle will use that setting regardless of what Androidx
-   * dependencies are in the classpath.
-   *
-   * If this property is not set, Tangle will automatically enable its Fragment dependencies if the
-   * module declares any `androidx.fragment` group dependencies.
-   */
-  public var fragmentsEnabled: Boolean? by objectFactory.property()
+    /**
+     * Worker/WorkManager code generation and API's enabled
+     *
+     * If this property is set, then Tangle will use that setting regardless of what Androidx
+     * dependencies are in the classpath.
+     *
+     * If this property is not set, Tangle will automatically enable its Worker/WorkManager
+     * dependencies if the module declares any `androidx.work` group dependencies.
+     */
+    public var workEnabled: Boolean? by objectFactory.property()
 
-  /**
-   * Worker/WorkManager code generation and API's enabled
-   *
-   * If this property is set, then Tangle will use that setting regardless of what Androidx
-   * dependencies are in the classpath.
-   *
-   * If this property is not set, Tangle will automatically enable its Worker/WorkManager
-   * dependencies if the module declares any `androidx.work` group dependencies.
-   */
-  public var workEnabled: Boolean? by objectFactory.property()
+    /**
+     * ViewModel configuration options
+     */
+    public val viewModelOptions: ViewModelOptions = ViewModelOptions(objectFactory)
 
-  /**
-   * ViewModel configuration options
-   */
-  public val viewModelOptions: ViewModelOptions = ViewModelOptions(objectFactory)
-
-  /**
-   * ViewModel configuration options
-   */
-  public fun viewModelOptions(action: Action<ViewModelOptions>) {
-    action.execute(viewModelOptions)
+    /**
+     * ViewModel configuration options
+     */
+    public fun viewModelOptions(action: Action<ViewModelOptions>) {
+      action.execute(viewModelOptions)
+    }
   }
-}
 
 internal fun ObjectFactory.property(): ReadWriteProperty<Any, Boolean?> =
   object : ReadWriteProperty<Any, Boolean?> {
-
     val delegate = property(Boolean::class.java)
 
-    override fun getValue(thisRef: Any, property: KProperty<*>): Boolean? {
+    override fun getValue(
+      thisRef: Any,
+      property: KProperty<*>
+    ): Boolean? {
       return delegate.orNull
     }
 
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: Boolean?) {
+    override fun setValue(
+      thisRef: Any,
+      property: KProperty<*>,
+      value: Boolean?
+    ) {
       delegate.set(value)
     }
   }

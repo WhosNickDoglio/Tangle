@@ -47,12 +47,10 @@ import java.io.File
  * ```
  */
 internal object FragmentInject_ModuleGenerator : FileGenerator<FragmentBindingModuleParams> {
-
   override fun generate(
     codeGenDir: File,
     params: FragmentBindingModuleParams
   ): GeneratedFileWithSources {
-
     val scopeClassName = params.scopeClassName
     val packageName = params.packageName
 
@@ -60,42 +58,44 @@ internal object FragmentInject_ModuleGenerator : FileGenerator<FragmentBindingMo
 
     val factoryImpls = params.factoryParams
 
-    val content = FileSpec.buildFile(packageName, moduleName) {
-      addType(
-        TypeSpec.objectBuilder(ClassName(packageName, moduleName))
-          .addAnnotation(ClassNames.module)
-          .addContributesTo(scopeClassName)
-          .applyEach(factoryImpls) { params ->
+    val content =
+      FileSpec.buildFile(packageName, moduleName) {
+        addType(
+          TypeSpec.objectBuilder(ClassName(packageName, moduleName))
+            .addAnnotation(ClassNames.module)
+            .addContributesTo(scopeClassName)
+            .applyEach(factoryImpls) { params ->
 
-            val factoryConstructorParams =
-              params.fragmentParams.constructorParams + params.fragmentParams.memberInjectedParams
+              val factoryConstructorParams =
+                params.fragmentParams.constructorParams + params.fragmentParams.memberInjectedParams
 
-            val args = factoryConstructorParams.asArgumentList(
-              asProvider = false,
-              includeModule = false
-            )
-            addFunction(
-              "provide_${params.factoryInterfaceClassName.generateSimpleNameString()}"
-            ) {
-              addAnnotation(ClassNames.provides)
-              factoryConstructorParams.forEach { argument ->
-                addParameter(
-                  ParameterSpec.builder(argument.name, argument.typeName.wrapInProvider())
-                    .applyEach(argument.qualifiers) { addAnnotation(it) }
-                    .build()
+              val args =
+                factoryConstructorParams.asArgumentList(
+                  asProvider = false,
+                  includeModule = false
+                )
+              addFunction(
+                "provide_${params.factoryInterfaceClassName.generateSimpleNameString()}"
+              ) {
+                addAnnotation(ClassNames.provides)
+                factoryConstructorParams.forEach { argument ->
+                  addParameter(
+                    ParameterSpec.builder(argument.name, argument.typeName.wrapInProvider())
+                      .applyEach(argument.qualifiers) { addAnnotation(it) }
+                      .build()
+                  )
+                }
+                returns(params.factoryInterfaceClassName)
+                addStatement(
+                  "return·%T.create(%T.create($args)).get()",
+                  params.factoryImplClassName,
+                  params.fragmentFactoryClassName
                 )
               }
-              returns(params.factoryInterfaceClassName)
-              addStatement(
-                "return·%T.create(%T.create($args)).get()",
-                params.factoryImplClassName,
-                params.fragmentFactoryClassName
-              )
             }
-          }
-          .build()
-      )
-    }
+            .build()
+        )
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir = codeGenDir,

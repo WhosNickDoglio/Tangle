@@ -33,7 +33,6 @@ class TangleCompilationException(
   cause: Throwable? = null,
   element: PsiElement? = null
 ) : CompilationException(message, cause, element) {
-
   constructor(
     annotationDescriptor: AnnotationDescriptor,
     message: String,
@@ -74,10 +73,11 @@ inline fun require(
 }
 
 @PublishedApi
-internal fun ClassReference.findPsi() = when (this) {
-  is Descriptor -> clazz.findPsi() as PsiElement
-  is Psi -> clazz
-}
+internal fun ClassReference.findPsi() =
+  when (this) {
+    is Descriptor -> clazz.findPsi() as PsiElement
+    is Psi -> clazz
+  }
 
 inline fun require(
   value: Boolean,

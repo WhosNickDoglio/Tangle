@@ -25,29 +25,31 @@ import tangle.inject.TangleParam
 import tangle.inject.test.utils.AppScope
 
 @ContributesFragment(AppScope::class)
-class ArgSampleFragment @FragmentInject constructor() : Fragment() {
+class ArgSampleFragment
+  @FragmentInject
+  constructor() : Fragment() {
+    val nameArg: String by arg("name")
 
-  val nameArg: String by arg("name")
-
-  @FragmentInjectFactory
-  interface Factory {
-    fun create(
-      @TangleParam("name")
-      name: String
-    ): Fragment
+    @FragmentInjectFactory
+    interface Factory {
+      fun create(
+        @TangleParam("name")
+        name: String
+      ): Fragment
+    }
   }
-}
 
 @ContributesFragment(AppScope::class)
-class ArgOrNullSampleFragment @FragmentInject constructor() : Fragment() {
+class ArgOrNullSampleFragment
+  @FragmentInject
+  constructor() : Fragment() {
+    val nameArg: String? by argOrNull("name")
 
-  val nameArg: String? by argOrNull("name")
-
-  @FragmentInjectFactory
-  interface Factory {
-    fun create(
-      @TangleParam("name")
-      name: String
-    ): Fragment
+    @FragmentInjectFactory
+    interface Factory {
+      fun create(
+        @TangleParam("name")
+        name: String
+      ): Fragment
+    }
   }
-}

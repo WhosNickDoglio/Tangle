@@ -28,13 +28,11 @@ import tangle.sample.data.breed.DogService
 @Module
 @ContributesTo(AppScope::class)
 object RetrofitModule {
-
   @Provides
   fun provideRetrofit(
     lazyClient: dagger.Lazy<OkHttpClient>,
     converterFactories: Set<@JvmSuppressWildcards Converter.Factory>
   ): Retrofit {
-
     return Retrofit.Builder()
       .callFactory { request -> lazyClient.get().newCall(request) }
       .baseUrl("https://api.thedogapi.com/")

@@ -27,7 +27,6 @@ import javax.inject.Singleton
 @Singleton
 @MergeComponent(AppScope::class, exclude = [CoilImageLoaderModule::class, RetrofitModule::class])
 interface TestAppComponent {
-
   @Component.Factory
   interface Factory {
     fun create(

@@ -42,22 +42,23 @@ import javax.inject.Provider
  * @see WorkerScheduler
  */
 @ContributesMultibinding(AppScope::class)
-class WorkManagerScheduler @Inject constructor(
-  val schedulersProvider: Provider<Set<WorkerScheduler>>,
-  val workerFactory: TangleWorkerFactory
-) : AppPlugin {
+class WorkManagerScheduler
+  @Inject
+  constructor(
+    val schedulersProvider: Provider<Set<WorkerScheduler>>,
+    val workerFactory: TangleWorkerFactory
+  ) : AppPlugin {
+    override fun apply(application: Application) {
+      WorkManager.initialize(
+        application,
+        Configuration.Builder()
+          .setWorkerFactory(workerFactory)
+          .build()
+      )
+      val workManager = WorkManager.getInstance(application)
 
-  override fun apply(application: Application) {
-    WorkManager.initialize(
-      application,
-      Configuration.Builder()
-        .setWorkerFactory(workerFactory)
-        .build()
-    )
-    val workManager = WorkManager.getInstance(application)
-
-    schedulersProvider.get()
-      .filter { it.isApplicable() }
-      .forEach { it.enqueue(workManager) }
+      schedulersProvider.get()
+        .filter { it.isApplicable() }
+        .forEach { it.enqueue(workManager) }
+    }
   }
-}

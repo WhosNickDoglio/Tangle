@@ -30,11 +30,11 @@ import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.functions
 
 class VMInjectGeneratorTest : BaseTest() {
-
   @TestFactory
-  fun `provider function is generated without arguments`() = test {
-    compile(
-      """
+  fun `provider function is generated without arguments`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.lifecycle.ViewModel
@@ -42,16 +42,16 @@ class VMInjectGeneratorTest : BaseTest() {
 
       class Target @VMInject constructor() : ViewModel()
      """
-    ) {
-
-      provideTarget()::class.java shouldBe targetClass
+      ) {
+        provideTarget()::class.java shouldBe targetClass
+      }
     }
-  }
 
   @TestFactory
-  fun `provider function is generated for an argument`() = test {
-    compile(
-      """
+  fun `provider function is generated for an argument`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.lifecycle.ViewModel
@@ -61,15 +61,16 @@ class VMInjectGeneratorTest : BaseTest() {
         name: String
       ) : ViewModel()
      """
-    ) {
-      provideTarget(Provider { "name" })::class.java shouldBe targetClass
+      ) {
+        provideTarget(Provider { "name" })::class.java shouldBe targetClass
+      }
     }
-  }
 
   @TestFactory
-  fun `provider function is generated for a generic argument`() = test {
-    compile(
-      """
+  fun `provider function is generated for a generic argument`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.lifecycle.ViewModel
@@ -79,10 +80,10 @@ class VMInjectGeneratorTest : BaseTest() {
         names: List<String>
       ) : ViewModel()
      """
-    ) {
-      provideTarget(Provider { listOf("name") })::class.java shouldBe targetClass
+      ) {
+        provideTarget(Provider { listOf("name") })::class.java shouldBe targetClass
+      }
     }
-  }
 
   @TestFactory
   fun `provider function is generated for a dagger Lazy argument`() =
@@ -189,7 +190,9 @@ class VMInjectGeneratorTest : BaseTest() {
      """
       ) {
         provideTarget(
-          Provider { SavedStateHandle(mapOf("aNameWhichIsVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLong" to "Leeroy")) }
+          Provider {
+            SavedStateHandle(mapOf("aNameWhichIsVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLong" to "Leeroy"))
+          }
         )::class.java shouldBe targetClass
       }
     }
@@ -351,9 +354,10 @@ class VMInjectGeneratorTest : BaseTest() {
     }
 
   @TestFactory
-  fun `qualified inject parameter propagates qualifiers`() = test {
-    compile(
-      """
+  fun `qualified inject parameter propagates qualifiers`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.lifecycle.ViewModel
@@ -370,29 +374,32 @@ class VMInjectGeneratorTest : BaseTest() {
         val someArg: String
       ) : ViewModel()
       """
-    ) {
-      val someQualifier = classLoader.loadClass("tangle.inject.tests.SomeQualifier").kotlin
+      ) {
+        val someQualifier = classLoader.loadClass("tangle.inject.tests.SomeQualifier").kotlin
 
-      val factoryProviderAnnotations = provideTargetFunction.parameters
-        .single { it.name == "someArg" }
-        .annotations
-        .map { it.annotationClass }
+        val factoryProviderAnnotations =
+          provideTargetFunction.parameters
+            .single { it.name == "someArg" }
+            .annotations
+            .map { it.annotationClass }
 
-      factoryProviderAnnotations shouldContain someQualifier
+        factoryProviderAnnotations shouldContain someQualifier
+      }
     }
-  }
 
   val JvmCompilationResult.provideTargetFunction: KFunction<ViewModel>
     get() {
-      val moduleClass = classLoader
-        .loadClass("tangle.inject.tests.TangleViewModelScope_VMInject_Module").kotlin
+      val moduleClass =
+        classLoader
+          .loadClass("tangle.inject.tests.TangleViewModelScope_VMInject_Module").kotlin
 
       val companionObject = moduleClass.companionObject!!
 
       val funName = "provide_Target"
 
-      val providerFunction = companionObject.functions
-        .find { it.name == funName }
+      val providerFunction =
+        companionObject.functions
+          .find { it.name == funName }
 
       requireNotNull(providerFunction) { "could not find a function named `$funName`" }
 
@@ -401,8 +408,9 @@ class VMInjectGeneratorTest : BaseTest() {
     }
 
   fun JvmCompilationResult.provideTarget(vararg args: Any?): Any {
-    val moduleClass = classLoader
-      .loadClass("tangle.inject.tests.TangleViewModelScope_VMInject_Module").kotlin
+    val moduleClass =
+      classLoader
+        .loadClass("tangle.inject.tests.TangleViewModelScope_VMInject_Module").kotlin
 
     return provideTargetFunction.call(moduleClass.companionObjectInstance, *args)
   }

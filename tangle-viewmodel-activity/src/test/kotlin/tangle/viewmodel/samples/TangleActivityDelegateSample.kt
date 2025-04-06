@@ -22,14 +22,14 @@ import tangle.viewmodel.VMInject
 import tangle.viewmodel.activity.tangleViewModel
 
 class TangleActivityDelegateSample {
-
   @Sample
   fun byTangleViewModelSample() {
     class MyActivity : ComponentActivity() {
-
       val viewModel: MyViewModel by tangleViewModel()
     }
   }
 }
 
-class MyViewModel @VMInject constructor() : ViewModel()
+class MyViewModel
+  @VMInject
+  constructor() : ViewModel()

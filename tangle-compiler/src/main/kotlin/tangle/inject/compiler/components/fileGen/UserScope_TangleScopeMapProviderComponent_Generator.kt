@@ -52,7 +52,6 @@ internal object UserScope_TangleScopeMapProviderComponent_Generator :
     codeGenDir: File,
     params: MergeComponentParams
   ): GeneratedFileWithSources? {
-
     if (params.forSubcomponent) {
       // This module binds the subcomponent factory for the main component's scope.
       // It doesn't need to be re-bound for subcomponents.
@@ -88,29 +87,30 @@ internal object UserScope_TangleScopeMapProviderComponent_Generator :
 
     val className = ClassName(packageName, classNameString)
 
-    val content = FileSpec.buildFile(packageName, classNameString) {
-      TypeSpec.interfaceBuilder(className)
-        .addSuperinterface(ClassNames.tangleScopeMapProviderComponent)
-        .addAnnotation(
-          AnnotationSpec(ClassNames.contributesTo) {
-            addMember("%T::class", params.scopeClassName)
-            addMember(
-              "replaces·=·[%L]",
-              replaced.joinToString { CodeBlock.of("%T::class", it).toString() }
-            )
-          }
-        )
-        .addProperty(
-          PropertySpec.builder(
-            "scopeMapProvider",
-            params.memberInjectToScopeMapProviderSubcomponentClassName
+    val content =
+      FileSpec.buildFile(packageName, classNameString) {
+        TypeSpec.interfaceBuilder(className)
+          .addSuperinterface(ClassNames.tangleScopeMapProviderComponent)
+          .addAnnotation(
+            AnnotationSpec(ClassNames.contributesTo) {
+              addMember("%T::class", params.scopeClassName)
+              addMember(
+                "replaces·=·[%L]",
+                replaced.joinToString { CodeBlock.of("%T::class", it).toString() }
+              )
+            }
           )
-            .addModifiers(KModifier.OVERRIDE)
-            .build()
-        )
-        .build()
-        .let { addType(it) }
-    }
+          .addProperty(
+            PropertySpec.builder(
+              "scopeMapProvider",
+              params.memberInjectToScopeMapProviderSubcomponentClassName
+            )
+              .addModifiers(KModifier.OVERRIDE)
+              .build()
+          )
+          .build()
+          .let { addType(it) }
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir,

@@ -25,11 +25,9 @@ import tangle.work.TangleWorkerFactory
 import javax.inject.Inject
 
 class TangleWorkerFactorySample {
-
   @Sample
   fun tangleWorkerFactorySample() {
     class MyApplication : Application(), Configuration.Provider {
-
       @Inject lateinit var workerFactory: TangleWorkerFactory
 
       // now the WorkManager instances will use TangleWorkerFactory
@@ -42,8 +40,9 @@ class TangleWorkerFactorySample {
       override fun onCreate() {
         super.onCreate()
 
-        val myAppComponent = DaggerAppComponent.factory()
-          .create(this)
+        val myAppComponent =
+          DaggerAppComponent.factory()
+            .create(this)
 
         TangleGraph.add(myAppComponent)
 

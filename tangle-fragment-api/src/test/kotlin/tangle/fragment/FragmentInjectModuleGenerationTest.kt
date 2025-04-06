@@ -27,11 +27,11 @@ import tangle.inject.test.utils.tangleUnitFragmentInjectModuleClass
 import kotlin.reflect.full.functions
 
 class FragmentInjectModuleGenerationTest : BaseTest() {
-
   @TestFactory
-  fun `module scope should match contributed scope`() = test {
-    compile(
-      """
+  fun `module scope should match contributed scope`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -47,16 +47,17 @@ class FragmentInjectModuleGenerationTest : BaseTest() {
         }
       }
       """
-    ) {
-      tangleUnitFragmentInjectModuleClass
-        .getAnnotation(ContributesTo::class.java)!!.scope shouldBe Unit::class
+      ) {
+        tangleUnitFragmentInjectModuleClass
+          .getAnnotation(ContributesTo::class.java)!!.scope shouldBe Unit::class
+      }
     }
-  }
 
   @TestFactory
-  fun `FragmentInject annotation gets qualified map binding`() = test {
-    compile(
-      """
+  fun `FragmentInject annotation gets qualified map binding`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -72,18 +73,19 @@ class FragmentInjectModuleGenerationTest : BaseTest() {
         }
       }
       """
-    ) {
-      tangleUnitFragmentInjectModuleClass.annotationClasses() shouldContainExactly listOf(
-        Module::class,
-        ContributesTo::class,
-        Metadata::class
-      )
+      ) {
+        tangleUnitFragmentInjectModuleClass.annotationClasses() shouldContainExactly
+          listOf(
+            Module::class,
+            ContributesTo::class,
+            Metadata::class
+          )
 
-      tangleUnitFragmentInjectModuleClass
-        .kotlin
-        .functions
-        .first { it.name == "provide_MyFragment_Factory" }
-        .call(tangleUnitFragmentInjectModuleClass.kotlin.objectInstance)!!::class.java shouldBe myFragmentFactoryImplClass
+        tangleUnitFragmentInjectModuleClass
+          .kotlin
+          .functions
+          .first { it.name == "provide_MyFragment_Factory" }
+          .call(tangleUnitFragmentInjectModuleClass.kotlin.objectInstance)!!::class.java shouldBe myFragmentFactoryImplClass
+      }
     }
-  }
 }

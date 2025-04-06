@@ -30,27 +30,26 @@ import tangle.sample.ui.composeWithFragments.ComposeWithFragmentsMainActivity
 
 @RunWith(AndroidJUnit4::class)
 class ComposeFragmentsIntegrationTest {
-
   @get:Rule
   val testRule = createAndroidComposeRule(ComposeWithFragmentsMainActivity::class.java)
 
   @Test
-  fun selected_item_is_passed_to_next_screen() = runBlocking {
+  fun selected_item_is_passed_to_next_screen() =
+    runBlocking {
+      retry {
+        testRule.onNodeWithText(
+          text = "Goldendoodle",
+          useUnmergedTree = true
+        ).performClick()
+      }
 
-    retry {
-      testRule.onNodeWithText(
-        text = "Goldendoodle",
-        useUnmergedTree = true
-      ).performClick()
+      retry {
+        testRule.onNodeWithText(
+          text = "awesome temperament",
+          useUnmergedTree = true
+        )
+          .performScrollTo()
+          .assertIsDisplayed()
+      }
     }
-
-    retry {
-      testRule.onNodeWithText(
-        text = "awesome temperament",
-        useUnmergedTree = true
-      )
-        .performScrollTo()
-        .assertIsDisplayed()
-    }
-  }
 }

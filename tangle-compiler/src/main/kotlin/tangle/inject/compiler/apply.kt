@@ -15,10 +15,15 @@
 
 package tangle.inject.compiler
 
-inline fun <T : Any, E> T.applyEach(elements: Iterable<E>, block: T.(E) -> Unit): T {
+inline fun <T : Any, E> T.applyEach(
+  elements: Iterable<E>,
+  block: T.(E) -> Unit
+): T {
   elements.forEach { element -> this.block(element) }
   return this
 }
 
-inline fun <T> T.applyIf(predicate: Boolean, body: T.() -> T): T =
-  if (predicate) body() else this
+inline fun <T> T.applyIf(
+  predicate: Boolean,
+  body: T.() -> T
+): T = if (predicate) body() else this

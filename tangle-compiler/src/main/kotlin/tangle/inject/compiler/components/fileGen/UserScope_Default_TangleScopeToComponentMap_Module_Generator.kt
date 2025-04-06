@@ -47,7 +47,6 @@ internal object UserScope_Default_TangleScopeToComponentMap_Module_Generator :
     codeGenDir: File,
     params: MergeComponentParams
   ): GeneratedFileWithSources {
-
     val packageName = params.packageName
 
     val scopeName = params.scopeClassName.generateSimpleNameString()
@@ -55,19 +54,20 @@ internal object UserScope_Default_TangleScopeToComponentMap_Module_Generator :
     val classNameString = "${scopeName}_Default_TangleScopeToComponentMap_Module"
     val className = ClassName(packageName, classNameString)
 
-    val content = FileSpec.buildFile(packageName, classNameString) {
-      TypeSpec.interfaceBuilder(className)
-        .addAnnotation(ClassNames.module)
-        .addContributesTo(params.scopeClassName)
-        .addFunction("bindTangleScopeToComponentMap") {
-          addAnnotation(ClassNames.tangleScopeToComponentMap)
-          addAnnotation(ClassNames.multibinds)
-          addModifiers(KModifier.ABSTRACT)
-          returns(ClassNames.javaClassToClassMap)
-        }
-        .build()
-        .let { addType(it) }
-    }
+    val content =
+      FileSpec.buildFile(packageName, classNameString) {
+        TypeSpec.interfaceBuilder(className)
+          .addAnnotation(ClassNames.module)
+          .addContributesTo(params.scopeClassName)
+          .addFunction("bindTangleScopeToComponentMap") {
+            addAnnotation(ClassNames.tangleScopeToComponentMap)
+            addAnnotation(ClassNames.multibinds)
+            addModifiers(KModifier.ABSTRACT)
+            returns(ClassNames.javaClassToClassMap)
+          }
+          .build()
+          .let { addType(it) }
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir,

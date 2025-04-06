@@ -36,7 +36,6 @@ import tangle.inject.InternalTangleApi
  */
 @InternalTangleApi
 public interface TangleInjector<T> {
-
   /**
    * Injects all dependencies into [target].
    *

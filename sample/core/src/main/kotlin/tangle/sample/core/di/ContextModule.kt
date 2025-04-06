@@ -29,7 +29,6 @@ annotation class ApplicationContext
 @Module
 @ContributesTo(AppScope::class)
 interface ContextModule {
-
   @get:Binds
   @get:ApplicationContext
   val Application.bindContext: Context

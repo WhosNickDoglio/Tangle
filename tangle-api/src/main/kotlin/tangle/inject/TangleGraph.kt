@@ -32,7 +32,6 @@ import tangle.inject.internal.TangleScopeMapProviderComponent
  * @since 0.10.0
  */
 public object TangleGraph {
-
   @PublishedApi
   internal val components: MutableSet<Any> = mutableSetOf()
 
@@ -79,14 +78,15 @@ public object TangleGraph {
    */
   @InternalTangleApi
   @RestrictTo(LIBRARY_GROUP)
-  public inline fun <reified T> get(): T = components
-    .filterIsInstance<T>()
-    .singleOrNull()
-    ?: throw IllegalStateException(
-      "Requested component of type `${T::class.java.canonicalName}` is missing from " +
-        "the currently registered components.\n\nCurrently registered components:\n" +
-        "${components.joinToString("\n") { it::class.java.canonicalName }}\n\n---"
-    )
+  public inline fun <reified T> get(): T =
+    components
+      .filterIsInstance<T>()
+      .singleOrNull()
+      ?: throw IllegalStateException(
+        "Requested component of type `${T::class.java.canonicalName}` is missing from " +
+          "the currently registered components.\n\nCurrently registered components:\n" +
+          "${components.joinToString("\n") { it::class.java.canonicalName }}\n\n---"
+      )
 
   /**
    * Used to retrieve a Component of a given type.
@@ -97,13 +97,14 @@ public object TangleGraph {
    */
   @Suppress("UNCHECKED_CAST")
   @PublishedApi
-  internal fun <T : Any> get(tClass: Class<T>): T = components
-    .firstOrNull { tClass.isAssignableFrom(it::class.java) } as? T
-    ?: throw IllegalStateException(
-      "Requested component of type `${tClass.canonicalName}` is missing from " +
-        "the currently registered components.\n\nCurrently registered components:\n" +
-        "${components.joinToString("\n") { it::class.java.canonicalName }}\n\n---"
-    )
+  internal fun <T : Any> get(tClass: Class<T>): T =
+    components
+      .firstOrNull { tClass.isAssignableFrom(it::class.java) } as? T
+      ?: throw IllegalStateException(
+        "Requested component of type `${tClass.canonicalName}` is missing from " +
+          "the currently registered components.\n\nCurrently registered components:\n" +
+          "${components.joinToString("\n") { it::class.java.canonicalName }}\n\n---"
+      )
 
   /**
    * Performs member/field injection upon [target] using its bound scope.
@@ -116,16 +117,17 @@ public object TangleGraph {
    */
   @OptIn(InternalTangleApi::class)
   public inline fun <reified T : Any> inject(target: T) {
-
-    val provider = get<TangleScopeMapProviderComponent>()
-      .scopeMapProvider
+    val provider =
+      get<TangleScopeMapProviderComponent>()
+        .scopeMapProvider
 
     val scopeClass = scopeClassForInjectedClass(target, provider)
 
     val componentClass = componentClassForScope(scopeClass, provider)
 
-    val injectorProvider = (get(componentClass) as TangleInjectorComponent)
-      .injectors[target::class.java]
+    val injectorProvider =
+      (get(componentClass) as TangleInjectorComponent)
+        .injectors[target::class.java]
 
     requireNotNull(injectorProvider) {
       "unable to find a TangleInjector bound for ${target::class.java.canonicalName} " +
@@ -144,9 +146,9 @@ public object TangleGraph {
     target: T,
     provider: TangleScopeMapProvider
   ): Class<*> {
-
-    val scopeClass = provider
-      .injectedClassToScopeClass[target::class.java]
+    val scopeClass =
+      provider
+        .injectedClassToScopeClass[target::class.java]
 
     requireNotNull(scopeClass) {
       "No scope is defined for ${target::class.qualifiedName}. " +
@@ -162,9 +164,9 @@ public object TangleGraph {
     scopeClass: Class<*>,
     provider: TangleScopeMapProvider
   ): Class<*> {
-
-    val componentClass = provider
-      .scopeClassToComponentClass[scopeClass]
+    val componentClass =
+      provider
+        .scopeClassToComponentClass[scopeClass]
 
     requireNotNull(componentClass) {
       """

@@ -32,36 +32,41 @@ import tangle.viewmodel.fragment.tangleViewModel
 import javax.inject.Inject
 
 @ContributesFragment(AppScope::class)
-class BreedListFragment @Inject constructor(
-  private val coroutineScope: MainImmediateCoroutineScope
-) : Fragment(R.layout.fragment_breed_list) {
+class BreedListFragment
+  @Inject
+  constructor(
+    private val coroutineScope: MainImmediateCoroutineScope
+  ) : Fragment(R.layout.fragment_breed_list) {
+    val binding by viewBinding(FragmentBreedListBinding::bind)
 
-  val binding by viewBinding(FragmentBreedListBinding::bind)
+    val viewModel by tangleViewModel<BreedListViewModel>()
 
-  val viewModel by tangleViewModel<BreedListViewModel>()
+    val pagingAdapter =
+      BreedListAdapter {
 
-  val pagingAdapter = BreedListAdapter {
+        findNavController().navigate(
+          R.id.action_BreedListFragment_to_BreedDetailFragment,
+          bundleOf("breedId" to it.id)
+        )
+      }
 
-    findNavController().navigate(
-      R.id.action_BreedListFragment_to_BreedDetailFragment,
-      bundleOf("breedId" to it.id)
-    )
-  }
+    init {
+      coroutineScope.withViewLifecycle(this) {
 
-  init {
-    coroutineScope.withViewLifecycle(this) {
+        viewModel.pagingDataFlow
+          .onEach { pagingData ->
+            pagingAdapter.submitData(pagingData)
+          }.launchOnStart()
+      }
+    }
 
-      viewModel.pagingDataFlow
-        .onEach { pagingData ->
-          pagingAdapter.submitData(pagingData)
-        }.launchOnStart()
+    override fun onViewCreated(
+      view: View,
+      savedInstanceState: Bundle?
+    ) {
+      super.onViewCreated(view, savedInstanceState)
+
+      val recyclerView = binding.breedList
+      recyclerView.adapter = pagingAdapter
     }
   }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-
-    val recyclerView = binding.breedList
-    recyclerView.adapter = pagingAdapter
-  }
-}

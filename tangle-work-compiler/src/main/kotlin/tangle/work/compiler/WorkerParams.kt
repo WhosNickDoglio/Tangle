@@ -39,11 +39,11 @@ data class WorkerParams(
   val sources: Set<File>
 ) {
   companion object {
-
-    val expectedAssistedArgTypes = listOf(
-      FqNames.context.asString(),
-      FqNames.workerParameters.asString()
-    )
+    val expectedAssistedArgTypes =
+      listOf(
+        FqNames.context.asString(),
+        FqNames.workerParameters.asString()
+      )
 
     fun create(
       module: ModuleDescriptor,
@@ -57,14 +57,16 @@ data class WorkerParams(
       val assistedFactoryClassNameString = "${workerClassNameString}_AssistedFactory"
       val assistedFactoryClassName = ClassName(packageName, assistedFactoryClassNameString)
 
-      val constructorParams = constructor.parameters
-        .mapToParameters(module)
+      val constructorParams =
+        constructor.parameters
+          .mapToParameters(module)
 
       val assistedArgs = constructorParams.filter { it.isDaggerAssisted }
 
-      val argTypes = assistedArgs
-        .map { it.typeName.toString() }
-        .sorted()
+      val argTypes =
+        assistedArgs
+          .map { it.typeName.toString() }
+          .sorted()
 
       require(
         argTypes == expectedAssistedArgTypes,
@@ -72,10 +74,11 @@ data class WorkerParams(
       ) {
         val actual = assistedArgs.map { "${it.name}: ${it.typeName}" }
 
-        val expected = listOf(
-          "context: ${FqNames.context.asString()}",
-          "params: ${FqNames.workerParameters.asString()}"
-        )
+        val expected =
+          listOf(
+            "context: ${FqNames.context.asString()}",
+            "params: ${FqNames.workerParameters.asString()}"
+          )
 
         """@TangleWorker-annotated classes may only have Context and WorkerParameters as @Assisted-annotated parameters.
         |

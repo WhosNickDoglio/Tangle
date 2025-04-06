@@ -20,12 +20,10 @@ import javax.inject.Provider
 
 @InternalTangleApi
 public interface TangleScopeMapProviderComponent {
-
   public val scopeMapProvider: TangleScopeMapProvider
 }
 
 @InternalTangleApi
 public interface TangleInjectorComponent {
-
   public val injectors: Map<Class<*>, @JvmSuppressWildcards Provider<TangleInjector<*>>>
 }

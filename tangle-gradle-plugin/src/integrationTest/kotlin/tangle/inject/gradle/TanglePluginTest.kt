@@ -20,173 +20,174 @@ import org.junit.jupiter.api.TestFactory
 import java.io.File
 
 class TanglePluginTest : BasePluginTest() {
-
   @TestFactory
-  fun `default application should apply Anvil`() = test {
-
-    module(
-      """
-      plugins {
-        id("com.android.library")
-        kotlin("android")
-        id("com.rickbusarow.tangle")
-      }
-
-      android {
-        compileSdk = 30
-        namespace = "foo"
-
-        defaultConfig {
-          minSdk = 23
-          targetSdk = 30
-        }
-      }
-
-      ${listDepsTasks()}
-      """.trimIndent()
-    )
-
-    File(testProjectDir, "module/src/main/java/tangle/inject/tests/Component.kt")
-      .also { it.parentFile.mkdirs() }
-      .writeText(
+  fun `default application should apply Anvil`() =
+    test {
+      module(
         """
-        package tangle.inject.tests
+        plugins {
+          id("com.android.library")
+          kotlin("android")
+          id("com.rickbusarow.tangle")
+        }
 
-        import com.squareup.anvil.annotations.ContributesTo
+        android {
+          compileSdk = 30
+          namespace = "foo"
 
-        @ContributesTo(Unit::class)
-        interface Component
+          defaultConfig {
+            minSdk = 23
+            targetSdk = 30
+          }
+        }
+
+        ${listDepsTasks()}
         """.trimIndent()
       )
 
-    tasks("assembleDebug")
-      .build()
-      .task(":module:assembleDebug")!!
-      .outcome shouldBe SUCCESS
-  }
+      File(testProjectDir, "module/src/main/java/tangle/inject/tests/Component.kt")
+        .also { it.parentFile.mkdirs() }
+        .writeText(
+          """
+          package tangle.inject.tests
+
+          import com.squareup.anvil.annotations.ContributesTo
+
+          @ContributesTo(Unit::class)
+          interface Component
+          """.trimIndent()
+        )
+
+      tasks("assembleDebug")
+        .build()
+        .task(":module:assembleDebug")!!
+        .outcome shouldBe SUCCESS
+    }
 
   @TestFactory
-  fun `default application should add Tangle dependencies`() = test {
-
-    module(
-      """
-      plugins {
-        id("com.android.library")
-        kotlin("android")
-        id("com.rickbusarow.tangle")
-      }
-
-      android {
-        compileSdk = 30
-        namespace = "foo"
-
-        defaultConfig {
-          minSdk = 23
-          targetSdk = 30
+  fun `default application should add Tangle dependencies`() =
+    test {
+      module(
+        """
+        plugins {
+          id("com.android.library")
+          kotlin("android")
+          id("com.rickbusarow.tangle")
         }
-      }
 
-      dependencies {
-        $activities
-        $fragments
-        $viewModels
-        $compose
-        $workManager
-      }
+        android {
+          compileSdk = 30
+          namespace = "foo"
 
-      ${listDepsTasks()}
-      """.trimIndent()
-    )
+          defaultConfig {
+            minSdk = 23
+            targetSdk = 30
+          }
+        }
 
-    build("deps").tangleDeps() shouldBe listOf(
-      "anvil com.rickbusarow.tangle:tangle-compiler",
-      "anvil com.rickbusarow.tangle:tangle-fragment-compiler",
-      "anvil com.rickbusarow.tangle:tangle-viewmodel-compiler",
-      "anvil com.rickbusarow.tangle:tangle-work-compiler",
-      "implementation com.rickbusarow.tangle:tangle-api",
-      "implementation com.rickbusarow.tangle:tangle-fragment-api",
-      "implementation com.rickbusarow.tangle:tangle-viewmodel-activity",
-      "implementation com.rickbusarow.tangle:tangle-viewmodel-api",
-      "implementation com.rickbusarow.tangle:tangle-viewmodel-compose",
-      "implementation com.rickbusarow.tangle:tangle-viewmodel-fragment",
-      "implementation com.rickbusarow.tangle:tangle-work-api"
-    )
-  }
+        dependencies {
+          $activities
+          $fragments
+          $viewModels
+          $compose
+          $workManager
+        }
+
+        ${listDepsTasks()}
+        """.trimIndent()
+      )
+
+      build("deps").tangleDeps() shouldBe
+        listOf(
+          "anvil com.rickbusarow.tangle:tangle-compiler",
+          "anvil com.rickbusarow.tangle:tangle-fragment-compiler",
+          "anvil com.rickbusarow.tangle:tangle-viewmodel-compiler",
+          "anvil com.rickbusarow.tangle:tangle-work-compiler",
+          "implementation com.rickbusarow.tangle:tangle-api",
+          "implementation com.rickbusarow.tangle:tangle-fragment-api",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-activity",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-api",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-compose",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-fragment",
+          "implementation com.rickbusarow.tangle:tangle-work-api"
+        )
+    }
 
   @TestFactory
   fun `only base compiler and api should be enabled without corresponding androidx dependencies`() =
     test {
-
       module(
         """
-      plugins {
-        id("com.android.library")
-        kotlin("android")
-        id("com.rickbusarow.tangle")
-      }
-
-      android {
-        compileSdk = 30
-        namespace = "foo"
-
-        defaultConfig {
-          minSdk = 23
-          targetSdk = 30
+        plugins {
+          id("com.android.library")
+          kotlin("android")
+          id("com.rickbusarow.tangle")
         }
-      }
 
-      dependencies {
-      }
+        android {
+          compileSdk = 30
+          namespace = "foo"
 
-      ${listDepsTasks()}
+          defaultConfig {
+            minSdk = 23
+            targetSdk = 30
+          }
+        }
+
+        dependencies {
+        }
+
+        ${listDepsTasks()}
         """.trimIndent()
       )
 
-      build("deps").tangleDeps() shouldBe listOf(
-        "anvil com.rickbusarow.tangle:tangle-compiler",
-        "implementation com.rickbusarow.tangle:tangle-api"
-      )
+      build("deps").tangleDeps() shouldBe
+        listOf(
+          "anvil com.rickbusarow.tangle:tangle-compiler",
+          "implementation com.rickbusarow.tangle:tangle-api"
+        )
     }
 
   @TestFactory
-  fun `build will fail if applied to a module without AGP`() = test {
-
-    module(
-      """
-      plugins {
-        kotlin("jvm")
-        id("com.rickbusarow.tangle")
-      }
-
-      tangle {
-        viewModelOptions {
-          composeEnabled = true // default is null
+  fun `build will fail if applied to a module without AGP`() =
+    test {
+      module(
+        """
+        plugins {
+          kotlin("jvm")
+          id("com.rickbusarow.tangle")
         }
-      }
 
-      ${listDepsTasks()}
-      """.trimIndent()
-    )
-
-    tasks("test").shouldFailWithMessage(
-      "A problem occurred configuring project ':module'.\n" +
-        "> Tangle is applied to project ':module', but no Android plugin has been applied.  " +
-        "Tangle serves no purpose unless the project is Android and the Kotlin plugin is applied."
-    )
-  }
-
-  fun listDepsTasks() = """
-  tasks.register("deps") {
-    doLast {
-      listOf("anvil", "api", "implementation")
-        .forEach { config ->
-          project.configurations
-            .named(config)
-            .get()
-            .dependencies
-            .forEach { println("${'$'}config ${'$'}{it.group}:${'$'}{it.name}") }
+        tangle {
+          viewModelOptions {
+            composeEnabled = true // default is null
+          }
         }
+
+        ${listDepsTasks()}
+        """.trimIndent()
+      )
+
+      tasks("test").shouldFailWithMessage(
+        "A problem occurred configuring project ':module'.\n" +
+          "> Tangle is applied to project ':module', but no Android plugin has been applied.  " +
+          "Tangle serves no purpose unless the project is Android and the Kotlin plugin is applied."
+      )
     }
-  }
-  """.trimIndent()
+
+  fun listDepsTasks() =
+    """
+    tasks.register("deps") {
+      doLast {
+        listOf("anvil", "api", "implementation")
+          .forEach { config ->
+            project.configurations
+              .named(config)
+              .get()
+              .dependencies
+              .forEach { println("${'$'}config ${'$'}{it.group}:${'$'}{it.name}") }
+          }
+      }
+    }
+    """.trimIndent()
 }

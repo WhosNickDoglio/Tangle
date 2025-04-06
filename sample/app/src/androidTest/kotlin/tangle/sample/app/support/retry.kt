@@ -35,16 +35,18 @@ suspend inline fun retry(
         predicate()
         return@withTimeoutOrNull
       } catch (e: NoMatchingViewException) {
-        exception = Builder()
-          .from(e)
-          .withCause(AssertionError(clue))
-          .build()
+        exception =
+          Builder()
+            .from(e)
+            .withCause(AssertionError(clue))
+            .build()
         delay(RETRY_POLLING_INTERVAL)
       } catch (e: PerformException) {
-        exception = PerformException.Builder()
-          .from(e)
-          .withCause(AssertionError(clue))
-          .build()
+        exception =
+          PerformException.Builder()
+            .from(e)
+            .withCause(AssertionError(clue))
+            .build()
         delay(RETRY_POLLING_INTERVAL)
       } catch (e: AssertionFailedError) {
         exception = AssertionFailedError(clue + e.message)

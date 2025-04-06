@@ -53,12 +53,10 @@ import java.io.File
  * ```
  */
 internal object TangleAppScope_UserScope_to_Component_Module_Generator : FileGenerator<MergeComponentParams> {
-
   override fun generate(
     codeGenDir: File,
     params: MergeComponentParams
   ): GeneratedFileWithSources {
-
     val packageName = CONSTANT_PACKAGE_NAME
 
     val baseName = params.scopeToComponentModuleClassName.simpleName
@@ -88,34 +86,37 @@ internal object TangleAppScope_UserScope_to_Component_Module_Generator : FileGen
 
     val className = ClassName(packageName, classNameString)
 
-    val content = FileSpec.buildFile(packageName, classNameString) {
-      addType(
-        TypeSpec.objectBuilder(className)
-          .addAnnotation(ClassNames.module)
-          .addAnnotation(
-            AnnotationSpec(ClassNames.contributesTo) {
-              addMember("%T::class", ClassNames.tangleAppScope)
-              addMember(
-                "replaces·=·[%L]",
-                replaced.joinToString { CodeBlock.of("%T::class", it).toString() }
-              )
+    val content =
+      FileSpec.buildFile(packageName, classNameString) {
+        addType(
+          TypeSpec.objectBuilder(className)
+            .addAnnotation(ClassNames.module)
+            .addAnnotation(
+              AnnotationSpec(ClassNames.contributesTo) {
+                addMember("%T::class", ClassNames.tangleAppScope)
+                addMember(
+                  "replaces·=·[%L]",
+                  replaced.joinToString { CodeBlock.of("%T::class", it).toString() }
+                )
+              }
+            )
+            .addFunction(
+              "provide${params.scopeClassName.generateSimpleNameString()}ComponentClassIntoMap"
+            ) {
+              addAnnotation(ClassNames.provides)
+              addAnnotation(ClassNames.tangleScopeToComponentMap)
+              addAnnotation(ClassNames.intoMap)
+                .addAnnotation(
+                  AnnotationSpec(ClassNames.classKey) {
+                    addMember("%T::class", params.scopeClassName)
+                  }
+                )
+              returns(ClassNames.javaClassWildcard)
+              addStatement("return·%T::class.java", params.originalComponentClassName)
             }
-          )
-          .addFunction("provide${params.scopeClassName.generateSimpleNameString()}ComponentClassIntoMap") {
-            addAnnotation(ClassNames.provides)
-            addAnnotation(ClassNames.tangleScopeToComponentMap)
-            addAnnotation(ClassNames.intoMap)
-              .addAnnotation(
-                AnnotationSpec(ClassNames.classKey) {
-                  addMember("%T::class", params.scopeClassName)
-                }
-              )
-            returns(ClassNames.javaClassWildcard)
-            addStatement("return·%T::class.java", params.originalComponentClassName)
-          }
-          .build()
-      )
-    }
+            .build()
+        )
+      }
 
     return TangleAppScope_TangleInjector_Scope_ModuleGenerator.createGeneratedFileWithSources(
       codeGenDir = codeGenDir,

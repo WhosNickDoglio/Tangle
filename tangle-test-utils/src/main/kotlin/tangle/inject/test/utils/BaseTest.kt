@@ -33,7 +33,6 @@ import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
 abstract class BaseTest {
-
   private var testInfo: TestInfo by Delegates.notNull()
 
   // This is automatically injected by JUnit5
@@ -42,13 +41,14 @@ abstract class BaseTest {
     this.testInfo = testInfo
   }
 
-  inline fun test(crossinline action: TestScope.() -> Unit) = listOf(true, false)
-    .map { useAnvilFactoryGen ->
-      val name = if (useAnvilFactoryGen) "anvil" else "dagger"
-      DynamicTest.dynamicTest(name) {
-        action.invoke(TestScope(useAnvilFactoryGen))
+  inline fun test(crossinline action: TestScope.() -> Unit) =
+    listOf(true, false)
+      .map { useAnvilFactoryGen ->
+        val name = if (useAnvilFactoryGen) "anvil" else "dagger"
+        DynamicTest.dynamicTest(name) {
+          action.invoke(TestScope(useAnvilFactoryGen))
+        }
       }
-    }
 
   @Suppress("NewApi")
   protected fun compileWithDagger(
@@ -61,10 +61,11 @@ abstract class BaseTest {
 
     val className = testInfo.testClass.get().simpleName
 
-    val testName = testInfo.displayName
-      .clean()
-      .replace("_{2,}".toRegex(), "_")
-      .removeSuffix("_")
+    val testName =
+      testInfo.displayName
+        .clean()
+        .replace("_{2,}".toRegex(), "_")
+        .removeSuffix("_")
 
     val workingDir = File("build/test-builds/$className/$testName")
 
@@ -91,10 +92,11 @@ abstract class BaseTest {
 
     val className = testInfo.testClass.get().simpleName
 
-    val testName = testInfo.displayName
-      .clean()
-      .replace("_{2,}".toRegex(), "_")
-      .removeSuffix("_")
+    val testName =
+      testInfo.displayName
+        .clean()
+        .replace("_{2,}".toRegex(), "_")
+        .removeSuffix("_")
 
     val compilerType = if (useAnvilFactories) "anvil" else "dagger"
 
@@ -112,17 +114,19 @@ abstract class BaseTest {
     )
   }
 
-  fun JvmCompilationResult.checkExitCode(shouldFail: Boolean) = apply {
-    val expectedCode = if (shouldFail) {
-      COMPILATION_ERROR
-    } else {
-      OK
-    }
+  fun JvmCompilationResult.checkExitCode(shouldFail: Boolean) =
+    apply {
+      val expectedCode =
+        if (shouldFail) {
+          COMPILATION_ERROR
+        } else {
+          OK
+        }
 
-    messages.asClue {
-      exitCode shouldBe expectedCode
+      messages.asClue {
+        exitCode shouldBe expectedCode
+      }
     }
-  }
 
   infix fun String.shouldContainIgnoringWhitespaces(expected: String) {
     val actual = this.replace("\\s{2,}".toRegex(), " ").trim()
@@ -133,16 +137,17 @@ abstract class BaseTest {
   data class TestScope(val useAnvilFactories: Boolean)
 
   fun clearTangleGraph() {
-
-    val graphClass = javaClass.classLoader
-      .loadClass("tangle.inject.TangleGraph")
-      .kotlin
+    val graphClass =
+      javaClass.classLoader
+        .loadClass("tangle.inject.TangleGraph")
+        .kotlin
 
     val graphInstance = graphClass.objectInstance ?: return
 
-    val components = graphClass.memberProperties
-      .find { it.name == "components" }
-      ?: return
+    val components =
+      graphClass.memberProperties
+        .find { it.name == "components" }
+        ?: return
 
     components.isAccessible = true
 

@@ -24,7 +24,6 @@ import javax.inject.Qualifier
  */
 @InternalTangleApi
 public interface TangleScopeMapProvider {
-
   /**
    * Given:
    * ```

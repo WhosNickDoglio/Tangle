@@ -27,11 +27,11 @@ import tangle.inject.InternalTangleApi
  * @since 0.12.0
  */
 public interface TangleWorkerFactoryMapSubcomponent {
-
   /** @suppress */
   @OptIn(InternalTangleApi::class)
   @get:TangleAssistedWorkerFactoryMap
-  public val workerFactoryMap: Map<String, @JvmSuppressWildcards AssistedWorkerFactory<out ListenableWorker>>
+  public val workerFactoryMap:
+    Map<String, @JvmSuppressWildcards AssistedWorkerFactory<out ListenableWorker>>
 
   /** Internal use only. */
   public interface Factory {

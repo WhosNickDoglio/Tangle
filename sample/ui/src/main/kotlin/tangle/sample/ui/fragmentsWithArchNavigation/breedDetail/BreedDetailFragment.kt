@@ -37,58 +37,60 @@ import java.util.Locale
 import javax.inject.Inject
 
 @ContributesFragment(AppScope::class)
-class BreedDetailFragment @Inject constructor(
-  private val coroutineScope: MainImmediateCoroutineScope
-) : Fragment(R.layout.fragment_breed_detail) {
+class BreedDetailFragment
+  @Inject
+  constructor(
+    private val coroutineScope: MainImmediateCoroutineScope
+  ) : Fragment(R.layout.fragment_breed_detail) {
+    val binding by viewBinding(FragmentBreedDetailBinding::bind)
 
-  val binding by viewBinding(FragmentBreedDetailBinding::bind)
+    val viewModel: BreedDetailViewModel by tangleViewModel()
 
-  val viewModel: BreedDetailViewModel by tangleViewModel()
-
-  init {
-    coroutineScope.withViewLifecycle(this) {
-      viewModel.itemDeferred
-        .filterNotNull()
-        .onEachLatest { binding.updateView(it) }
-        .launchOnStart()
-    }
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-
-    fun TextView.readOnClick() {
-      setOnClickListener { text?.toString()?.let { viewModel.onTextSelected(it) } }
+    init {
+      coroutineScope.withViewLifecycle(this) {
+        viewModel.itemDeferred
+          .filterNotNull()
+          .onEachLatest { binding.updateView(it) }
+          .launchOnStart()
+      }
     }
 
-    binding.name.readOnClick()
-    binding.group.readOnClick()
-    binding.bredFor.readOnClick()
-    binding.lifeSpan.readOnClick()
-    binding.temperament.readOnClick()
-    binding.height.readOnClick()
-    binding.weight.readOnClick()
-  }
+    override fun onViewCreated(
+      view: View,
+      savedInstanceState: Bundle?
+    ) {
+      super.onViewCreated(view, savedInstanceState)
 
-  @SuppressLint("SetTextI18n")
-  fun FragmentBreedDetailBinding.updateView(detail: BreedDetail) {
+      fun TextView.readOnClick() {
+        setOnClickListener { text?.toString()?.let { viewModel.onTextSelected(it) } }
+      }
 
-    name.text = detail.name
-
-    group.text = detail.breedGroup
-    bredFor.text = detail.bredFor
-    lifeSpan.text = detail.lifeSpan
-    temperament.text = detail.temperament
-
-    if (Locale.getDefault().isMetric()) {
-
-      height.text = "${detail.heightMetric} cm"
-      weight.text = "${detail.weightMetric} kg"
-    } else {
-      height.text = "${detail.heightImperial} inches"
-      weight.text = "${detail.weightImperial} pounds"
+      binding.name.readOnClick()
+      binding.group.readOnClick()
+      binding.bredFor.readOnClick()
+      binding.lifeSpan.readOnClick()
+      binding.temperament.readOnClick()
+      binding.height.readOnClick()
+      binding.weight.readOnClick()
     }
 
-    image.load(detail.imageUrl)
+    @SuppressLint("SetTextI18n")
+    fun FragmentBreedDetailBinding.updateView(detail: BreedDetail) {
+      name.text = detail.name
+
+      group.text = detail.breedGroup
+      bredFor.text = detail.bredFor
+      lifeSpan.text = detail.lifeSpan
+      temperament.text = detail.temperament
+
+      if (Locale.getDefault().isMetric()) {
+        height.text = "${detail.heightMetric} cm"
+        weight.text = "${detail.weightMetric} kg"
+      } else {
+        height.text = "${detail.heightImperial} inches"
+        weight.text = "${detail.weightImperial} pounds"
+      }
+
+      image.load(detail.imageUrl)
+    }
   }
-}

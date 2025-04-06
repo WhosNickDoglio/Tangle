@@ -52,7 +52,6 @@ data class MergeComponentParams(
       clazz: KtClassOrObject,
       forSubcomponent: Boolean
     ): MergeComponentParams {
-
       val packageName = clazz.containingKtFile.packageFqName.safePackageString()
 
       val scopeClassName = scopeFqName.asClassName(module)
@@ -64,19 +63,24 @@ data class MergeComponentParams(
       val providerComponentClassName =
         ClassName(packageName, "${localScope}_TangleScopeMapProviderComponent")
 
-      val scopeQualifier = AnnotationSpec(ClassNames.named) {
-        addMember("%S", "${clazz.requireFqName().asString()}--${scopeClassName.canonicalName}")
-      }
+      val scopeQualifier =
+        AnnotationSpec(ClassNames.named) {
+          addMember("%S", "${clazz.requireFqName().asString()}--${scopeClassName.canonicalName}")
+        }
 
       val tangleAppScope = ClassNames.tangleAppScope.generateSimpleNameString()
 
-      val memberInjectToScopeMapProviderClassName = ClassName(
-        packageName, "${tangleAppScope}_TangleScopeMapProvider_Subcomponent"
-      )
+      val memberInjectToScopeMapProviderClassName =
+        ClassName(
+          packageName,
+          "${tangleAppScope}_TangleScopeMapProvider_Subcomponent"
+        )
 
-      val mergeComponentTangleInjectorModuleClassName = ClassName(
-        packageName, "${localScope}_Tangle_TangleInjector_Module"
-      )
+      val mergeComponentTangleInjectorModuleClassName =
+        ClassName(
+          packageName,
+          "${localScope}_Tangle_TangleInjector_Module"
+        )
 
       val originalComponentName = clazz.requireFqName()
       val originalComponentClassName = originalComponentName.asClassName(module)

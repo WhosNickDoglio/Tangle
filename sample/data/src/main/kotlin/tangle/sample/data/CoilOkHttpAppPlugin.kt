@@ -32,19 +32,19 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 @ContributesMultibinding(AppScope::class)
-class CoilOkHttpAppPlugin @Inject constructor(
-  private val imageLoaderProvider: Provider<ImageLoader>
-) : AppPlugin {
-
-  override fun apply(application: Application) {
-    Coil.setImageLoader { imageLoaderProvider.get() }
+class CoilOkHttpAppPlugin
+  @Inject
+  constructor(
+    private val imageLoaderProvider: Provider<ImageLoader>
+  ) : AppPlugin {
+    override fun apply(application: Application) {
+      Coil.setImageLoader { imageLoaderProvider.get() }
+    }
   }
-}
 
 @Module
 @ContributesTo(AppScope::class)
 object CoilImageLoaderModule {
-
   private const val MEM_CACHE_MAX_SIZE = 0.25
   private const val DISK_CACHE_MAX_SIZE = 0.02
 
@@ -53,7 +53,6 @@ object CoilImageLoaderModule {
     @ApplicationContext
     context: Context
   ): ImageLoader {
-
     return ImageLoader.Builder(context)
       .memoryCache {
         MemoryCache.Builder(context)

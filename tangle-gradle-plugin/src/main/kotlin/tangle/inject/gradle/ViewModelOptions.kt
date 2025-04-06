@@ -18,54 +18,55 @@ package tangle.inject.gradle
 import org.gradle.api.model.ObjectFactory
 import javax.inject.Inject
 
-public open class ViewModelOptions @Inject constructor(
-  objectFactory: ObjectFactory
-) {
+public open class ViewModelOptions
+  @Inject
+  constructor(
+    objectFactory: ObjectFactory
+  ) {
+    /**
+     * ViewModel code generation and API's enabled
+     *
+     * If this property is set, then Tangle will use that setting regardless of what Androidx
+     * dependencies are in the classpath.
+     *
+     * If this property is not set, Tangle will automatically enable its ViewModel dependencies if the
+     * module declares any `androidx.lifecycle:lifecycle-viewmodel*` group dependencies.
+     */
+    public var enabled: Boolean? by objectFactory.property()
 
-  /**
-   * ViewModel code generation and API's enabled
-   *
-   * If this property is set, then Tangle will use that setting regardless of what Androidx
-   * dependencies are in the classpath.
-   *
-   * If this property is not set, Tangle will automatically enable its ViewModel dependencies if the
-   * module declares any `androidx.lifecycle:lifecycle-viewmodel*` group dependencies.
-   */
-  public var enabled: Boolean? by objectFactory.property()
+    /**
+     * Activity ViewModel API's enabled
+     *
+     * If this property is set, then Tangle will use that setting regardless of what Androidx
+     * dependencies are in the classpath.
+     *
+     * If this property is not set, Tangle will automatically enable its ViewModel-Activity
+     * dependencies if ViewModel code generation is enabled via [enabled] and the module declares any
+     * `androidx.activity` group dependencies.
+     */
+    public var activitiesEnabled: Boolean? by objectFactory.property()
 
-  /**
-   * Activity ViewModel API's enabled
-   *
-   * If this property is set, then Tangle will use that setting regardless of what Androidx
-   * dependencies are in the classpath.
-   *
-   * If this property is not set, Tangle will automatically enable its ViewModel-Activity
-   * dependencies if ViewModel code generation is enabled via [enabled] and the module declares any
-   * `androidx.activity` group dependencies.
-   */
-  public var activitiesEnabled: Boolean? by objectFactory.property()
+    /**
+     * Compose ViewModel API's enabled
+     *
+     * If this property is set, then Tangle will use that setting regardless of what Androidx
+     * dependencies are in the classpath.
+     *
+     * If this property is not set, Tangle will automatically enable its ViewModel-Compose
+     * dependencies if ViewModel code generation is enabled via [enabled] and the module declares any
+     * `androidx.compose.ui` group dependencies.
+     */
+    public var composeEnabled: Boolean? by objectFactory.property()
 
-  /**
-   * Compose ViewModel API's enabled
-   *
-   * If this property is set, then Tangle will use that setting regardless of what Androidx
-   * dependencies are in the classpath.
-   *
-   * If this property is not set, Tangle will automatically enable its ViewModel-Compose
-   * dependencies if ViewModel code generation is enabled via [enabled] and the module declares any
-   * `androidx.compose.ui` group dependencies.
-   */
-  public var composeEnabled: Boolean? by objectFactory.property()
-
-  /**
-   * Fragment ViewModel API's enabled
-   *
-   * If this property is set, then Tangle will use that setting regardless of what Androidx
-   * dependencies are in the classpath.
-   *
-   * If this property is not set, Tangle will automatically enable its ViewModel-Fragment
-   * dependencies if ViewModel code generation is enabled via [enabled] and the module declares any
-   * `androidx.fragment` group dependencies.
-   */
-  public var fragmentsEnabled: Boolean? by objectFactory.property()
-}
+    /**
+     * Fragment ViewModel API's enabled
+     *
+     * If this property is set, then Tangle will use that setting regardless of what Androidx
+     * dependencies are in the classpath.
+     *
+     * If this property is not set, Tangle will automatically enable its ViewModel-Fragment
+     * dependencies if ViewModel code generation is enabled via [enabled] and the module declares any
+     * `androidx.fragment` group dependencies.
+     */
+    public var fragmentsEnabled: Boolean? by objectFactory.property()
+  }

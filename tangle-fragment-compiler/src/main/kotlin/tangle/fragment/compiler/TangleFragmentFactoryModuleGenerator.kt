@@ -45,18 +45,18 @@ import java.io.File
 @Suppress("unused")
 @AutoService(CodeGenerator::class)
 class TangleFragmentFactoryModuleGenerator : TangleCodeGenerator() {
-
   override fun generateTangleCode(
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
-  ): Collection<GeneratedFileWithSources> = projectFiles
-    .classAndInnerClassReferences(module)
-    .filter { it.isAnnotatedWith(FqNames.mergeComponent) }
-    // fast path for excluding duplicate binding modules if they're in the same source
-    .distinctBy { it.annotations.find(FqNames.mergeComponent)!!.scope() }
-    .mapNotNull { generateComponent(codeGenDir, module, it) }
-    .toList()
+  ): Collection<GeneratedFileWithSources> =
+    projectFiles
+      .classAndInnerClassReferences(module)
+      .filter { it.isAnnotatedWith(FqNames.mergeComponent) }
+      // fast path for excluding duplicate binding modules if they're in the same source
+      .distinctBy { it.annotations.find(FqNames.mergeComponent)!!.scope() }
+      .mapNotNull { generateComponent(codeGenDir, module, it) }
+      .toList()
 
   private fun generateComponent(
     codeGenDir: File,
@@ -83,52 +83,54 @@ class TangleFragmentFactoryModuleGenerator : TangleCodeGenerator() {
     // If the (Dagger) Module for this scope already exists in a different Gradle module,
     // it can't be created again here without creating a duplicate binding
     // for the TangleFragmentFactory.
-    val alreadyCreated = listOf(module)
-      .plus(module.allDependencyModules)
-      .any { depMod ->
-        depMod.resolveClassByFqName(moduleFqName, FROM_BACKEND) != null
-      }
+    val alreadyCreated =
+      listOf(module)
+        .plus(module.allDependencyModules)
+        .any { depMod ->
+          depMod.resolveClassByFqName(moduleFqName, FROM_BACKEND) != null
+        }
 
     if (alreadyCreated) {
       return null
     }
 
-    val content = FileSpec.buildFile(packageName, moduleClassNameString) {
-      TypeSpec.interfaceBuilder(moduleClassName)
-        .addAnnotation(ClassNames.module)
-        .addContributesTo(scopeFqName.asClassName())
-        .addFunction("bindProviderMap") {
-          addAnnotation(ClassNames.multibinds)
-          addModifiers(ABSTRACT)
-          returns(ClassNames.fragmentMap)
-        }
-        .addFunction("bindTangleProviderMap") {
-          addAnnotation(ClassNames.multibinds)
-          addAnnotation(ClassNames.tangleFragmentProviderMap)
-          addModifiers(ABSTRACT)
-          returns(ClassNames.fragmentMap)
-        }
-        .addType(
-          TypeSpec.companionObjectBuilder()
-            .addFunction("provide_${ClassNames.tangleFragmentFactory.simpleName}") {
-              addAnnotation(ClassNames.provides)
-              addParameter("providerMap", ClassNames.fragmentProviderMap)
-              addParameter(
-                ParameterSpec.builder("tangleProviderMap", ClassNames.fragmentProviderMap)
-                  .addAnnotation(ClassNames.tangleFragmentProviderMap)
-                  .build()
-              )
-              returns(ClassNames.tangleFragmentFactory)
-              addStatement(
-                "return·%T(providerMap,·tangleProviderMap)",
-                ClassNames.tangleFragmentFactory
-              )
-            }
-            .build()
-        )
-        .build()
-        .let { addType(it) }
-    }
+    val content =
+      FileSpec.buildFile(packageName, moduleClassNameString) {
+        TypeSpec.interfaceBuilder(moduleClassName)
+          .addAnnotation(ClassNames.module)
+          .addContributesTo(scopeFqName.asClassName())
+          .addFunction("bindProviderMap") {
+            addAnnotation(ClassNames.multibinds)
+            addModifiers(ABSTRACT)
+            returns(ClassNames.fragmentMap)
+          }
+          .addFunction("bindTangleProviderMap") {
+            addAnnotation(ClassNames.multibinds)
+            addAnnotation(ClassNames.tangleFragmentProviderMap)
+            addModifiers(ABSTRACT)
+            returns(ClassNames.fragmentMap)
+          }
+          .addType(
+            TypeSpec.companionObjectBuilder()
+              .addFunction("provide_${ClassNames.tangleFragmentFactory.simpleName}") {
+                addAnnotation(ClassNames.provides)
+                addParameter("providerMap", ClassNames.fragmentProviderMap)
+                addParameter(
+                  ParameterSpec.builder("tangleProviderMap", ClassNames.fragmentProviderMap)
+                    .addAnnotation(ClassNames.tangleFragmentProviderMap)
+                    .build()
+                )
+                returns(ClassNames.tangleFragmentFactory)
+                addStatement(
+                  "return·%T(providerMap,·tangleProviderMap)",
+                  ClassNames.tangleFragmentFactory
+                )
+              }
+              .build()
+          )
+          .build()
+          .let { addType(it) }
+      }
 
     return createGeneratedFile(
       codeGenDir,

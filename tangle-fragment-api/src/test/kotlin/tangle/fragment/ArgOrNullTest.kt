@@ -25,12 +25,10 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
 class ArgOrNullTest {
-
   val fragmentName = TestFragment::class.java.canonicalName!!
 
   @Test
   fun `argument of the correct type is returned`() {
-
     val fragment = TestFragment()
     fragment.arguments = bundleOf("int" to 1)
 
@@ -41,7 +39,6 @@ class ArgOrNullTest {
 
   @Test
   fun `existing value of incompatible type returns null`() {
-
     val fragment = TestFragment()
     fragment.arguments = bundleOf("char" to 'c')
 
@@ -54,7 +51,6 @@ class ArgOrNullTest {
 
   @Test
   fun `existing entry of null returns null`() {
-
     val fragment = TestFragment()
     fragment.arguments = bundleOf("nullable" to null)
 
@@ -65,7 +61,6 @@ class ArgOrNullTest {
 
   @Test
   fun `expected type may be a supertype of the actual argument type`() {
-
     val fragment = TestFragment()
     fragment.arguments = bundleOf("string" to "expected")
 

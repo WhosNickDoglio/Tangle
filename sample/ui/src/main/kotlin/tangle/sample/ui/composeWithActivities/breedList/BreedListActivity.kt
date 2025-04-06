@@ -23,18 +23,15 @@ import androidx.compose.material.MaterialTheme
 import tangle.sample.ui.composeWithActivities.breedDetail.BreedDetailActivity
 
 class BreedListActivity : ComponentActivity() {
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContent {
-
       MaterialTheme {
-
         BreedList {
-
-          val detailIntent = Intent(this@BreedListActivity, BreedDetailActivity::class.java).apply {
-            putExtra("breedId", it.id)
-          }
+          val detailIntent =
+            Intent(this@BreedListActivity, BreedDetailActivity::class.java).apply {
+              putExtra("breedId", it.id)
+            }
 
           startActivity(detailIntent)
         }

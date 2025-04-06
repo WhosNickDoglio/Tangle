@@ -34,7 +34,6 @@ interface WorkerComponent {
 
 @OptIn(InternalTangleApi::class)
 class WorkerIntegrationTest : BaseTest() {
-
   val context = mockk<Context>()
   val workerParameters = mockk<WorkerParameters>()
 
@@ -44,8 +43,9 @@ class WorkerIntegrationTest : BaseTest() {
   }
 
   @Test
-  fun `worker is multi-bound into TangleAppScope`() = compileWithDagger(
-    """
+  fun `worker is multi-bound into TangleAppScope`() =
+    compileWithDagger(
+      """
       package tangle.inject.tests
 
       import com.squareup.anvil.annotations.MergeComponent
@@ -73,24 +73,26 @@ class WorkerIntegrationTest : BaseTest() {
       @MergeComponent(Unit::class)
       interface AppComponent : WorkerComponent
      """
-  ) {
+    ) {
+      val component =
+        daggerAppComponent.createFunction()
+          .invoke(null) as TangleWorkerComponent
 
-    val component = daggerAppComponent.createFunction()
-      .invoke(null) as TangleWorkerComponent
+      val mapSubcomponent =
+        component.tangleWorkerMapSubcomponentFactory
+          .create()
 
-    val mapSubcomponent = component.tangleWorkerMapSubcomponentFactory
-      .create()
+      val map = mapSubcomponent.workerFactoryMap
 
-    val map = mapSubcomponent.workerFactoryMap
-
-    map.size shouldBe 1
-    map[myWorkerClass.canonicalName!!]!!
-      .create(context, workerParameters)::class.java shouldBe myWorkerClass
-  }
+      map.size shouldBe 1
+      map[myWorkerClass.canonicalName!!]!!
+        .create(context, workerParameters)::class.java shouldBe myWorkerClass
+    }
 
   @Test
-  fun `TangleWorkerFactory is bound and contains Worker`() = compileWithDagger(
-    """
+  fun `TangleWorkerFactory is bound and contains Worker`() =
+    compileWithDagger(
+      """
       package tangle.inject.tests
 
       import com.squareup.anvil.annotations.MergeComponent
@@ -118,24 +120,26 @@ class WorkerIntegrationTest : BaseTest() {
       @MergeComponent(Unit::class)
       interface AppComponent : WorkerComponent
      """
-  ) {
+    ) {
+      val component =
+        daggerAppComponent.createFunction()
+          .invoke(null)!!
 
-    val component = daggerAppComponent.createFunction()
-      .invoke(null)!!
+      TangleGraph.add(component)
 
-    TangleGraph.add(component)
+      val workerFactory =
+        TangleGraph.get<WorkerComponent>()
+          .tangleWorkerFactory
 
-    val workerFactory = TangleGraph.get<WorkerComponent>()
-      .tangleWorkerFactory
+      val worker =
+        workerFactory.createWorker(
+          appContext = context,
+          workerClassName = myWorkerClass.canonicalName!!,
+          workerParameters = workerParameters
+        )!!
 
-    val worker = workerFactory.createWorker(
-      appContext = context,
-      workerClassName = myWorkerClass.canonicalName!!,
-      workerParameters = workerParameters
-    )!!
-
-    worker::class.java shouldBe myWorkerClass
-  }
+      worker::class.java shouldBe myWorkerClass
+    }
 
   @Test
   fun `two components in classpath with same scope should not get duplicate bindings`() =

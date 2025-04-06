@@ -22,18 +22,21 @@ import androidx.paging.PagingConfig
 import tangle.sample.data.breed.BreedDao
 import tangle.viewmodel.VMInject
 
-class BreedListViewModel @VMInject constructor(
-  private val breedDoa: BreedDao
-) : ViewModel() {
-
-  @OptIn(ExperimentalPagingApi::class)
-  val pagingDataFlow = Pager(
-    config = PagingConfig(
-      pageSize = 20,
-      initialLoadSize = 20,
-      enablePlaceholders = false
-    ),
-    pagingSourceFactory = { breedDoa.pagingSource() }
-  )
-    .flow
-}
+class BreedListViewModel
+  @VMInject
+  constructor(
+    private val breedDoa: BreedDao
+  ) : ViewModel() {
+    @OptIn(ExperimentalPagingApi::class)
+    val pagingDataFlow =
+      Pager(
+        config =
+          PagingConfig(
+            pageSize = 20,
+            initialLoadSize = 20,
+            enablePlaceholders = false
+          ),
+        pagingSourceFactory = { breedDoa.pagingSource() }
+      )
+        .flow
+  }

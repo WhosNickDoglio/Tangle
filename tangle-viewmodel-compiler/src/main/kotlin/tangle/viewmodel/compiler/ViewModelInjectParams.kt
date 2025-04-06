@@ -85,50 +85,58 @@ data class ViewModelParams(
     ): ViewModelParams {
       val packageName = viewModelClass.packageFqName.safePackageString()
 
-      val viewModelFactoryClassName = viewModelClass.generateClassName(suffix = "_Factory")
-        .asClassName()
+      val viewModelFactoryClassName =
+        viewModelClass.generateClassName(suffix = "_Factory")
+          .asClassName()
 
       val memberInjectParameters = viewModelClass.memberInjectedParameters()
 
-      val viewModelConstructorParams = constructor.parameters
-        .mapToParameters(module)
+      val viewModelConstructorParams =
+        constructor.parameters
+          .mapToParameters(module)
 
-      val (daggerConstructorParams, savedStateParams) = viewModelConstructorParams
-        .partition { !it.isTangleParam }
+      val (daggerConstructorParams, savedStateParams) =
+        viewModelConstructorParams
+          .partition { !it.isTangleParam }
 
-      val tempSavedStateParam = daggerConstructorParams
-        .firstOrNull {
-          it.typeName == ClassNames.androidxSavedStateHandle ||
-            it.typeName == ClassNames.androidxSavedStateHandle.jvmSuppressWildcards()
-        }
-        ?: createSavedStateParameter(viewModelConstructorParams)
+      val tempSavedStateParam =
+        daggerConstructorParams
+          .firstOrNull {
+            it.typeName == ClassNames.androidxSavedStateHandle ||
+              it.typeName == ClassNames.androidxSavedStateHandle.jvmSuppressWildcards()
+          }
+          ?: createSavedStateParameter(viewModelConstructorParams)
 
       val needsExtraSavedStateParam =
         tempSavedStateParam !in daggerConstructorParams && savedStateParams.isNotEmpty()
 
-      val factoryConstructorParams = if (needsExtraSavedStateParam) {
-        daggerConstructorParams + memberInjectParameters + tempSavedStateParam
-      } else {
-        daggerConstructorParams + memberInjectParameters
-      }
+      val factoryConstructorParams =
+        if (needsExtraSavedStateParam) {
+          daggerConstructorParams + memberInjectParameters + tempSavedStateParam
+        } else {
+          daggerConstructorParams + memberInjectParameters
+        }
 
       val typeParameters = viewModelClass.typeParameters.map { it.typeVariableName }
 
-      val viewModelClassSimpleName = viewModelClass.asClassName()
-        .simpleNames
-        .joinToString("_")
+      val viewModelClassSimpleName =
+        viewModelClass.asClassName()
+          .simpleNames
+          .joinToString("_")
 
       val viewModelClassName = viewModelClass.asClassName()
 
-      val viewModelTypeName = viewModelClassName.let {
-        if (typeParameters.isEmpty()) it else it.parameterizedBy(typeParameters)
-      }
+      val viewModelTypeName =
+        viewModelClassName.let {
+          if (typeParameters.isEmpty()) it else it.parameterizedBy(typeParameters)
+        }
 
-      val finalSavedStateParam = when {
-        needsExtraSavedStateParam -> tempSavedStateParam
-        savedStateParams.isNotEmpty() -> tempSavedStateParam
-        else -> null
-      }
+      val finalSavedStateParam =
+        when {
+          needsExtraSavedStateParam -> tempSavedStateParam
+          savedStateParams.isNotEmpty() -> tempSavedStateParam
+          else -> null
+        }
 
       return ViewModelParams(
         packageName = packageName,
@@ -207,8 +215,9 @@ data class Factory(
       val scopeClass = viewModelClass.annotations.find(FqNames.mergeComponent)!!.scope()
       val scopeFqName = scopeClass.fqName
 
-      val viewModelFactoryClassName = viewModelClass.generateClassName(suffix = "_Factory")
-        .asClassName()
+      val viewModelFactoryClassName =
+        viewModelClass.generateClassName(suffix = "_Factory")
+          .asClassName()
 
       val functions = factoryInterface.functions
 
@@ -227,13 +236,14 @@ data class Factory(
         "${factoryInterfaceClassName.generateSimpleNameString()}_Impl"
       val factoryImplClassName = ClassName(packageName, factoryImplSimpleName)
 
-      val tangleParams = functionParameters.map {
-        TangleParameter(
-          it.requireTangleParamName(),
-          it.name,
-          it.type().asTypeName()
-        )
-      }
+      val tangleParams =
+        functionParameters.map {
+          TangleParameter(
+            it.requireTangleParamName(),
+            it.name,
+            it.type().asTypeName()
+          )
+        }
 
       val functionName = function.name
 
@@ -254,15 +264,16 @@ data class Factory(
       )
     }
 
-    private fun ClassDescriptor.functions(): List<FunctionDescriptor> = unsubstitutedMemberScope
-      .getContributedDescriptors(DescriptorKindFilter.FUNCTIONS)
-      .asSequence()
-      .filterIsInstance<FunctionDescriptor>()
-      .filter { it.modality == ABSTRACT }
-      .filter {
-        it.visibility == DescriptorVisibilities.PUBLIC ||
-          it.visibility == DescriptorVisibilities.PROTECTED
-      }
-      .toList()
+    private fun ClassDescriptor.functions(): List<FunctionDescriptor> =
+      unsubstitutedMemberScope
+        .getContributedDescriptors(DescriptorKindFilter.FUNCTIONS)
+        .asSequence()
+        .filterIsInstance<FunctionDescriptor>()
+        .filter { it.modality == ABSTRACT }
+        .filter {
+          it.visibility == DescriptorVisibilities.PUBLIC ||
+            it.visibility == DescriptorVisibilities.PROTECTED
+        }
+        .toList()
   }
 }

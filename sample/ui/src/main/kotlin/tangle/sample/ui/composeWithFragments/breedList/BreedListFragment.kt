@@ -23,13 +23,15 @@ import tangle.sample.ui.composeWithFragments.BaseComposeFragment
 import javax.inject.Inject
 
 @ContributesFragment(AppScope::class)
-class BreedListFragment @Inject constructor(
-  private val breedListNavigation: BreedListNavigation
-) : BaseComposeFragment() {
-  override val ui = @Composable {
+class BreedListFragment
+  @Inject
+  constructor(
+    private val breedListNavigation: BreedListNavigation
+  ) : BaseComposeFragment() {
+    override val ui = @Composable {
 
-    BreedList {
-      breedListNavigation.breedDetail(it.id, this)
+      BreedList {
+        breedListNavigation.breedDetail(it.id, this)
+      }
     }
   }
-}

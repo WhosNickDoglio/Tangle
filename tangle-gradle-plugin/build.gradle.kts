@@ -33,9 +33,10 @@ val test by sourceSets.getting
 
 val integrationTest by java.sourceSets.registering {
   kotlin.apply {
-    compileClasspath += main.output
-      .plus(test.output)
-      .plus(configurations.testRuntimeClasspath.get())
+    compileClasspath +=
+      main.output
+        .plus(test.output)
+        .plus(configurations.testRuntimeClasspath.get())
     runtimeClasspath += output + compileClasspath
   }
 }
@@ -119,12 +120,17 @@ val generateBuildProperties by tasks.registering {
   val group = GROUP
 
   val buildPropertiesDir = File(generatedDirPath)
-  val buildPropertiesFile = File(
-    buildPropertiesDir,
-    "tangle/inject/gradle/BuildProperties.kt"
-  )
+  val buildPropertiesFile =
+    File(
+      buildPropertiesDir,
+      "tangle/inject/gradle/BuildProperties.kt"
+    )
 
-  inputs.file(rootProject.file("build-logic/src/main/kotlin/dev/whosnickdoglio/convention/tangle/builds/Versions.kt"))
+  inputs.file(
+    rootProject.file(
+      "build-logic/src/main/kotlin/dev/whosnickdoglio/convention/tangle/builds/Versions.kt"
+    )
+  )
   inputs.properties(mapOf("version" to version, "group" to group))
   outputs.file(buildPropertiesFile)
 
@@ -160,7 +166,11 @@ val generateTestVersions by tasks.registering {
   val testVersionsDir = File(generatedTestDirPath)
   val testVersionsFile = File(testVersionsDir, "tangle/inject/gradle/TestVersions.kt")
 
-  inputs.file(rootProject.file("build-logic/src/main/kotlin/dev/whosnickdoglio/convention/tangle/builds/Versions.kt"))
+  inputs.file(
+    rootProject.file(
+      "build-logic/src/main/kotlin/dev/whosnickdoglio/convention/tangle/builds/Versions.kt"
+    )
+  )
   inputs.file(rootProject.file("gradle/libs.versions.toml"))
   outputs.file(testVersionsFile)
 
@@ -199,36 +209,39 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 tasks.matching {
-  it.name in setOf(
-    "javaSourcesJar",
-    "sourcesJar",
-    "runKtlintCheckOverMainSourceSet",
-    "runKtlintFormatOverMainSourceSet"
-  )
+  it.name in
+    setOf(
+      "javaSourcesJar",
+      "sourcesJar",
+      "runKtlintCheckOverMainSourceSet",
+      "runKtlintFormatOverMainSourceSet"
+    )
 }
   .configureEach {
     dependsOn(generateBuildProperties)
   }
 
 tasks.matching {
-  it.name in setOf(
-    "compileIntegrationTestKotlin",
-    "compileTestKotlin",
-    "runKtlintCheckOverIntegrationTestSourceSet",
-    "runKtlintCheckOverTestSourceSet",
-    "runKtlintFormatOverIntegrationTestSourceSet",
-    "runKtlintFormatOverTestSourceSet"
-  )
+  it.name in
+    setOf(
+      "compileIntegrationTestKotlin",
+      "compileTestKotlin",
+      "runKtlintCheckOverIntegrationTestSourceSet",
+      "runKtlintCheckOverTestSourceSet",
+      "runKtlintFormatOverIntegrationTestSourceSet",
+      "runKtlintFormatOverTestSourceSet"
+    )
 }
   .configureEach {
     dependsOn(generateTestVersions)
   }
 
-val integrationTestTask = tasks.register("integrationTest", Test::class) {
-  val integrationTestSourceSet = java.sourceSets["integrationTest"]
-  testClassesDirs = integrationTestSourceSet.output.classesDirs
-  classpath = integrationTestSourceSet.runtimeClasspath
-}
+val integrationTestTask =
+  tasks.register("integrationTest", Test::class) {
+    val integrationTestSourceSet = java.sourceSets["integrationTest"]
+    testClassesDirs = integrationTestSourceSet.output.classesDirs
+    classpath = integrationTestSourceSet.runtimeClasspath
+  }
 
 tasks.matching { it.name == "check" }.all { dependsOn(integrationTestTask) }
 

@@ -30,5 +30,8 @@ public fun interface AssistedWorkerFactory<T : ListenableWorker> {
    *
    * @since 0.12.0
    */
-  public fun create(context: Context, params: WorkerParameters): T
+  public fun create(
+    context: Context,
+    params: WorkerParameters
+  ): T
 }

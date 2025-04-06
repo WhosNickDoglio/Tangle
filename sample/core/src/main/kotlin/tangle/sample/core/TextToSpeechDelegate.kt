@@ -28,27 +28,30 @@ fun interface TextToSpeechDelegate {
 }
 
 @ContributesBinding(AppScope::class)
-class RealTextToSpeechDelegate @Inject constructor(
-  @ApplicationContext
-  private val context: Context
-) : TextToSpeechDelegate {
+class RealTextToSpeechDelegate
+  @Inject
+  constructor(
+    @ApplicationContext
+    private val context: Context
+  ) : TextToSpeechDelegate {
+    private val tts =
+      TextToSpeech(
+        context,
+        {},
+        "com.google.android.tts"
+      ).also {
+        it.voice =
+          Voice(
+            "tangle-voice",
+            Locale.US,
+            Voice.QUALITY_VERY_HIGH,
+            Voice.LATENCY_VERY_LOW,
+            false,
+            setOf()
+          )
+      }
 
-  private val tts = TextToSpeech(
-    context,
-    {},
-    "com.google.android.tts"
-  ).also {
-    it.voice = Voice(
-      "tangle-voice",
-      Locale.US,
-      Voice.QUALITY_VERY_HIGH,
-      Voice.LATENCY_VERY_LOW,
-      false,
-      setOf()
-    )
+    override fun speak(text: String) {
+      tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+    }
   }
-
-  override fun speak(text: String) {
-    tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
-  }
-}

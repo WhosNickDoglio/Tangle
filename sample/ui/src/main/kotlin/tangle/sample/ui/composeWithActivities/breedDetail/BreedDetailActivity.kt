@@ -25,16 +25,16 @@ import tangle.viewmodel.compose.tangleViewModel
 import java.util.Locale
 
 class BreedDetailActivity : ComponentActivity() {
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContent {
       MaterialTheme {
         val viewModel = tangleViewModel<BreedDetailViewModel>()
 
-        val breedDetail = viewModel.detailFlow
-          .collectAsState()
-          .value
+        val breedDetail =
+          viewModel.detailFlow
+            .collectAsState()
+            .value
 
         if (breedDetail != null) {
           BreedDetail(

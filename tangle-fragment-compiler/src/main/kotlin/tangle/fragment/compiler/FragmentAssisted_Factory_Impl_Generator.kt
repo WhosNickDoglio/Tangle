@@ -60,12 +60,10 @@ import java.io.File
  * ```
  */
 internal object FragmentAssisted_Factory_Impl_Generator : FileGenerator<Factory> {
-
   override fun generate(
     codeGenDir: File,
     params: Factory
   ): GeneratedFileWithSources {
-
     val factoryParams = params
     val fragmentParams = params.fragmentParams
 
@@ -83,79 +81,81 @@ internal object FragmentAssisted_Factory_Impl_Generator : FileGenerator<Factory>
 
     val tangleParams = factoryParams.tangleParams
 
-    val content = FileSpec.buildFile(packageName, factoryImplClassName.simpleName) {
-      TypeSpec.classBuilder(factoryImplClassName)
-        .apply {
-          if (factoryClass.isInterface()) {
-            addSuperinterface(factoryInterfaceClassName)
-          } else {
-            superclass(factoryInterfaceClassName)
+    val content =
+      FileSpec.buildFile(packageName, factoryImplClassName.simpleName) {
+        TypeSpec.classBuilder(factoryImplClassName)
+          .apply {
+            if (factoryClass.isInterface()) {
+              addSuperinterface(factoryInterfaceClassName)
+            } else {
+              superclass(factoryInterfaceClassName)
+            }
           }
-        }
-        .applyEach(typeParameters) { addTypeVariable(it.typeVariableName) }
-        .primaryConstructor(
-          FunSpec.constructorBuilder()
-            .addParameter(delegateFactoryName, fragmentFactoryClassName)
-            .build()
-        )
-        .addProperty(
-          PropertySpec.builder(delegateFactoryName, fragmentFactoryClassName)
-            .initializer(delegateFactoryName)
-            .build()
-        )
-        .addFunction(
-          FunSpec.builder(factoryParams.functionName)
-            .addModifiers(OVERRIDE)
-            .applyEach(tangleParams) { param ->
-              addParameter(param.name, param.typeName)
-            }
-            .returns(returnType = fragmentTypeName)
-            .apply {
-              val allNames = factoryParams.tangleParams.map { it.name }
-
-              val bundleName = allNames.uniqueName("bundle")
-
-              val bundleOfArguments = tangleParams.joinToString(
-                separator = ",\n",
-                prefix = "(\n",
-                postfix = "\n)"
-              ) { param ->
-                CodeBlock.of("  %S·to·%L", param.key, param.name).toString()
+          .applyEach(typeParameters) { addTypeVariable(it.typeVariableName) }
+          .primaryConstructor(
+            FunSpec.constructorBuilder()
+              .addParameter(delegateFactoryName, fragmentFactoryClassName)
+              .build()
+          )
+          .addProperty(
+            PropertySpec.builder(delegateFactoryName, fragmentFactoryClassName)
+              .initializer(delegateFactoryName)
+              .build()
+          )
+          .addFunction(
+            FunSpec.builder(factoryParams.functionName)
+              .addModifiers(OVERRIDE)
+              .applyEach(tangleParams) { param ->
+                addParameter(param.name, param.typeName)
               }
+              .returns(returnType = fragmentTypeName)
+              .apply {
+                val allNames = factoryParams.tangleParams.map { it.name }
 
-              addStatement(
-                "val·%L·=·%M%L",
-                bundleName,
-                MemberNames.bundleOf,
-                bundleOfArguments
-              )
+                val bundleName = allNames.uniqueName("bundle")
 
-              beginControlFlow("return·$delegateFactoryName.get().apply·{", fragmentTypeName)
-              addStatement("this@apply.arguments·=·%L", bundleName)
-              endControlFlow()
-            }
-            .build()
-        )
-        .addType(
-          TypeSpec.companionObjectBuilder()
-            .addFunction(
-              FunSpec
-                .builder("create")
-                .addAnnotation(ClassNames.jvmStatic)
-                .addParameter(delegateFactoryName, fragmentFactoryClassName)
-                .returns(factoryInterfaceClassName.wrapInProvider())
-                .addStatement(
-                  "return·%T.create(%T($delegateFactoryName))",
-                  ClassNames.instanceFactory,
-                  factoryImplClassName
+                val bundleOfArguments =
+                  tangleParams.joinToString(
+                    separator = ",\n",
+                    prefix = "(\n",
+                    postfix = "\n)"
+                  ) { param ->
+                    CodeBlock.of("  %S·to·%L", param.key, param.name).toString()
+                  }
+
+                addStatement(
+                  "val·%L·=·%M%L",
+                  bundleName,
+                  MemberNames.bundleOf,
+                  bundleOfArguments
                 )
-                .build()
-            )
-            .build()
-        )
-        .build()
-        .let { addType(it) }
-    }
+
+                beginControlFlow("return·$delegateFactoryName.get().apply·{", fragmentTypeName)
+                addStatement("this@apply.arguments·=·%L", bundleName)
+                endControlFlow()
+              }
+              .build()
+          )
+          .addType(
+            TypeSpec.companionObjectBuilder()
+              .addFunction(
+                FunSpec
+                  .builder("create")
+                  .addAnnotation(ClassNames.jvmStatic)
+                  .addParameter(delegateFactoryName, fragmentFactoryClassName)
+                  .returns(factoryInterfaceClassName.wrapInProvider())
+                  .addStatement(
+                    "return·%T.create(%T($delegateFactoryName))",
+                    ClassNames.instanceFactory,
+                    factoryImplClassName
+                  )
+                  .build()
+              )
+              .build()
+          )
+          .build()
+          .let { addType(it) }
+      }
     return createGeneratedFileWithSources(
       codeGenDir = codeGenDir,
       packageName = packageName,

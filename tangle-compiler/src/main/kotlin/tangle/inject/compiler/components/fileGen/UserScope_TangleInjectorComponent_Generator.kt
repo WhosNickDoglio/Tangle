@@ -46,7 +46,6 @@ internal object UserScope_TangleInjectorComponent_Generator : FileGenerator<Merg
     codeGenDir: File,
     params: MergeComponentParams
   ): GeneratedFileWithSources? {
-
     val packageName = "tangle.inject"
 
     val baseName = params.componentClassName.simpleName
@@ -76,21 +75,22 @@ internal object UserScope_TangleInjectorComponent_Generator : FileGenerator<Merg
 
     val className = ClassName(packageName, classNameString)
 
-    val content = FileSpec.buildFile(packageName, classNameString) {
-      TypeSpec.interfaceBuilder(className)
-        .addSuperinterface(ClassNames.tangleInjectorComponent)
-        .addAnnotation(
-          AnnotationSpec(ClassNames.contributesTo) {
-            addMember("%T::class", params.scopeClassName)
-            addMember(
-              "replaces·=·[%L]",
-              replaced.joinToString { CodeBlock.of("%T::class", it).toString() }
-            )
-          }
-        )
-        .build()
-        .let { addType(it) }
-    }
+    val content =
+      FileSpec.buildFile(packageName, classNameString) {
+        TypeSpec.interfaceBuilder(className)
+          .addSuperinterface(ClassNames.tangleInjectorComponent)
+          .addAnnotation(
+            AnnotationSpec(ClassNames.contributesTo) {
+              addMember("%T::class", params.scopeClassName)
+              addMember(
+                "replaces·=·[%L]",
+                replaced.joinToString { CodeBlock.of("%T::class", it).toString() }
+              )
+            }
+          )
+          .build()
+          .let { addType(it) }
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir,

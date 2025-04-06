@@ -56,16 +56,19 @@ val ClassNames.androidxSavedStateHandle
     ClassName("androidx.lifecycle", "SavedStateHandle")
 
 val ClassNames.javaClassOutVM
-  get() = Class::class.asClassName()
-    .parameterizedBy(TypeVariableName("out·${androidxViewModel.canonicalName}"))
+  get() =
+    Class::class.asClassName()
+      .parameterizedBy(TypeVariableName("out·${androidxViewModel.canonicalName}"))
 
 val ClassNames.viewModelClassSet
-  get() = Set::class.asClassName()
-    .parameterizedBy(javaClassOutVM)
+  get() =
+    Set::class.asClassName()
+      .parameterizedBy(javaClassOutVM)
 
 val ClassNames.viewModelMap
-  get() = Map::class.asClassName()
-    .parameterizedBy(
-      javaClassWildcard,
-      androidxViewModel.jvmSuppressWildcards()
-    )
+  get() =
+    Map::class.asClassName()
+      .parameterizedBy(
+        javaClassWildcard,
+        androidxViewModel.jvmSuppressWildcards()
+      )

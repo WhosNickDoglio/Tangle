@@ -28,39 +28,42 @@ import java.io.File
 @Suppress("UNUSED")
 @AutoService(CodeGenerator::class)
 class VMInjectCodeGenerator : TangleCodeGenerator() {
-
   override fun generateTangleCode(
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
   ): Collection<GeneratedFileWithSources> {
-    val viewModelParamsList = projectFiles
-      .classAndInnerClassReferences(module)
-      .mapNotNull {
-        val constructor = it.vmInjectConstructor() ?: return@mapNotNull null
-        it to constructor
-      }
-      .map { (viewModelClass, constructor) ->
-        ViewModelParams.create(module, viewModelClass, constructor)
-      }
+    val viewModelParamsList =
+      projectFiles
+        .classAndInnerClassReferences(module)
+        .mapNotNull {
+          val constructor = it.vmInjectConstructor() ?: return@mapNotNull null
+          it to constructor
+        }
+        .map { (viewModelClass, constructor) ->
+          ViewModelParams.create(module, viewModelClass, constructor)
+        }
 
-    val moduleParams = viewModelParamsList
-      .groupBy { it.packageName }
-      .map { (packageName, byPackageName) ->
+    val moduleParams =
+      viewModelParamsList
+        .groupBy { it.packageName }
+        .map { (packageName, byPackageName) ->
 
-        TangleScopeModule(
-          packageName = packageName,
-          viewModelParamsList = byPackageName
-        )
+          TangleScopeModule(
+            packageName = packageName,
+            viewModelParamsList = byPackageName
+          )
+        }
+    val tangleScopeModules =
+      with(ViewModelTangleScopeModuleGenerator()) {
+        moduleParams
+          .map { generate(codeGenDir, it) }
       }
-    val tangleScopeModules = with(ViewModelTangleScopeModuleGenerator()) {
-      moduleParams
-        .map { generate(codeGenDir, it) }
-    }
-    val tangleAppScopeModules = with(ViewModelTangleAppScopeModuleGenerator()) {
-      moduleParams
-        .map { generate(codeGenDir, it) }
-    }
+    val tangleAppScopeModules =
+      with(ViewModelTangleAppScopeModuleGenerator()) {
+        moduleParams
+          .map { generate(codeGenDir, it) }
+      }
 
     return tangleScopeModules + tangleAppScopeModules
   }

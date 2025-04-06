@@ -37,22 +37,22 @@ internal object TangleAppScope_TangleInjectorMapProvider_Subcomponent_Generator 
     codeGenDir: File,
     params: MergeComponentParams
   ): GeneratedFileWithSources {
-
     val packageName = params.packageName
 
     val className = params.memberInjectToScopeMapProviderSubcomponentClassName
 
-    val content = FileSpec.buildFile(packageName, className.simpleName) {
-      TypeSpec.interfaceBuilder(className)
-        .addSuperinterface(ClassNames.tangleScopeMapProvider)
-        .addAnnotation(
-          com.squareup.kotlinpoet.AnnotationSpec.builder(ClassNames.mergeSubcomponent)
-            .addMember("%T::class", ClassNames.tangleAppScope)
-            .build()
-        )
-        .build()
-        .let { addType(it) }
-    }
+    val content =
+      FileSpec.buildFile(packageName, className.simpleName) {
+        TypeSpec.interfaceBuilder(className)
+          .addSuperinterface(ClassNames.tangleScopeMapProvider)
+          .addAnnotation(
+            com.squareup.kotlinpoet.AnnotationSpec.builder(ClassNames.mergeSubcomponent)
+              .addMember("%T::class", ClassNames.tangleAppScope)
+              .build()
+          )
+          .build()
+          .let { addType(it) }
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir,

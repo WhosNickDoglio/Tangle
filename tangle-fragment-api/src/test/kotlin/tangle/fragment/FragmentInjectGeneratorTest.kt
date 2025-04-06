@@ -36,11 +36,11 @@ import javax.inject.Provider
 import kotlin.reflect.full.memberFunctions
 
 class FragmentInjectGeneratorTest : BaseTest() {
-
   @TestFactory
-  fun `factory interface return type may be supertype of the fragment`() = test {
-    compile(
-      """
+  fun `factory interface return type may be supertype of the fragment`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -57,27 +57,28 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
       """
-    ) {
-      val factoryClass = myFragmentClass.moduleClass()
-      val factoryInstance = factoryClass.createStatic()
+      ) {
+        val factoryClass = myFragmentClass.moduleClass()
+        val factoryInstance = factoryClass.createStatic()
 
-      val factoryImplClass = myFragmentFactoryImplClass
+        val factoryImplClass = myFragmentFactoryImplClass
 
-      val factoryImplInstance = factoryImplClass.createInstance(factoryInstance)
+        val factoryImplInstance = factoryImplClass.createInstance(factoryInstance)
 
-      factoryImplClass.declaredMethods
-        .filterNot { it.isStatic }
-        .filter { it.name == "create" }
-        .forEach {
-          it.invoke(factoryImplInstance, "name")::class.java shouldBe myFragmentClass
-        }
+        factoryImplClass.declaredMethods
+          .filterNot { it.isStatic }
+          .filter { it.name == "create" }
+          .forEach {
+            it.invoke(factoryImplInstance, "name")::class.java shouldBe myFragmentClass
+          }
+      }
     }
-  }
 
   @TestFactory
-  fun `factory impl function name must match interface function name`() = test {
-    compile(
-      """
+  fun `factory impl function name must match interface function name`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -95,25 +96,26 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
      """
-    ) {
-      val factoryClass = myFragmentClass.moduleClass()
-      val factoryInstance = factoryClass.createStatic()
+      ) {
+        val factoryClass = myFragmentClass.moduleClass()
+        val factoryInstance = factoryClass.createStatic()
 
-      val factoryImplClass = myFragmentFactoryImplClass
+        val factoryImplClass = myFragmentFactoryImplClass
 
-      val factoryImplInstance = factoryImplClass.createInstance(factoryInstance)
+        val factoryImplInstance = factoryImplClass.createInstance(factoryInstance)
 
-      factoryImplClass.declaredMethods
-        .filterNot { it.isStatic }
-        .single { it.name == "pizza" }
-        .invoke(factoryImplInstance, "name")::class.java shouldBe myFragmentClass
+        factoryImplClass.declaredMethods
+          .filterNot { it.isStatic }
+          .single { it.name == "pizza" }
+          .invoke(factoryImplInstance, "name")::class.java shouldBe myFragmentClass
+      }
     }
-  }
 
   @TestFactory
-  fun `factory performs member injection in injected class`() = test {
-    compile(
-      """
+  fun `factory performs member injection in injected class`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -134,27 +136,28 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
      """
-    ) {
-      val factoryClass = myFragmentClass.moduleClass()
+      ) {
+        val factoryClass = myFragmentClass.moduleClass()
 
-      val factoryInstance = factoryClass.createStatic(Provider { "id value" })
+        val factoryInstance = factoryClass.createStatic(Provider { "id value" })
 
-      factoryInstance::class.java shouldBe factoryClass
+        factoryInstance::class.java shouldBe factoryClass
 
-      val fragment = factoryInstance.factoryGet()
+        val fragment = factoryInstance.factoryGet()
 
-      fragment::class.java shouldBe myFragmentClass
+        fragment::class.java shouldBe myFragmentClass
 
-      myFragmentClass.methods
-        .first { it.name == "getId" }
-        .invoke(fragment) shouldBe "id value"
+        myFragmentClass.methods
+          .first { it.name == "getId" }
+          .invoke(fragment) shouldBe "id value"
+      }
     }
-  }
 
   @TestFactory
-  fun `factory performs member injection of lateinit var in super class`() = test {
-    compile(
-      """
+  fun `factory performs member injection of lateinit var in super class`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -179,34 +182,36 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
      """
-    ) {
-      val factoryClass = myFragmentClass.moduleClass()
+      ) {
+        val factoryClass = myFragmentClass.moduleClass()
 
-      val factoryInstance = factoryClass.createStatic(
-        Provider { "baseId value" },
-        Provider { "id value" }
-      )
+        val factoryInstance =
+          factoryClass.createStatic(
+            Provider { "baseId value" },
+            Provider { "id value" }
+          )
 
-      factoryInstance::class.java shouldBe factoryClass
+        factoryInstance::class.java shouldBe factoryClass
 
-      val fragment = factoryInstance.factoryGet()
+        val fragment = factoryInstance.factoryGet()
 
-      fragment::class.java shouldBe myFragmentClass
+        fragment::class.java shouldBe myFragmentClass
 
-      myFragmentClass.methods
-        .first { it.name == "getId" }
-        .invoke(fragment) shouldBe "id value"
+        myFragmentClass.methods
+          .first { it.name == "getId" }
+          .invoke(fragment) shouldBe "id value"
 
-      myFragmentClass.methods
-        .first { it.name == "getBaseId" }
-        .invoke(fragment) shouldBe "baseId value"
+        myFragmentClass.methods
+          .first { it.name == "getBaseId" }
+          .invoke(fragment) shouldBe "baseId value"
+      }
     }
-  }
 
   @TestFactory
-  fun `factory performs member injection of lateinit var in intermediary super class`() = test {
-    compile(
-      """
+  fun `factory performs member injection of lateinit var in intermediary super class`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -235,35 +240,37 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
      """
-    ) {
-      val factoryClass = myFragmentClass.moduleClass()
+      ) {
+        val factoryClass = myFragmentClass.moduleClass()
 
-      val factoryInstance = factoryClass.createStatic(
-        Provider { 23 },
-        Provider { "baseId value" },
-        Provider { "id value" }
-      )
+        val factoryInstance =
+          factoryClass.createStatic(
+            Provider { 23 },
+            Provider { "baseId value" },
+            Provider { "id value" }
+          )
 
-      factoryInstance::class.java shouldBe factoryClass
+        factoryInstance::class.java shouldBe factoryClass
 
-      val fragment = factoryInstance.factoryGet()
+        val fragment = factoryInstance.factoryGet()
 
-      fragment::class.java shouldBe myFragmentClass
+        fragment::class.java shouldBe myFragmentClass
 
-      myFragmentClass.methods
-        .first { it.name == "getId" }
-        .invoke(fragment) shouldBe "id value"
+        myFragmentClass.methods
+          .first { it.name == "getId" }
+          .invoke(fragment) shouldBe "id value"
 
-      myFragmentClass.methods
-        .first { it.name == "getBaseId" }
-        .invoke(fragment) shouldBe "baseId value"
+        myFragmentClass.methods
+          .first { it.name == "getBaseId" }
+          .invoke(fragment) shouldBe "baseId value"
+      }
     }
-  }
 
   @TestFactory
-  fun `factory performs member injection of lateinit var in grand-super class`() = test {
-    compile(
-      """
+  fun `factory performs member injection of lateinit var in grand-super class`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -290,33 +297,36 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
      """
-    ) {
-      val factoryClass = myFragmentClass.moduleClass()
+      ) {
+        val factoryClass = myFragmentClass.moduleClass()
 
-      val factoryInstance = factoryClass.createStatic(
-        Provider { "baseId value" }, Provider { "id value" }
-      )
+        val factoryInstance =
+          factoryClass.createStatic(
+            Provider { "baseId value" },
+            Provider { "id value" }
+          )
 
-      factoryInstance::class.java shouldBe factoryClass
+        factoryInstance::class.java shouldBe factoryClass
 
-      val fragment = factoryInstance.factoryGet()
+        val fragment = factoryInstance.factoryGet()
 
-      fragment::class.java shouldBe myFragmentClass
+        fragment::class.java shouldBe myFragmentClass
 
-      myFragmentClass.methods
-        .first { it.name == "getId" }
-        .invoke(fragment) shouldBe "id value"
+        myFragmentClass.methods
+          .first { it.name == "getId" }
+          .invoke(fragment) shouldBe "id value"
 
-      myFragmentClass.methods
-        .first { it.name == "getBaseId" }
-        .invoke(fragment) shouldBe "baseId value"
+        myFragmentClass.methods
+          .first { it.name == "getBaseId" }
+          .invoke(fragment) shouldBe "baseId value"
+      }
     }
-  }
 
   @TestFactory
-  fun `factory performs member injection of dagger lazy property`() = test {
-    compile(
-      """
+  fun `factory performs member injection of dagger lazy property`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -337,25 +347,26 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
      """
-    ) {
-      val factoryClass = myFragmentClass.moduleClass()
+      ) {
+        val factoryClass = myFragmentClass.moduleClass()
 
-      val constructor = factoryClass.declaredConstructors.single()
+        val constructor = factoryClass.declaredConstructors.single()
 
-      val factoryInstance = constructor.newInstance(Provider { listOf("name") })
+        val factoryInstance = constructor.newInstance(Provider { listOf("name") })
 
-      factoryClass.getterFunction().invoke(factoryInstance)::class.java shouldBe myFragmentClass
+        factoryClass.getterFunction().invoke(factoryInstance)::class.java shouldBe myFragmentClass
 
-      factoryClass.createStatic(Provider { listOf("name") })::class.java shouldBe factoryClass
-      factoryClass.newInstanceStatic()::class.java shouldBe myFragmentClass
+        factoryClass.createStatic(Provider { listOf("name") })::class.java shouldBe factoryClass
+        factoryClass.newInstanceStatic()::class.java shouldBe myFragmentClass
+      }
     }
-  }
 
   @Disabled // blocked by Anvil bug https://github.com/square/anvil/issues/343
   @TestFactory
-  fun `factory performs member injection of dagger lazy lateinit var in super class`() = test {
-    compile(
-      """
+  fun `factory performs member injection of dagger lazy lateinit var in super class`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -370,24 +381,25 @@ class FragmentInjectGeneratorTest : BaseTest() {
       @ContributesFragment(Unit::class)
       class MyFragment @Inject constructor() : BaseFragment()
      """
-    ) {
-      val factoryClass = myFragmentClass.moduleClass()
+      ) {
+        val factoryClass = myFragmentClass.moduleClass()
 
-      val constructor = factoryClass.declaredConstructors.single()
+        val constructor = factoryClass.declaredConstructors.single()
 
-      val factoryInstance = constructor.newInstance(Provider { listOf("name") })
+        val factoryInstance = constructor.newInstance(Provider { listOf("name") })
 
-      factoryClass.getterFunction().invoke(factoryInstance)::class.java shouldBe myFragmentClass
+        factoryClass.getterFunction().invoke(factoryInstance)::class.java shouldBe myFragmentClass
 
-      factoryClass.createStatic(Provider { listOf("name") })::class.java shouldBe factoryClass
-      factoryClass.newInstanceStatic(dagger.Lazy { listOf("name") })::class.java shouldBe myFragmentClass
+        factoryClass.createStatic(Provider { listOf("name") })::class.java shouldBe factoryClass
+        factoryClass.newInstanceStatic(dagger.Lazy { listOf("name") })::class.java shouldBe myFragmentClass
+      }
     }
-  }
 
   @TestFactory
-  fun `factory is generated with only TangleParam arguments`() = test {
-    compile(
-      """
+  fun `factory is generated with only TangleParam arguments`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -405,24 +417,25 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
      """
-    ) {
-      val factoryClass = myFragmentClass.moduleClass()
+      ) {
+        val factoryClass = myFragmentClass.moduleClass()
 
-      val fragmentInstance = factoryClass.newInstanceStatic()
-      val factoryInstance = factoryClass.createStatic()
+        val fragmentInstance = factoryClass.newInstanceStatic()
+        val factoryInstance = factoryClass.createStatic()
 
-      factoryInstance::class.java shouldBe factoryClass
+        factoryInstance::class.java shouldBe factoryClass
 
-      factoryInstance.factoryGet()::class.java shouldBe myFragmentClass
+        factoryInstance.factoryGet()::class.java shouldBe myFragmentClass
 
-      fragmentInstance::class.java shouldBe myFragmentClass
+        fragmentInstance::class.java shouldBe myFragmentClass
+      }
     }
-  }
 
   @TestFactory
-  fun `factory is generated with only constructor arguments`() = test {
-    compile(
-      """
+  fun `factory is generated with only constructor arguments`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -439,24 +452,25 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
      """
-    ) {
-      val factoryClass = myFragmentClass.moduleClass()
+      ) {
+        val factoryClass = myFragmentClass.moduleClass()
 
-      val constructor = factoryClass.declaredConstructors.single()
+        val constructor = factoryClass.declaredConstructors.single()
 
-      val factoryInstance = constructor.newInstance(Provider { 1 })
+        val factoryInstance = constructor.newInstance(Provider { 1 })
 
-      factoryClass.getterFunction().invoke(factoryInstance)::class.java shouldBe myFragmentClass
+        factoryClass.getterFunction().invoke(factoryInstance)::class.java shouldBe myFragmentClass
 
-      factoryClass.createStatic(Provider { 1 })::class.java shouldBe factoryClass
-      factoryClass.newInstanceStatic(1)::class.java shouldBe myFragmentClass
+        factoryClass.createStatic(Provider { 1 })::class.java shouldBe factoryClass
+        factoryClass.newInstanceStatic(1)::class.java shouldBe myFragmentClass
+      }
     }
-  }
 
   @TestFactory
-  fun `factory is generated with a dagger Lazy argument`() = test {
-    compile(
-      """
+  fun `factory is generated with a dagger Lazy argument`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -473,24 +487,25 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
      """
-    ) {
-      val factoryClass = myFragmentClass.moduleClass()
+      ) {
+        val factoryClass = myFragmentClass.moduleClass()
 
-      val constructor = factoryClass.declaredConstructors.single()
+        val constructor = factoryClass.declaredConstructors.single()
 
-      val factoryInstance = constructor.newInstance(Provider { listOf("name") })
+        val factoryInstance = constructor.newInstance(Provider { listOf("name") })
 
-      factoryClass.getterFunction().invoke(factoryInstance)::class.java shouldBe myFragmentClass
+        factoryClass.getterFunction().invoke(factoryInstance)::class.java shouldBe myFragmentClass
 
-      factoryClass.createStatic(Provider { listOf("name") })::class.java shouldBe factoryClass
-      factoryClass.newInstanceStatic(dagger.Lazy { listOf("name") })::class.java shouldBe myFragmentClass
+        factoryClass.createStatic(Provider { listOf("name") })::class.java shouldBe factoryClass
+        factoryClass.newInstanceStatic(dagger.Lazy { listOf("name") })::class.java shouldBe myFragmentClass
+      }
     }
-  }
 
   @TestFactory
-  fun `factory is generated with a TangleParam and a constructor argument`() = test {
-    compile(
-      """
+  fun `factory is generated with a TangleParam and a constructor argument`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -510,26 +525,27 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
      """
-    ) {
-      val factoryClass = myFragmentClass.moduleClass()
+      ) {
+        val factoryClass = myFragmentClass.moduleClass()
 
-      val constructor = factoryClass.declaredConstructors.single()
+        val constructor = factoryClass.declaredConstructors.single()
 
-      val numbers = listOf(1, 2)
+        val numbers = listOf(1, 2)
 
-      val factoryInstance = constructor.newInstance(Provider { numbers })
+        val factoryInstance = constructor.newInstance(Provider { numbers })
 
-      factoryClass.getterFunction().invoke(factoryInstance)::class.java shouldBe myFragmentClass
+        factoryClass.getterFunction().invoke(factoryInstance)::class.java shouldBe myFragmentClass
 
-      factoryClass.createStatic(Provider { numbers })::class.java shouldBe factoryClass
-      factoryClass.newInstanceStatic(numbers)::class.java shouldBe myFragmentClass
+        factoryClass.createStatic(Provider { numbers })::class.java shouldBe factoryClass
+        factoryClass.newInstanceStatic(numbers)::class.java shouldBe myFragmentClass
+      }
     }
-  }
 
   @TestFactory
-  fun `factory is generated with TangleParam and constructor arguments of the same name`() = test {
-    compile(
-      """
+  fun `factory is generated with TangleParam and constructor arguments of the same name`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -549,24 +565,25 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
      """
-    ) {
-      val factoryClass = myFragmentClass.moduleClass()
+      ) {
+        val factoryClass = myFragmentClass.moduleClass()
 
-      val constructor = factoryClass.declaredConstructors.single()
+        val constructor = factoryClass.declaredConstructors.single()
 
-      val factoryInstance = constructor.newInstance(Provider { "name" })
+        val factoryInstance = constructor.newInstance(Provider { "name" })
 
-      factoryClass.getterFunction().invoke(factoryInstance)::class.java shouldBe myFragmentClass
+        factoryClass.getterFunction().invoke(factoryInstance)::class.java shouldBe myFragmentClass
 
-      factoryClass.createStatic(Provider { "name" })::class.java shouldBe factoryClass
-      factoryClass.newInstanceStatic("name")::class.java shouldBe myFragmentClass
+        factoryClass.createStatic(Provider { "name" })::class.java shouldBe factoryClass
+        factoryClass.newInstanceStatic("name")::class.java shouldBe myFragmentClass
+      }
     }
-  }
 
   @TestFactory
-  fun `FragmentInject constructors must have a corresponding factory interface`() = test {
-    compile(
-      """
+  fun `FragmentInject constructors must have a corresponding factory interface`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -576,19 +593,19 @@ class FragmentInjectGeneratorTest : BaseTest() {
       @ContributesFragment(Unit::class)
       class MyFragment @FragmentInject constructor() : Fragment()
       """,
-      shouldFail = true
-    ) {
-
-      messages shouldContain "@FragmentInject must only be applied to the constructor " +
-        "of a Fragment, and that fragment must have a corresponding " +
-        "FragmentInjectFactory-annotated factory interface."
+        shouldFail = true
+      ) {
+        messages shouldContain "@FragmentInject must only be applied to the constructor " +
+          "of a Fragment, and that fragment must have a corresponding " +
+          "FragmentInjectFactory-annotated factory interface."
+      }
     }
-  }
 
   @TestFactory
-  fun `factory interface must have a corresponding FragmentInject constructor`() = test {
-    compile(
-      """
+  fun `factory interface must have a corresponding FragmentInject constructor`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -604,19 +621,19 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
       """,
-      shouldFail = true
-    ) {
-
-      messages shouldContain "The @FragmentInjectFactory-annotated interface " +
-        "`tangle.inject.tests.MyFragment.Factory` must be defined inside a Fragment " +
-        "which is annotated with `@FragmentInject`."
+        shouldFail = true
+      ) {
+        messages shouldContain "The @FragmentInjectFactory-annotated interface " +
+          "`tangle.inject.tests.MyFragment.Factory` must be defined inside a Fragment " +
+          "which is annotated with `@FragmentInject`."
+      }
     }
-  }
 
   @TestFactory
-  fun `factory interface must have a function`() = test {
-    compile(
-      """
+  fun `factory interface must have a function`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -630,19 +647,19 @@ class FragmentInjectGeneratorTest : BaseTest() {
         interface Factory
       }
       """,
-      shouldFail = true
-    ) {
-
-      messages shouldContain "@FragmentInjectFactory-annotated types must have exactly one " +
-        "abstract function -- without a default implementation -- " +
-        "which returns the FragmentInject Fragment type."
+        shouldFail = true
+      ) {
+        messages shouldContain "@FragmentInjectFactory-annotated types must have exactly one " +
+          "abstract function -- without a default implementation -- " +
+          "which returns the FragmentInject Fragment type."
+      }
     }
-  }
 
   @TestFactory
-  fun `factory interface must have only one function`() = test {
-    compile(
-      """
+  fun `factory interface must have only one function`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -660,19 +677,19 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
       """,
-      shouldFail = true
-    ) {
-
-      messages shouldContain "@FragmentInjectFactory-annotated types must have exactly one " +
-        "abstract function -- without a default implementation -- " +
-        "which returns the FragmentInject Fragment type."
+        shouldFail = true
+      ) {
+        messages shouldContain "@FragmentInjectFactory-annotated types must have exactly one " +
+          "abstract function -- without a default implementation -- " +
+          "which returns the FragmentInject Fragment type."
+      }
     }
-  }
 
   @TestFactory
-  fun `factory interface must have a return type`() = test {
-    compile(
-      """
+  fun `factory interface must have a return type`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -689,19 +706,19 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
       """,
-      shouldFail = true
-    ) {
-
-      messages shouldContain "Return type of 'create' is not a subtype of the return type " +
-        "of the overridden member 'public abstract fun create(name: String): Unit " +
-        "defined in tangle.inject.tests.MyFragment.Factory'"
+        shouldFail = true
+      ) {
+        messages shouldContain "Return type of 'create' is not a subtype of the return type " +
+          "of the overridden member 'public abstract fun create(name: String): Unit " +
+          "defined in tangle.inject.tests.MyFragment.Factory'"
+      }
     }
-  }
 
   @TestFactory
-  fun `FragmentInject fragments must have ContributesFragment annotation`() = test {
-    compile(
-      """
+  fun `FragmentInject fragments must have ContributesFragment annotation`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -716,18 +733,18 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
       """,
-      shouldFail = true
-    ) {
-
-      messages shouldContain "@FragmentInject-annotated Fragments must also have " +
-        "a `tangle.fragment.ContributesFragment` class annotation."
+        shouldFail = true
+      ) {
+        messages shouldContain "@FragmentInject-annotated Fragments must also have " +
+          "a `tangle.fragment.ContributesFragment` class annotation."
+      }
     }
-  }
 
   @TestFactory
-  fun `factory arguments must be annotated with TangleParam`() = test {
-    compile(
-      """
+  fun `factory arguments must be annotated with TangleParam`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -742,17 +759,17 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
       """,
-      shouldFail = true
-    ) {
-
-      messages shouldContain "could not find a @TangleParam annotation for parameter `name`"
+        shouldFail = true
+      ) {
+        messages shouldContain "could not find a @TangleParam annotation for parameter `name`"
+      }
     }
-  }
 
   @TestFactory
-  fun `injected arguments must be supported by Bundle`() = test {
-    compile(
-      """
+  fun `injected arguments must be supported by Bundle`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -772,18 +789,18 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
      """,
-      shouldFail = true
-    ) {
-
-      messages shouldContain "Tangle found Fragment runtime arguments which cannot " +
-        "be inserted into a Bundle: [name: tangle.inject.tests.Illegal]"
+        shouldFail = true
+      ) {
+        messages shouldContain "Tangle found Fragment runtime arguments which cannot " +
+          "be inserted into a Bundle: [name: tangle.inject.tests.Illegal]"
+      }
     }
-  }
 
   @TestFactory
-  fun `qualified inject parameter propagates qualifiers`() = test {
-    compile(
-      """
+  fun `qualified inject parameter propagates qualifiers`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import androidx.fragment.app.Fragment
@@ -809,21 +826,23 @@ class FragmentInjectGeneratorTest : BaseTest() {
         }
       }
       """
-    ) {
-      val someQualifier = classLoader.loadClass("tangle.inject.tests.SomeQualifier").kotlin
+      ) {
+        val someQualifier = classLoader.loadClass("tangle.inject.tests.SomeQualifier").kotlin
 
-      val factoryProviderAnnotations = tangleUnitFragmentInjectModuleClass
-        .kotlin.memberFunctions.single { it.name == "provide_MyFragment_Factory" }
-        .parameters.single { it.name == "qualified" }
-        .annotations.map { it.annotationClass }
+        val factoryProviderAnnotations =
+          tangleUnitFragmentInjectModuleClass
+            .kotlin.memberFunctions.single { it.name == "provide_MyFragment_Factory" }
+            .parameters.single { it.name == "qualified" }
+            .annotations.map { it.annotationClass }
 
-      val internalFragmentProviderAnnotations = tangleUnitFragmentModuleCompanionClass
-        .kotlin.memberFunctions.single { it.name == "provide_MyFragment" }
-        .parameters.single { it.name == "qualified" }
-        .annotations.map { it.annotationClass }
+        val internalFragmentProviderAnnotations =
+          tangleUnitFragmentModuleCompanionClass
+            .kotlin.memberFunctions.single { it.name == "provide_MyFragment" }
+            .parameters.single { it.name == "qualified" }
+            .annotations.map { it.annotationClass }
 
-      factoryProviderAnnotations shouldContain someQualifier
-      internalFragmentProviderAnnotations shouldContain someQualifier
+        factoryProviderAnnotations shouldContain someQualifier
+        internalFragmentProviderAnnotations shouldContain someQualifier
+      }
     }
-  }
 }

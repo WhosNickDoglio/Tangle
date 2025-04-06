@@ -35,12 +35,13 @@ private const val WORKMANAGER_GROUP = "androidx.work"
 private const val LIFECYCLE_GROUP = "androidx.lifecycle"
 private const val VIEWMODEL_MODULE_PREFIX = "lifecycle-viewmodel"
 
-internal fun Project.projectAndroidDependencyConfigs() = configurations
-  .filterNot { it.name == "ktlintRuleset" }
-  .mapNotNull { config ->
+internal fun Project.projectAndroidDependencyConfigs() =
+  configurations
+    .filterNot { it.name == "ktlintRuleset" }
+    .mapNotNull { config ->
 
-    config.androidDependencyConfigOrNull()
-  }
+      config.androidDependencyConfigOrNull()
+    }
 
 private fun Configuration.androidDependencyConfigOrNull(): AndroidDependencyConfig? {
   var activities = false
@@ -49,10 +50,11 @@ private fun Configuration.androidDependencyConfigOrNull(): AndroidDependencyConf
   var viewModels = false
   var workManager = false
 
-  val deps = dependencies
-    .withType(org.gradle.api.artifacts.ExternalModuleDependency::class.java)
-    .takeIf { it.isNotEmpty() }
-    ?: return null
+  val deps =
+    dependencies
+      .withType(org.gradle.api.artifacts.ExternalModuleDependency::class.java)
+      .takeIf { it.isNotEmpty() }
+      ?: return null
 
   deps.forEach { dependency ->
 
@@ -89,8 +91,12 @@ private fun Configuration.androidDependencyConfigOrNull(): AndroidDependencyConf
 }
 
 private fun ExternalModuleDependency.isActivities(): Boolean = group == ACTIVITY_GROUP
+
 private fun ExternalModuleDependency.isCompose(): Boolean = group == COMPOSE_GROUP
+
 private fun ExternalModuleDependency.isFragments(): Boolean = group == FRAGMENT_GROUP
+
 private fun ExternalModuleDependency.isWorkManager(): Boolean = group == WORKMANAGER_GROUP
+
 private fun ExternalModuleDependency.isViewModels(): Boolean =
   group == LIFECYCLE_GROUP && module.name.startsWith(VIEWMODEL_MODULE_PREFIX)

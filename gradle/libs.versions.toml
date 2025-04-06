@@ -9,7 +9,7 @@ gradleDoctor = "0.10.0"
 jUnit = "5.11.4"
 kotest = "5.4.2"
 kotlin = "2.0.21"
-ktlint-gradle = "11.0.0"
+ktlint-gradle = "12.2.0"
 jdk = "17"
 
 androidx-activity = "1.10.1"

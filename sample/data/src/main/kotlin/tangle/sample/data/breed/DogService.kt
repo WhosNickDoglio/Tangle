@@ -19,7 +19,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface DogService {
-
   @GET("/v1/breeds")
   suspend fun getAllBreedsPaged(
     @Query("page")

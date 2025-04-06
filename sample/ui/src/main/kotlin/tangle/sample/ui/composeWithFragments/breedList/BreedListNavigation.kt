@@ -23,19 +23,22 @@ import javax.inject.Inject
  * In a real application, this would be an interface with an implementation which lives in a higher
  * level module.
  */
-class BreedListNavigation @Inject constructor(
-  internal val breedDetailFragmentFactory: BreedDetailFragment.Factory
-) {
+class BreedListNavigation
+  @Inject
+  constructor(
+    internal val breedDetailFragmentFactory: BreedDetailFragment.Factory
+  ) {
+    fun breedDetail(
+      breedId: Int,
+      breedListFragment: BreedListFragment
+    ) {
+      val fragment = breedDetailFragmentFactory.create(breedId)
+      val name = fragment::class.qualifiedName!!
 
-  fun breedDetail(breedId: Int, breedListFragment: BreedListFragment) {
-
-    val fragment = breedDetailFragmentFactory.create(breedId)
-    val name = fragment::class.qualifiedName!!
-
-    breedListFragment.parentFragmentManager
-      .beginTransaction()
-      .replace(R.id.fragment_content_main, fragment, name)
-      .addToBackStack(name)
-      .commitAllowingStateLoss()
+      breedListFragment.parentFragmentManager
+        .beginTransaction()
+        .replace(R.id.fragment_content_main, fragment, name)
+        .addToBackStack(name)
+        .commitAllowingStateLoss()
+    }
   }
-}

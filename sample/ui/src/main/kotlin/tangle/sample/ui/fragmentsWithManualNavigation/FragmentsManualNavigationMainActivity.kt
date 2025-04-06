@@ -28,7 +28,6 @@ import javax.inject.Provider
 
 @TangleScope(AppScope::class)
 class FragmentsManualNavigationMainActivity : AppCompatActivity() {
-
   @Inject lateinit var tangleFragmentFactory: TangleFragmentFactory
 
   @Inject lateinit var navigation: FragmentsManualNavigationMainActivityNavigation
@@ -49,15 +48,17 @@ class FragmentsManualNavigationMainActivity : AppCompatActivity() {
  * In a real application, this would be an interface with an implementation which lives in a higher
  * level module.
  */
-class FragmentsManualNavigationMainActivityNavigation @Inject constructor(
-  internal val breedListFragmentProvider: Provider<BreedListFragment>
-) {
-  fun breedList(activity: FragmentsManualNavigationMainActivity) {
-    val fragment = breedListFragmentProvider.get()
-    val name = fragment::class.qualifiedName!!
+class FragmentsManualNavigationMainActivityNavigation
+  @Inject
+  constructor(
+    internal val breedListFragmentProvider: Provider<BreedListFragment>
+  ) {
+    fun breedList(activity: FragmentsManualNavigationMainActivity) {
+      val fragment = breedListFragmentProvider.get()
+      val name = fragment::class.qualifiedName!!
 
-    activity.supportFragmentManager.beginTransaction()
-      .replace(R.id.fragment_content_main, fragment, name)
-      .commitAllowingStateLoss()
+      activity.supportFragmentManager.beginTransaction()
+        .replace(R.id.fragment_content_main, fragment, name)
+        .commitAllowingStateLoss()
+    }
   }
-}

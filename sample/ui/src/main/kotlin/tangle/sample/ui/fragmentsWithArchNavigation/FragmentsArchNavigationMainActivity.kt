@@ -27,7 +27,6 @@ import javax.inject.Inject
 
 @TangleScope(AppScope::class)
 class FragmentsArchNavigationMainActivity : AppCompatActivity() {
-
   @Inject lateinit var tangleFragmentFactory: TangleFragmentFactory
 
   override fun onCreate(savedInstanceState: Bundle?) {

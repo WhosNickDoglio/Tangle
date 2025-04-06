@@ -35,7 +35,6 @@ import java.io.File
  * In short, this is an attempt to prevent flooding Anvil's issue tracker with Tangle bug reports.
  */
 abstract class TangleCodeGenerator : CodeGenerator {
-
   final override fun isApplicable(context: AnvilContext): Boolean = true
 
   final override fun generateCode(

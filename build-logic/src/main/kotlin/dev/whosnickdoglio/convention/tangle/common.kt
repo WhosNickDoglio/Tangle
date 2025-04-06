@@ -29,6 +29,8 @@ import java.io.File
 
 @Suppress("LongMethod")
 fun Project.common() {
+  pluginManager.apply("org.jlleitschuh.gradle.ktlint")
+
   val versionCatalog = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
   dependencies.add(
     "implementation",

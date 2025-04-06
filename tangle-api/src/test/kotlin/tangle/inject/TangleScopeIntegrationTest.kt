@@ -33,15 +33,15 @@ import tangle.inject.test.utils.targetClass
 
 @Execution(ExecutionMode.SAME_THREAD)
 class TangleScopeIntegrationTest : BaseTest() {
-
   @BeforeEach
   fun beforeEach() {
     clearTangleGraph()
   }
 
   @Test
-  fun `target may be injected without any injected members`() = compileWithDagger(
-    """
+  fun `target may be injected without any injected members`() =
+    compileWithDagger(
+      """
       package tangle.inject.tests
 
       import com.squareup.anvil.annotations.MergeComponent
@@ -58,23 +58,24 @@ class TangleScopeIntegrationTest : BaseTest() {
       @MergeComponent(AppScope::class)
       interface AppComponent
      """
-  ) {
+    ) {
+      val component =
+        daggerAppComponent.createFunction()
+          .invoke(null)
 
-    val component = daggerAppComponent.createFunction()
-      .invoke(null)
+      TangleGraph.add(component)
 
-    TangleGraph.add(component)
+      val target = targetClass.createInstance()
 
-    val target = targetClass.createInstance()
+      TangleGraph.inject(target)
 
-    TangleGraph.inject(target)
-
-    target.fieldsValues() shouldBe mapOf()
-  }
+      target.fieldsValues() shouldBe mapOf()
+    }
 
   @Test
-  fun `target may be injected with declared injected members`() = compileWithDagger(
-    """
+  fun `target may be injected with declared injected members`() =
+    compileWithDagger(
+      """
       package tangle.inject.tests
 
       import com.squareup.anvil.annotations.MergeComponent
@@ -102,22 +103,22 @@ class TangleScopeIntegrationTest : BaseTest() {
         }
       }
      """
-  ) {
+    ) {
+      val component = appComponentFactoryCreate("name")
 
-    val component = appComponentFactoryCreate("name")
+      TangleGraph.add(component)
 
-    TangleGraph.add(component)
+      val target = targetClass.createInstance()
 
-    val target = targetClass.createInstance()
+      TangleGraph.inject(target)
 
-    TangleGraph.inject(target)
-
-    target.fieldsValues() shouldBe mapOf("str" to "name")
-  }
+      target.fieldsValues() shouldBe mapOf("str" to "name")
+    }
 
   @Test
-  fun `target may be injected with superclass injected members`() = compileWithDagger(
-    """
+  fun `target may be injected with superclass injected members`() =
+    compileWithDagger(
+      """
       package tangle.inject.tests
 
       import com.squareup.anvil.annotations.MergeComponent
@@ -147,18 +148,17 @@ class TangleScopeIntegrationTest : BaseTest() {
         }
       }
      """
-  ) {
+    ) {
+      val component = appComponentFactoryCreate("baseName")
 
-    val component = appComponentFactoryCreate("baseName")
+      TangleGraph.add(component)
 
-    TangleGraph.add(component)
+      val target = targetClass.createInstance()
 
-    val target = targetClass.createInstance()
+      TangleGraph.inject(target)
 
-    TangleGraph.inject(target)
-
-    target.fieldsValues() shouldBe mapOf("baseStr" to "baseName")
-  }
+      target.fieldsValues() shouldBe mapOf("baseStr" to "baseName")
+    }
 
   @Test
   fun `target may be injected with declared injected members and superclass injected members`() =
@@ -197,7 +197,6 @@ class TangleScopeIntegrationTest : BaseTest() {
       }
      """
     ) {
-
       val component = appComponentFactoryCreate("name", listOf("strs"))
 
       TangleGraph.add(component)
@@ -250,7 +249,6 @@ class TangleScopeIntegrationTest : BaseTest() {
       }
      """
     ) {
-
       val component = appComponentFactoryCreate("name", listOf("strs"))
 
       TangleGraph.add(component)
@@ -307,9 +305,9 @@ class TangleScopeIntegrationTest : BaseTest() {
       }
      """
     ) {
-
-      val component = daggerAppComponent.createFunction()
-        .invoke(null)
+      val component =
+        daggerAppComponent.createFunction()
+          .invoke(null)
 
       val userComponent: Any = appComponent.getPrivateFieldByName("userComponent", component)
 
@@ -367,7 +365,6 @@ class TangleScopeIntegrationTest : BaseTest() {
      """,
       shouldFail = true
     ) {
-
       messages shouldContain """[Dagger/MissingBinding] java.lang.String cannot be provided without an @Inject constructor or an @Provides-annotated method"""
     }
 
@@ -398,7 +395,6 @@ class TangleScopeIntegrationTest : BaseTest() {
      """,
       shouldFail = true
     ) {
-
       messages shouldContain """@TangleScope cannot be applied to classes which use injected constructors"""
     }
 }

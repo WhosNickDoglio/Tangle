@@ -43,9 +43,10 @@ val ClassNames.tangleWorkerFactoryMapSubcomponentFactory
   get() = tangleWorkerFactoryMapSubcomponent.nestedClass("Factory")
 
 val ClassNames.assistedWorkerFactoryMap: ParameterizedTypeName
-  get() = Map::class.asClassName()
-    .parameterizedBy(
-      string,
-      assistedWorkerFactory
-        .parameterizedBy(TypeVariableName("out·${androidxListenableWorker.canonicalName}"))
-    )
+  get() =
+    Map::class.asClassName()
+      .parameterizedBy(
+        string,
+        assistedWorkerFactory
+          .parameterizedBy(TypeVariableName("out·${androidxListenableWorker.canonicalName}"))
+      )

@@ -24,15 +24,15 @@ import tangle.viewmodel.VMInject
 import tangle.viewmodel.fragment.tangleViewModel
 
 class VMInjectSample {
-
   @Sample
   fun vmInjectSample() {
-
-    class MyViewModel @VMInject constructor(
-      val repository: MyRepository,
-      @TangleParam("userId")
-      val userId: Int
-    ) : ViewModel()
+    class MyViewModel
+      @VMInject
+      constructor(
+        val repository: MyRepository,
+        @TangleParam("userId")
+        val userId: Int
+      ) : ViewModel()
 
     class MyFragment : Fragment() {
       val viewModel by tangleViewModel<MyViewModel>()

@@ -25,7 +25,6 @@ import javax.inject.Singleton
 @Singleton
 @MergeComponent(AppScope::class)
 interface AppComponent {
-
   @Component.Factory
   interface Factory {
     fun create(

@@ -41,9 +41,10 @@ import tangle.viewmodel.internal.TangleViewModelFactory
 @Composable
 @OptIn(InternalTangleApi::class)
 public inline fun <reified VM : ViewModel> tangleViewModel(
-  viewModelStoreOwner: ViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
-    "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-  }
+  viewModelStoreOwner: ViewModelStoreOwner =
+    checkNotNull(LocalViewModelStoreOwner.current) {
+      "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+    }
 ): VM {
   return when {
     viewModelStoreOwner is NavBackStackEntry -> {
@@ -51,7 +52,6 @@ public inline fun <reified VM : ViewModel> tangleViewModel(
       viewModel(viewModelStoreOwner, factory = factory)
     }
     viewModelStoreOwner is ComponentActivity -> {
-
       val args = viewModelStoreOwner.intent.extras
       val defaultFactory = viewModelStoreOwner.defaultViewModelProviderFactory
 
@@ -60,7 +60,6 @@ public inline fun <reified VM : ViewModel> tangleViewModel(
     }
     viewModelStoreOwner is SavedStateRegistryOwner &&
       viewModelStoreOwner is HasDefaultViewModelProviderFactory -> {
-
       val args = currentFragmentOrNull(viewModelStoreOwner)?.arguments
       val defaultFactory = viewModelStoreOwner.defaultViewModelProviderFactory
 
@@ -75,9 +74,7 @@ public inline fun <reified VM : ViewModel> tangleViewModel(
 
 @Composable
 @PublishedApi
-internal fun currentFragmentOrNull(
-  viewModelStoreOwner: ViewModelStoreOwner
-): Fragment? {
+internal fun currentFragmentOrNull(viewModelStoreOwner: ViewModelStoreOwner): Fragment? {
   val view = LocalView.current
   return try {
     FragmentManager.findFragment<Fragment>(view).takeIf {
@@ -90,6 +87,7 @@ internal fun currentFragmentOrNull(
   }
 }
 
+@Suppress("ktlint:standard:function-naming")
 @PublishedApi
 @OptIn(InternalTangleApi::class)
 internal fun TangleViewModelFactory(

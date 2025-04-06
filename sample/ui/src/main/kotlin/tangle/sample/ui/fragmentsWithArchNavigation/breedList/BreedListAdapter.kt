@@ -30,7 +30,6 @@ import java.util.Locale
 class BreedListAdapter(
   val onClick: (BreedSummary) -> Unit
 ) : PagingDataAdapter<BreedSummary, BreedViewHolder>(BreedSummaryComparator) {
-
   override fun onCreateViewHolder(
     parent: ViewGroup,
     viewType: Int
@@ -45,7 +44,10 @@ class BreedListAdapter(
     )
   }
 
-  override fun onBindViewHolder(holder: BreedViewHolder, position: Int) {
+  override fun onBindViewHolder(
+    holder: BreedViewHolder,
+    position: Int
+  ) {
     val item = getItem(position)
     // Note that item may be null. ViewHolder must support binding a
     // null item as a placeholder.
@@ -57,10 +59,8 @@ class BreedViewHolder(
   val itemBinding: BreedItemBinding,
   val onClick: (BreedSummary) -> Unit
 ) : RecyclerView.ViewHolder(itemBinding.root) {
-
   @SuppressLint("SetTextI18n")
   fun bind(item: BreedSummary?) {
-
     item ?: return
 
     itemBinding.name.text = item.name
@@ -68,7 +68,6 @@ class BreedViewHolder(
     itemBinding.group.text = item.breedGroup
 
     if (Locale.getDefault().isMetric()) {
-
       itemBinding.height.text = "${item.heightMetric} cm"
       itemBinding.weight.text = "${item.weightMetric} kg"
     } else {

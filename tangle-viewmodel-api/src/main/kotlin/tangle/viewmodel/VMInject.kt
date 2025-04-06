@@ -32,11 +32,3 @@ import kotlin.annotation.AnnotationTarget.CONSTRUCTOR
 @Retention(BINARY)
 @MustBeDocumented
 public annotation class VMInject
-
-// TODO - support factories with a "DelicateTangleApi" annotation
-/*
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.BINARY)
-@MustBeDocumented
-public annotation class VMInjectFactory
-*/

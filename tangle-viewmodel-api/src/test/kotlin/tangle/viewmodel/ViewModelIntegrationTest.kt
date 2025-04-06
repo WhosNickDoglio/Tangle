@@ -30,10 +30,10 @@ import tangle.inject.test.utils.targetClass
 
 @OptIn(InternalTangleApi::class)
 class ViewModelIntegrationTest : BaseTest() {
-
   @Test
-  fun `viewmodel is multi-bound into TangleViewModelScope`() = compileWithDagger(
-    """
+  fun `viewmodel is multi-bound into TangleViewModelScope`() =
+    compileWithDagger(
+      """
       package tangle.inject.tests
 
       import com.squareup.anvil.annotations.MergeComponent
@@ -48,23 +48,25 @@ class ViewModelIntegrationTest : BaseTest() {
       @MergeComponent(Unit::class)
       interface AppComponent
      """
-  ) {
+    ) {
+      val component =
+        daggerAppComponent.createFunction()
+          .invoke(null) as TangleViewModelComponent
 
-    val component = daggerAppComponent.createFunction()
-      .invoke(null) as TangleViewModelComponent
+      val mapSubcomponent =
+        component.tangleViewModelMapSubcomponentFactory
+          .create(SavedStateHandle())
 
-    val mapSubcomponent = component.tangleViewModelMapSubcomponentFactory
-      .create(SavedStateHandle())
+      val map = mapSubcomponent.viewModelProviderMap
 
-    val map = mapSubcomponent.viewModelProviderMap
-
-    map.size shouldBe 1
-    map[myViewModelClass]!!.get()::class.java shouldBe myViewModelClass
-  }
+      map.size shouldBe 1
+      map[myViewModelClass]!!.get()::class.java shouldBe myViewModelClass
+    }
 
   @Test
-  fun `viewmodel key is multi-bound into TangleAppScope`() = compileWithDagger(
-    """
+  fun `viewmodel key is multi-bound into TangleAppScope`() =
+    compileWithDagger(
+      """
       package tangle.inject.tests
 
       import com.squareup.anvil.annotations.MergeComponent
@@ -79,16 +81,17 @@ class ViewModelIntegrationTest : BaseTest() {
       @MergeComponent(Unit::class)
       interface AppComponent
      """
-  ) {
+    ) {
+      val component =
+        daggerAppComponent.createFunction()
+          .invoke(null)as TangleViewModelComponent
 
-    val component = daggerAppComponent.createFunction()
-      .invoke(null)as TangleViewModelComponent
+      val keysSubcomponent =
+        component.tangleViewModelKeysSubcomponentFactory
+          .create()
 
-    val keysSubcomponent = component.tangleViewModelKeysSubcomponentFactory
-      .create()
-
-    keysSubcomponent.viewModelKeys shouldBe setOf(myViewModelClass)
-  }
+      keysSubcomponent.viewModelKeys shouldBe setOf(myViewModelClass)
+    }
 
   @Test
   fun `two components in classpath with same scope should not get duplicate bindings`() =
@@ -185,8 +188,9 @@ class ViewModelIntegrationTest : BaseTest() {
     )
 
   @Test
-  fun `viewModel arguments with typed qualifiers get qualified bindings`() = compileWithDagger(
-    """
+  fun `viewModel arguments with typed qualifiers get qualified bindings`() =
+    compileWithDagger(
+      """
     package tangle.inject.tests
 
     import androidx.lifecycle.ViewModel
@@ -229,24 +233,26 @@ class ViewModelIntegrationTest : BaseTest() {
       fun get() = someArg
     }
     """
-  ) {
-    val expected = "Expected"
-    val unexpected = "Unexpected"
+    ) {
+      val expected = "Expected"
+      val unexpected = "Unexpected"
 
-    val viewModel = (appComponentFactoryCreate(expected, unexpected) as TangleViewModelComponent)
-      .tangleViewModelMapSubcomponentFactory
-      .create(SavedStateHandle())
-      .viewModelProviderMap[targetClass]!!
-      .get()!!
+      val viewModel =
+        (appComponentFactoryCreate(expected, unexpected) as TangleViewModelComponent)
+          .tangleViewModelMapSubcomponentFactory
+          .create(SavedStateHandle())
+          .viewModelProviderMap[targetClass]!!
+          .get()!!
 
-    viewModel::class.java shouldBe targetClass
+      viewModel::class.java shouldBe targetClass
 
-    viewModel.propertyValue<String>("someArg") shouldBe expected
-  }
+      viewModel.propertyValue<String>("someArg") shouldBe expected
+    }
 
   @Test
-  fun `viewModel arguments with named qualifiers get qualified bindings`() = compileWithDagger(
-    """
+  fun `viewModel arguments with named qualifiers get qualified bindings`() =
+    compileWithDagger(
+      """
     package tangle.inject.tests
 
     import androidx.lifecycle.ViewModel
@@ -281,24 +287,26 @@ class ViewModelIntegrationTest : BaseTest() {
       val someArg: String
     ) : ViewModel()
     """
-  ) {
-    val expected = "Expected"
-    val unexpected = "Unexpected"
+    ) {
+      val expected = "Expected"
+      val unexpected = "Unexpected"
 
-    val viewModel = (appComponentFactoryCreate(expected, unexpected) as TangleViewModelComponent)
-      .tangleViewModelMapSubcomponentFactory
-      .create(SavedStateHandle.createHandle(null, null))
-      .viewModelProviderMap[targetClass]!!
-      .get()!!
+      val viewModel =
+        (appComponentFactoryCreate(expected, unexpected) as TangleViewModelComponent)
+          .tangleViewModelMapSubcomponentFactory
+          .create(SavedStateHandle.createHandle(null, null))
+          .viewModelProviderMap[targetClass]!!
+          .get()!!
 
-    viewModel::class.java shouldBe targetClass
+      viewModel::class.java shouldBe targetClass
 
-    viewModel.propertyValue<String>("someArg") shouldBe expected
-  }
+      viewModel.propertyValue<String>("someArg") shouldBe expected
+    }
 
   @Test
-  fun `qualified argument without binding should fail`() = compileWithDagger(
-    """
+  fun `qualified argument without binding should fail`() =
+    compileWithDagger(
+      """
     package tangle.inject.test
 
     import androidx.lifecycle.ViewModel
@@ -328,9 +336,9 @@ class ViewModelIntegrationTest : BaseTest() {
       val someArg: String
     ) : ViewModel()
     """,
-    shouldFail = true
-  ) {
-    messages shouldContain "[Dagger/MissingBinding] @tangle.inject.test.SomeQualifier " +
-      "java.lang.String cannot be provided without an @Provides-annotated method."
-  }
+      shouldFail = true
+    ) {
+      messages shouldContain "[Dagger/MissingBinding] @tangle.inject.test.SomeQualifier " +
+        "java.lang.String cannot be provided without an @Provides-annotated method."
+    }
 }

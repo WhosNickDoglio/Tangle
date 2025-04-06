@@ -81,7 +81,10 @@ inline fun <reified T : Any, reified R : Any> T.getPrivateFieldByName(name: Stri
   return property.get(this) as R
 }
 
-inline fun <reified T : Any> T.getPrivateFunctionByName(name: String, vararg args: Any?): Any? {
+inline fun <reified T : Any> T.getPrivateFunctionByName(
+  name: String,
+  vararg args: Any?
+): Any? {
   val kClass = T::class
 
   val function = kClass.memberFunctions.find { it.name == name }

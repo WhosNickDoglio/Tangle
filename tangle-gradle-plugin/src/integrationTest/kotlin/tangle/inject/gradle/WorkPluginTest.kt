@@ -18,107 +18,108 @@ package tangle.inject.gradle
 import org.junit.jupiter.api.TestFactory
 
 class WorkPluginTest : BasePluginTest() {
-
   @TestFactory
-  fun `disabling work in config should disable its dependencies`() = test {
-
-    module(
-      """
-      plugins {
-        id("com.android.library")
-        kotlin("android")
-        id("com.rickbusarow.tangle")
-      }
-
-      android {
-        compileSdk = 30
-        namespace = "foo"
-
-        defaultConfig {
-          minSdk = 23
-          targetSdk = 30
+  fun `disabling work in config should disable its dependencies`() =
+    test {
+      module(
+        """
+        plugins {
+          id("com.android.library")
+          kotlin("android")
+          id("com.rickbusarow.tangle")
         }
-      }
 
-      tangle {
-        workEnabled = false // default is null
-      }
+        android {
+          compileSdk = 30
+          namespace = "foo"
 
-      dependencies {
-        $activities
-        $fragments
-        $viewModels
-        $compose
-        $workManager
-      }
+          defaultConfig {
+            minSdk = 23
+            targetSdk = 30
+          }
+        }
 
-      ${listDepsTasks()}
-      """.trimIndent()
-    )
+        tangle {
+          workEnabled = false // default is null
+        }
 
-    build("deps").tangleDeps() shouldBe listOf(
-      "anvil com.rickbusarow.tangle:tangle-compiler",
-      "anvil com.rickbusarow.tangle:tangle-fragment-compiler",
-      "anvil com.rickbusarow.tangle:tangle-viewmodel-compiler",
-      "implementation com.rickbusarow.tangle:tangle-api",
-      "implementation com.rickbusarow.tangle:tangle-fragment-api",
-      "implementation com.rickbusarow.tangle:tangle-viewmodel-activity",
-      "implementation com.rickbusarow.tangle:tangle-viewmodel-api",
-      "implementation com.rickbusarow.tangle:tangle-viewmodel-compose",
-      "implementation com.rickbusarow.tangle:tangle-viewmodel-fragment"
-    )
-  }
+        dependencies {
+          $activities
+          $fragments
+          $viewModels
+          $compose
+          $workManager
+        }
+
+        ${listDepsTasks()}
+        """.trimIndent()
+      )
+
+      build("deps").tangleDeps() shouldBe
+        listOf(
+          "anvil com.rickbusarow.tangle:tangle-compiler",
+          "anvil com.rickbusarow.tangle:tangle-fragment-compiler",
+          "anvil com.rickbusarow.tangle:tangle-viewmodel-compiler",
+          "implementation com.rickbusarow.tangle:tangle-api",
+          "implementation com.rickbusarow.tangle:tangle-fragment-api",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-activity",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-api",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-compose",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-fragment"
+        )
+    }
 
   @TestFactory
   fun `work compiler and api should be automatically enabled with androidx work dependencies`() =
     test {
-
       module(
         """
-      plugins {
-        id("com.android.library")
-        kotlin("android")
-        id("com.rickbusarow.tangle")
-      }
-
-      android {
-        compileSdk = 30
-        namespace = "foo"
-
-        defaultConfig {
-          minSdk = 23
-          targetSdk = 30
+        plugins {
+          id("com.android.library")
+          kotlin("android")
+          id("com.rickbusarow.tangle")
         }
-      }
 
-      dependencies {
-        $workManager
-      }
+        android {
+          compileSdk = 30
+          namespace = "foo"
 
-      ${listDepsTasks()}
+          defaultConfig {
+            minSdk = 23
+            targetSdk = 30
+          }
+        }
+
+        dependencies {
+          $workManager
+        }
+
+        ${listDepsTasks()}
         """.trimIndent()
       )
 
-      build("deps").tangleDeps() shouldBe listOf(
-        "anvil com.rickbusarow.tangle:tangle-compiler",
-        "anvil com.rickbusarow.tangle:tangle-work-compiler",
-        "implementation com.rickbusarow.tangle:tangle-api",
-        "implementation com.rickbusarow.tangle:tangle-work-api"
-      )
+      build("deps").tangleDeps() shouldBe
+        listOf(
+          "anvil com.rickbusarow.tangle:tangle-compiler",
+          "anvil com.rickbusarow.tangle:tangle-work-compiler",
+          "implementation com.rickbusarow.tangle:tangle-api",
+          "implementation com.rickbusarow.tangle:tangle-work-api"
+        )
     }
 
-  fun listDepsTasks() = """
-  tasks.register("deps") {
-    doLast {
-      listOf("anvil", "api", "implementation")
-        .forEach { config ->
-          project.configurations
-            .named(config)
-            .get()
-            .dependencies
-            .forEach { println("${'$'}config ${'$'}{it.group}:${'$'}{it.name}") }
-        }
+  fun listDepsTasks() =
+    """
+    tasks.register("deps") {
+      doLast {
+        listOf("anvil", "api", "implementation")
+          .forEach { config ->
+            project.configurations
+              .named(config)
+              .get()
+              .dependencies
+              .forEach { println("${'$'}config ${'$'}{it.group}:${'$'}{it.name}") }
+          }
+      }
     }
-  }
-  """.trimIndent()
+    """.trimIndent()
 }

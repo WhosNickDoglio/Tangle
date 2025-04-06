@@ -29,11 +29,11 @@ import tangle.inject.test.utils.targetClass
 
 @OptIn(InternalTangleApi::class)
 class TangleScopeTest : BaseTest() {
-
   @TestFactory
-  fun `injector is generated without injected members`() = test {
-    compile(
-      """
+  fun `injector is generated without injected members`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import tangle.inject.TangleScope
@@ -42,21 +42,22 @@ class TangleScopeTest : BaseTest() {
       @TangleScope(Unit::class)
       class Target
      """
-    ) {
-      val tangleInjector = targetClass.tangleInjector().createInstance() as TangleInjector<Any>
+      ) {
+        val tangleInjector = targetClass.tangleInjector().createInstance() as TangleInjector<Any>
 
-      val target = targetClass.createInstance()
+        val target = targetClass.createInstance()
 
-      tangleInjector.inject(target)
+        tangleInjector.inject(target)
 
-      target.fieldsValues() shouldBe mapOf()
+        target.fieldsValues() shouldBe mapOf()
+      }
     }
-  }
 
   @TestFactory
-  fun `injector is generated with declared injected members`() = test {
-    compile(
-      """
+  fun `injector is generated with declared injected members`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import tangle.inject.TangleScope
@@ -67,22 +68,26 @@ class TangleScopeTest : BaseTest() {
         @Inject lateinit var str: String
       }
      """
-    ) {
-      val membersInjector = targetClass.membersInjector().createInstance("name".provider())
-      val tangleInjector = targetClass.tangleInjector().createInstance(membersInjector) as TangleInjector<Any>
+      ) {
+        val membersInjector = targetClass.membersInjector().createInstance("name".provider())
+        val tangleInjector =
+          targetClass.tangleInjector().createInstance(
+            membersInjector
+          ) as TangleInjector<Any>
 
-      val target = targetClass.createInstance()
+        val target = targetClass.createInstance()
 
-      tangleInjector.inject(target)
+        tangleInjector.inject(target)
 
-      target.fieldsValues() shouldBe mapOf("str" to "name")
+        target.fieldsValues() shouldBe mapOf("str" to "name")
+      }
     }
-  }
 
   @TestFactory
-  fun `injector is generated with injected members only in superclass`() = test {
-    compile(
-      """
+  fun `injector is generated with injected members only in superclass`() =
+    test {
+      compile(
+        """
       package tangle.inject.tests
 
       import tangle.inject.TangleScope
@@ -95,18 +100,19 @@ class TangleScopeTest : BaseTest() {
         @Inject lateinit var baseStr: String
       }
      """
-    ) {
-      val membersInjector = baseClass.membersInjector().createInstance("baseName".provider())
-      val tangleInjector = targetClass.tangleInjector()
-        .createInstance(membersInjector) as TangleInjector<Any>
+      ) {
+        val membersInjector = baseClass.membersInjector().createInstance("baseName".provider())
+        val tangleInjector =
+          targetClass.tangleInjector()
+            .createInstance(membersInjector) as TangleInjector<Any>
 
-      val target = targetClass.createInstance()
+        val target = targetClass.createInstance()
 
-      tangleInjector.inject(target)
+        tangleInjector.inject(target)
 
-      target.fieldsValues() shouldBe mapOf("baseStr" to "baseName")
+        target.fieldsValues() shouldBe mapOf("baseStr" to "baseName")
+      }
     }
-  }
 
   @TestFactory
   fun `injector is generated with declared injected members and injected members in superclass`() =
@@ -128,11 +134,13 @@ class TangleScopeTest : BaseTest() {
       }
      """
       ) {
-        val membersInjector = targetClass.membersInjector()
-          .createInstance("baseName".provider(), "name".provider())
+        val membersInjector =
+          targetClass.membersInjector()
+            .createInstance("baseName".provider(), "name".provider())
 
-        val tangleInjector = targetClass.tangleInjector()
-          .createInstance(membersInjector) as TangleInjector<Any>
+        val tangleInjector =
+          targetClass.tangleInjector()
+            .createInstance(membersInjector) as TangleInjector<Any>
 
         val target = targetClass.createInstance()
 

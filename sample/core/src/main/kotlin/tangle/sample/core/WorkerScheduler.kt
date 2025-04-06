@@ -46,7 +46,6 @@ import androidx.work.WorkManager
  * ```
  */
 interface WorkerScheduler {
-
   /**
    * @return true if the [Worker] should be scheduled, or false if it shouldn't
    */

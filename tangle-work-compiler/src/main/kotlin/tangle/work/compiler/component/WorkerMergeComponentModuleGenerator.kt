@@ -33,25 +33,25 @@ object WorkerMergeComponentModuleGenerator : FileGenerator<MergeComponentParams>
     codeGenDir: File,
     params: MergeComponentParams
   ): GeneratedFileWithSources {
-
     val packageName = params.packageName
 
     val className = params.mergeComponentModuleClassName
     val classNameString = className.simpleName
 
-    val content = FileSpec.buildFile(packageName, classNameString) {
-      TypeSpec.interfaceBuilder(className)
-        .addAnnotation(ClassNames.module)
-        .addContributesTo(params.scopeClassName)
-        .addFunction("bindTangleWorkerFactoryMap") {
-          addAnnotation(ClassNames.multibinds)
-          addAnnotation(ClassNames.tangleAssistedWorkerFactoryMap)
-          addModifiers(KModifier.ABSTRACT)
-          returns(ClassNames.assistedWorkerFactoryMap)
-        }
-        .build()
-        .let { addType(it) }
-    }
+    val content =
+      FileSpec.buildFile(packageName, classNameString) {
+        TypeSpec.interfaceBuilder(className)
+          .addAnnotation(ClassNames.module)
+          .addContributesTo(params.scopeClassName)
+          .addFunction("bindTangleWorkerFactoryMap") {
+            addAnnotation(ClassNames.multibinds)
+            addAnnotation(ClassNames.tangleAssistedWorkerFactoryMap)
+            addModifiers(KModifier.ABSTRACT)
+            returns(ClassNames.assistedWorkerFactoryMap)
+          }
+          .build()
+          .let { addType(it) }
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir,

@@ -30,12 +30,10 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
 class ArgTest {
-
   val fragmentName = TestFragment::class.java.canonicalName!!
 
   @Test
   fun `primitive argument of the correct type is returned`() {
-
     val fragment = TestFragment()
     fragment.arguments = bundleOf("int" to 1)
 
@@ -46,7 +44,6 @@ class ArgTest {
 
   @Test
   fun `typed array argument of the correct type is returned`() {
-
     val fragment = TestFragment()
     fragment.arguments = bundleOf("ints" to arrayOf(1))
 
@@ -58,7 +55,6 @@ class ArgTest {
 
   @Test
   fun `IntArray argument of the correct type is returned`() {
-
     val fragment = TestFragment()
     fragment.arguments = bundleOf("ints" to intArrayOf(1))
 
@@ -69,7 +65,6 @@ class ArgTest {
 
   @Test
   fun `Parcelable argument of the correct type is returned`() {
-
     val fragment = TestFragment()
     fragment.arguments = bundleOf("parcelable" to ParcelablePacket())
 
@@ -80,7 +75,6 @@ class ArgTest {
 
   @Test
   fun `expected type may be a supertype of the actual argument type`() {
-
     val fragment = TestFragment()
     fragment.arguments = bundleOf("string" to "expected")
 
@@ -91,7 +85,6 @@ class ArgTest {
 
   @Test
   fun `missing bundle throws IllegalStateException`() {
-
     val fragment = TestFragment()
 
     val arg: String by fragment.arg("missing")
@@ -102,7 +95,6 @@ class ArgTest {
 
   @Test
   fun `missing argument throws IllegalArgumentException`() {
-
     val fragment = TestFragment()
 
     fragment.arguments = bundleOf()
@@ -115,7 +107,6 @@ class ArgTest {
 
   @Test
   fun `null argument with non-nullable expected type throws IllegalArgumentException`() {
-
     val fragment = TestFragment()
     fragment.arguments = bundleOf("nullable" to null)
 
@@ -128,7 +119,6 @@ class ArgTest {
 
   @Test
   fun `argument of the wrong non-nullable type throws IllegalArgumentException`() {
-
     val fragment = TestFragment()
     fragment.arguments = bundleOf("wrong" to 1)
 
@@ -141,7 +131,6 @@ class ArgTest {
 
   @Test
   fun `argument of the wrong nullable type throws IllegalArgumentException`() {
-
     val fragment = TestFragment()
     fragment.arguments = bundleOf("wrong" to 1)
 
@@ -154,7 +143,6 @@ class ArgTest {
 
   @Test
   fun `null argument with nullable expected type just returns null`() {
-
     val fragment = TestFragment()
     fragment.arguments = bundleOf("nullable" to null)
 
@@ -171,9 +159,15 @@ class TestFragment : Fragment()
 class ParcelablePacket() : Parcelable {
   constructor(parcel: Parcel) : this()
 
-  override fun writeToParcel(parcel: Parcel, flags: Int) = Unit
+  override fun writeToParcel(
+    parcel: Parcel,
+    flags: Int
+  ) = Unit
+
   override fun describeContents(): Int = 0
+
   override fun equals(other: Any?): Boolean = other is ParcelablePacket
+
   override fun hashCode(): Int = javaClass.hashCode()
 
   companion object CREATOR : Creator<ParcelablePacket> {

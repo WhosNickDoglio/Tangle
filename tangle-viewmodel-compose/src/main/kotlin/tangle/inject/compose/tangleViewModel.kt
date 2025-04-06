@@ -36,7 +36,8 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 )
 @Composable
 public inline fun <reified VM : ViewModel> tangleViewModel(
-  viewModelStoreOwner: ViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
-    "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-  }
+  viewModelStoreOwner: ViewModelStoreOwner =
+    checkNotNull(LocalViewModelStoreOwner.current) {
+      "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+    }
 ): VM = tangle.viewmodel.compose.tangleViewModel(viewModelStoreOwner)

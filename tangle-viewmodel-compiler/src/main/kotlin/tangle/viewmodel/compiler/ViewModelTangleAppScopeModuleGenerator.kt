@@ -29,38 +29,36 @@ import tangle.inject.compiler.generateSimpleNameString
 import java.io.File
 
 class ViewModelTangleAppScopeModuleGenerator : FileGenerator<TangleScopeModule> {
-
   override fun generate(
     codeGenDir: File,
     params: TangleScopeModule
   ): GeneratedFileWithSources {
-
     val packageName = params.packageName
 
     val moduleName = "${ClassNames.tangleAppScope.simpleName}_VMInject_Module"
 
-    val content = FileSpec.buildFile(packageName, moduleName) {
-      addType(
-        TypeSpec.objectBuilder(ClassName(packageName, moduleName))
-          .addAnnotation(ClassNames.module)
-          .addContributesTo(ClassNames.tangleAppScope)
-          .applyEach(params.viewModelParamsList) { viewModelParams ->
+    val content =
+      FileSpec.buildFile(packageName, moduleName) {
+        addType(
+          TypeSpec.objectBuilder(ClassName(packageName, moduleName))
+            .addAnnotation(ClassNames.module)
+            .addContributesTo(ClassNames.tangleAppScope)
+            .applyEach(params.viewModelParamsList) { viewModelParams ->
 
-            addFunction(
-              "provide_${viewModelParams.viewModelClassName.generateSimpleNameString()}Key"
-            ) {
-              returns(ClassNames.javaClassOutVM)
-              addAnnotation(ClassNames.intoSet)
-              addAnnotation(ClassNames.provides)
-              addAnnotation(ClassNames.tangleViewModelProviderMapKeySet)
-              addStatement("return·%T::class.java", viewModelParams.viewModelClassName)
-              build()
+              addFunction(
+                "provide_${viewModelParams.viewModelClassName.generateSimpleNameString()}Key"
+              ) {
+                returns(ClassNames.javaClassOutVM)
+                addAnnotation(ClassNames.intoSet)
+                addAnnotation(ClassNames.provides)
+                addAnnotation(ClassNames.tangleViewModelProviderMapKeySet)
+                addStatement("return·%T::class.java", viewModelParams.viewModelClassName)
+                build()
+              }
             }
-          }
-          .build()
-
-      )
-    }
+            .build()
+        )
+      }
     return createGeneratedFileWithSources(
       codeGenDir,
       packageName,

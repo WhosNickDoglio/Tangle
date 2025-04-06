@@ -37,25 +37,25 @@ import androidx.fragment.app.Fragment
  * @see tangle.fragment.argOrNull for the non-throwing version
  * @see androidx.core.os.bundleOf for all supported types and how they're treated
  */
-public inline fun <reified A : Any?> Fragment.arg(bundleKey: String): Lazy<A> = lazy {
+public inline fun <reified A : Any?> Fragment.arg(bundleKey: String): Lazy<A> =
+  lazy {
+    val args = requireArguments()
 
-  val args = requireArguments()
+    require(args.containsKey(bundleKey)) {
+      "Fragment ${javaClass.canonicalName}'s arguments do not contain key: $bundleKey"
+    }
 
-  require(args.containsKey(bundleKey)) {
-    "Fragment ${javaClass.canonicalName}'s arguments do not contain key: $bundleKey"
+    val arg = args.get(bundleKey)
+
+    require(arg is A) {
+      val actualType = arg?.let { it::class.qualifiedName }
+
+      "expected the argument for key '$bundleKey' to be of type '${A::class.qualifiedName}', " +
+        "but it is of type '$actualType'."
+    }
+
+    arg
   }
-
-  val arg = args.get(bundleKey)
-
-  require(arg is A) {
-    val actualType = arg?.let { it::class.qualifiedName }
-
-    "expected the argument for key '$bundleKey' to be of type '${A::class.qualifiedName}', " +
-      "but it is of type '$actualType'."
-  }
-
-  arg
-}
 
 /**
  * Lazily retrieve an argument passed to this fragment. Returns `null` if:
@@ -74,9 +74,9 @@ public inline fun <reified A : Any?> Fragment.arg(bundleKey: String): Lazy<A> = 
  * @see tangle.fragment.arg for a non-nullable return when the argument is guaranteed
  * @see androidx.core.os.bundleOf for all supported types and how they're treated
  */
-public inline fun <reified A : Any?> Fragment.argOrNull(bundleKey: String): Lazy<A?> = lazy {
+public inline fun <reified A : Any?> Fragment.argOrNull(bundleKey: String): Lazy<A?> =
+  lazy {
+    val args = arguments ?: return@lazy null
 
-  val args = arguments ?: return@lazy null
-
-  args.get(bundleKey) as? A
-}
+    args.get(bundleKey) as? A
+  }

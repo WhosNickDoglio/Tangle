@@ -48,36 +48,35 @@ import java.io.File
  * ```
  */
 internal object TangleAppScope_TangleInjector_Scope_ModuleGenerator : FileGenerator<MemberInjectParams> {
-
   override fun generate(
     codeGenDir: File,
     params: MemberInjectParams
   ): GeneratedFileWithSources {
-
     val packageName = params.packageName
 
     val moduleName = params.tangleAppScopeModuleClassName.simpleName
 
-    val content = FileSpec.buildFile(packageName, moduleName) {
-      addType(
-        TypeSpec.objectBuilder(params.tangleAppScopeModuleClassName)
-          .addAnnotation(ClassNames.module)
-          .addContributesTo(ClassNames.tangleAppScope)
-          .addFunction("provide${params.injectedClassName.generateSimpleNameString()}Scope") {
-            addAnnotation(ClassNames.provides)
-            addAnnotation(ClassNames.tangleScopeMap)
-            addAnnotation(ClassNames.intoMap)
-              .addAnnotation(
-                AnnotationSpec.builder(ClassNames.classKey)
-                  .addMember("%T::class", params.injectedClassName)
-                  .build()
-              )
-            returns(ClassNames.javaClassWildcard)
-            addStatement("return·%T::class.java", params.scopeClassName)
-          }
-          .build()
-      )
-    }
+    val content =
+      FileSpec.buildFile(packageName, moduleName) {
+        addType(
+          TypeSpec.objectBuilder(params.tangleAppScopeModuleClassName)
+            .addAnnotation(ClassNames.module)
+            .addContributesTo(ClassNames.tangleAppScope)
+            .addFunction("provide${params.injectedClassName.generateSimpleNameString()}Scope") {
+              addAnnotation(ClassNames.provides)
+              addAnnotation(ClassNames.tangleScopeMap)
+              addAnnotation(ClassNames.intoMap)
+                .addAnnotation(
+                  AnnotationSpec.builder(ClassNames.classKey)
+                    .addMember("%T::class", params.injectedClassName)
+                    .build()
+                )
+              returns(ClassNames.javaClassWildcard)
+              addStatement("return·%T::class.java", params.scopeClassName)
+            }
+            .build()
+        )
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir = codeGenDir,

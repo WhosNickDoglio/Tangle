@@ -35,21 +35,24 @@ val ClassNames.androidxFragment
   get() = ClassName("androidx.fragment.app", "Fragment")
 
 private val ClassNames.javaClassOutFragment: ParameterizedTypeName
-  get() = Class::class.asClassName()
-    .parameterizedBy(TypeVariableName("out·${androidxFragment.canonicalName}"))
+  get() =
+    Class::class.asClassName()
+      .parameterizedBy(TypeVariableName("out·${androidxFragment.canonicalName}"))
 
 val ClassNames.fragmentMap: ParameterizedTypeName
-  get() = Map::class.asClassName()
-    .parameterizedBy(
-      javaClassOutFragment,
-      androidxFragment.jvmSuppressWildcards()
-    )
+  get() =
+    Map::class.asClassName()
+      .parameterizedBy(
+        javaClassOutFragment,
+        androidxFragment.jvmSuppressWildcards()
+      )
 
 val ClassNames.fragmentProviderMap: ParameterizedTypeName
-  get() = Map::class.asClassName()
-    .parameterizedBy(
-      javaClassOutFragment,
-      ClassNames.provider
-        .parameterizedBy(androidxFragment.jvmSuppressWildcards())
-        .jvmSuppressWildcards()
-    )
+  get() =
+    Map::class.asClassName()
+      .parameterizedBy(
+        javaClassOutFragment,
+        ClassNames.provider
+          .parameterizedBy(androidxFragment.jvmSuppressWildcards())
+          .jvmSuppressWildcards()
+      )

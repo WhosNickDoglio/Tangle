@@ -33,7 +33,6 @@ val gradleVersions = setOf(TestVersions.GRADLE)
 val kotlinVersions = setOf(TestVersions.KOTLIN, "1.7.0", "1.7.10")
 
 abstract class BasePluginTest {
-
   protected val activities = "api(\"androidx.activity:activity:${TestVersions.ACTIVITY}\")"
   protected val compose = "api(\"androidx.compose.ui:ui:${TestVersions.COMPOSE}\")"
   protected val fragments = "api(\"androidx.fragment:fragment:${TestVersions.FRAGMENT}\")"
@@ -55,19 +54,20 @@ abstract class BasePluginTest {
   }
 
   @Language("RegExp")
-  fun BuildResult.tangleDeps(): List<String> = output
-    .replace("[\\s\\S]*> Task :module:\\S*\\s*".toRegex(), "")
-    .replace(
-      "\\s*BUILD SUCCESSFUL in .*\\s*\\d* actionable task: \\d* executed\\s*".toRegex(), ""
-    )
-    .lines()
-    .filterNot { it.isBlank() }
-    .filterNot { it.startsWith("api androidx") }
-    .filterNot { it.contains("com.squareup.anvil") }
-    .sorted()
+  fun BuildResult.tangleDeps(): List<String> =
+    output
+      .replace("[\\s\\S]*> Task :module:\\S*\\s*".toRegex(), "")
+      .replace(
+        "\\s*BUILD SUCCESSFUL in .*\\s*\\d* actionable task: \\d* executed\\s*".toRegex(),
+        ""
+      )
+      .lines()
+      .filterNot { it.isBlank() }
+      .filterNot { it.startsWith("api androidx") }
+      .filterNot { it.contains("com.squareup.anvil") }
+      .sorted()
 
   fun GradleRunner.shouldFailWithMessage(expectedMessage: String) {
-
     val result = buildAndFail()
 
     result.tasks.forEach { it.outcome shouldBe TaskOutcome.FAILED }
@@ -76,7 +76,6 @@ abstract class BasePluginTest {
   }
 
   fun GradleRunner.shouldFailWithMessage(expectedMessage: Regex) {
-
     val result = buildAndFail()
 
     result.tasks.forEach { it.outcome shouldBe TaskOutcome.FAILED }
@@ -84,20 +83,19 @@ abstract class BasePluginTest {
     result.output.fixPath() shouldContain expectedMessage
   }
 
-  inline fun test(
-    crossinline action: TestScope.() -> Unit
-  ): List<DynamicTest> =
+  inline fun test(crossinline action: TestScope.() -> Unit): List<DynamicTest> =
     gradleVersions.flatMap { gradle ->
       kotlinVersions.flatMap { kotlin ->
         agpVersions.flatMap { agp ->
           anvilVersions.map { anvil ->
-            val scope = TestScope(
-              testInfo = testInfo,
-              gradleVersion = gradle,
-              kotlinVersion = kotlin,
-              agpVersion = agp,
-              anvilVersion = anvil
-            )
+            val scope =
+              TestScope(
+                testInfo = testInfo,
+                gradleVersion = gradle,
+                kotlinVersion = kotlin,
+                agpVersion = agp,
+                anvilVersion = anvil
+              )
             DynamicTest.dynamicTest(scope.toString()) {
               scope.testProjectDir.deleteRecursively()
               action.invoke(scope)
@@ -121,10 +119,11 @@ abstract class BasePluginTest {
       kotestShouldBe(expected)
     } catch (assertionError: AssertionError) {
       // remove this function from the stacktrace and rethrow
-      assertionError.stackTrace = assertionError
-        .stackTrace
-        .drop(1)
-        .toTypedArray()
+      assertionError.stackTrace =
+        assertionError
+          .stackTrace
+          .drop(1)
+          .toTypedArray()
       throw assertionError
     }
   }

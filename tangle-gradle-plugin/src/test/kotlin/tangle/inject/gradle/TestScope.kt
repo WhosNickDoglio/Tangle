@@ -28,12 +28,12 @@ data class TestScope(
   val agpVersion: String,
   val anvilVersion: String
 ) {
-
   val classNameDir: File by lazy {
-    val className = testInfo.testClass
-      .get()
-      .simpleName
-      .replace("[^a-zA-Z0-9]".toRegex(), "_")
+    val className =
+      testInfo.testClass
+        .get()
+        .simpleName
+        .replace("[^a-zA-Z0-9]".toRegex(), "_")
 
     File("build/tests/$className").also {
       it.mkdir()
@@ -41,26 +41,29 @@ data class TestScope(
   }
 
   val testProjectDir: File by lazy {
-    val testName = testInfo.displayName
-      .replace("[^a-zA-Z0-9]".toRegex(), "_")
-      .replace("_{2,}".toRegex(), "_")
-      .removeSuffix("_")
+    val testName =
+      testInfo.displayName
+        .replace("[^a-zA-Z0-9]".toRegex(), "_")
+        .replace("_{2,}".toRegex(), "_")
+        .removeSuffix("_")
 
-    val scopeName = toString()
-      .replace("[^a-zA-Z0-9]".toRegex(), "_")
-      .replace("_{2,}".toRegex(), "_")
-      .removeSuffix("_")
+    val scopeName =
+      toString()
+        .replace("[^a-zA-Z0-9]".toRegex(), "_")
+        .replace("_{2,}".toRegex(), "_")
+        .removeSuffix("_")
 
     File(classNameDir, "$testName/$scopeName").also {
       it.mkdir()
     }
   }
 
-  fun gradleRunner(): GradleRunner = GradleRunner.create()
-    .forwardOutput()
-    .withGradleVersion(gradleVersion)
-    // .withDebug(true)
-    .withProjectDir(testProjectDir)
+  fun gradleRunner(): GradleRunner =
+    GradleRunner.create()
+      .forwardOutput()
+      .withGradleVersion(gradleVersion)
+      // .withDebug(true)
+      .withProjectDir(testProjectDir)
 
   fun projectBuildFile(): File {
     testProjectDir.mkdirs()

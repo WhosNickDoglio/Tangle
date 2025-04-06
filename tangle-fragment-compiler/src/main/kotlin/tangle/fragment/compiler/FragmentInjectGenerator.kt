@@ -37,86 +37,91 @@ import java.io.File
 @Suppress("unused")
 @AutoService(CodeGenerator::class)
 class FragmentInjectGenerator : TangleCodeGenerator() {
-
   override fun generateTangleCode(
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
   ): Collection<GeneratedFileWithSources> {
-    val paramsList = projectFiles
-      .flatMap { file ->
+    val paramsList =
+      projectFiles
+        .flatMap { file ->
 
-        val factoryParams = listOf(file).classAndInnerClassReferences(module)
-          .filter { it.isAnnotatedWith(FqNames.fragmentInjectFactory) }
-          .map { factoryInterface ->
+          val factoryParams =
+            listOf(file).classAndInnerClassReferences(module)
+              .filter { it.isAnnotatedWith(FqNames.fragmentInjectFactory) }
+              .map { factoryInterface ->
 
-            factoryInterface.clazz
-              .nonStaticOuterClasses()
-              .map { it.toClassReference(module) }
-              .firstOrNull { it.fragmentInjectConstructor() != null }
-              ?.let { fragmentClass ->
-                Factory.create(
-                  module = module,
-                  factoryInterface = factoryInterface,
-                  fragmentClass = fragmentClass,
-                  constructor = fragmentClass.fragmentInjectConstructor()!!
+                factoryInterface.clazz
+                  .nonStaticOuterClasses()
+                  .map { it.toClassReference(module) }
+                  .firstOrNull { it.fragmentInjectConstructor() != null }
+                  ?.let { fragmentClass ->
+                    Factory.create(
+                      module = module,
+                      factoryInterface = factoryInterface,
+                      fragmentClass = fragmentClass,
+                      constructor = fragmentClass.fragmentInjectConstructor()!!
+                    )
+                  } ?: throw TangleCompilationException(
+                  "The @${FqNames.fragmentInjectFactory.shortName().asString()}-annotated interface " +
+                    "`${factoryInterface.fqName}` must be defined inside a Fragment " +
+                    "which is annotated with `@${FqNames.fragmentInject.shortName().asString()}`."
                 )
-              } ?: throw TangleCompilationException(
-              "The @${FqNames.fragmentInjectFactory.shortName().asString()}-annotated interface " +
-                "`${factoryInterface.fqName}` must be defined inside a Fragment " +
-                "which is annotated with `@${FqNames.fragmentInject.shortName().asString()}`."
-            )
-          }
+              }
 
-        val alreadyParsedFragments = factoryParams.map { it.fragmentClassName }.toSet()
+          val alreadyParsedFragments = factoryParams.map { it.fragmentClassName }.toSet()
 
-        listOf(file).classAndInnerClassReferences(module)
-          .filterNot { it.asClassName() in alreadyParsedFragments }
-          .forEach { clazz ->
+          listOf(file).classAndInnerClassReferences(module)
+            .filterNot { it.asClassName() in alreadyParsedFragments }
+            .forEach { clazz ->
 
-            if (clazz.asClassName() in alreadyParsedFragments) return@forEach
+              if (clazz.asClassName() in alreadyParsedFragments) return@forEach
 
-            require(clazz.fragmentInjectConstructor() == null, clazz) {
-              "@${FqNames.fragmentInject.shortName().asString()} must only be applied " +
-                "to the constructor of a Fragment, and that fragment must have a corresponding " +
-                FqNames.fragmentInjectFactory.shortName().asString() +
-                "-annotated factory interface."
+              require(clazz.fragmentInjectConstructor() == null, clazz) {
+                "@${FqNames.fragmentInject.shortName().asString()} must only be applied " +
+                  "to the constructor of a Fragment, and that fragment must have a corresponding " +
+                  FqNames.fragmentInjectFactory.shortName().asString() +
+                  "-annotated factory interface."
+              }
             }
-          }
 
-        factoryParams.toList().plus(factoryParams.map { it.fragmentParams })
-      }
-      .toList()
+          factoryParams.toList().plus(factoryParams.map { it.fragmentParams })
+        }
+        .toList()
 
     if (paramsList.isEmpty()) {
       return emptyList()
     }
 
-    val factoryImpls = paramsList
-      .filterIsInstance<Factory>()
-      .map { FragmentAssisted_Factory_Impl_Generator.generate(codeGenDir, it) }
+    val factoryImpls =
+      paramsList
+        .filterIsInstance<Factory>()
+        .map { FragmentAssisted_Factory_Impl_Generator.generate(codeGenDir, it) }
 
-    val fragmentFactories = paramsList
-      .filterIsInstance<Fragment>()
-      .map { Fragment_Factory_Generator.generate(codeGenDir, it) }
+    val fragmentFactories =
+      paramsList
+        .filterIsInstance<Fragment>()
+        .map { Fragment_Factory_Generator.generate(codeGenDir, it) }
 
-    val daggerModules = paramsList
-      .filterIsInstance<Factory>()
-      .groupBy { it.packageName }
-      .flatMap { (packageName, byPackageName) ->
-        byPackageName
-          .groupBy { it.scopeName }
-          .map { (scopeName, byScopeName) ->
+    val daggerModules =
+      paramsList
+        .filterIsInstance<Factory>()
+        .groupBy { it.packageName }
+        .flatMap { (packageName, byPackageName) ->
+          byPackageName
+            .groupBy { it.scopeName }
+            .map { (scopeName, byScopeName) ->
 
-            val params = FragmentInject_ModuleGenerator.FragmentBindingModuleParams(
-              scopeClassName = scopeName.asClassName(module),
-              packageName = packageName,
-              factoryParams = byScopeName
-            )
+              val params =
+                FragmentInject_ModuleGenerator.FragmentBindingModuleParams(
+                  scopeClassName = scopeName.asClassName(module),
+                  packageName = packageName,
+                  factoryParams = byScopeName
+                )
 
-            FragmentInject_ModuleGenerator.generate(codeGenDir, params)
-          }
-      }
+              FragmentInject_ModuleGenerator.generate(codeGenDir, params)
+            }
+        }
 
     return fragmentFactories + factoryImpls + daggerModules
   }

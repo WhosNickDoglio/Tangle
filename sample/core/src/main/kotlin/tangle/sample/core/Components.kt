@@ -16,7 +16,6 @@
 package tangle.sample.core
 
 object Components {
-
   @PublishedApi
   @Suppress("ObjectPropertyNaming")
   internal val _components = mutableSetOf<Any>()
@@ -25,7 +24,8 @@ object Components {
     _components.add(component)
   }
 
-  inline fun <reified T> get(): T = _components
-    .filterIsInstance<T>()
-    .single()
+  inline fun <reified T> get(): T =
+    _components
+      .filterIsInstance<T>()
+      .single()
 }

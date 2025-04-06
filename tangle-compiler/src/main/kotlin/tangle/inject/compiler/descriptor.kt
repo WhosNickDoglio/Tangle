@@ -52,11 +52,13 @@ import org.jetbrains.kotlin.types.typeUtil.TypeNullability.NULLABLE
 import org.jetbrains.kotlin.types.typeUtil.nullability
 import org.jetbrains.kotlin.types.typeUtil.representativeUpperBound
 
-fun ClassReference.isFragment() = allSuperTypeClassReferences(true)
-  .any { it.fqName == FqNames.androidxFragment }
+fun ClassReference.isFragment() =
+  allSuperTypeClassReferences(true)
+    .any { it.fqName == FqNames.androidxFragment }
 
-fun ClassReference.isViewModel() = allSuperTypeClassReferences(true)
-  .any { it.fqName == FqNames.androidxViewModel }
+fun ClassReference.isViewModel() =
+  allSuperTypeClassReferences(true)
+    .any { it.fqName == FqNames.androidxViewModel }
 
 /**
  * Returns all member-injected parameters for the receiver class *and any superclasses*.
@@ -106,12 +108,11 @@ private fun ClassReference.declaredMemberInjectParameters(
  * This mimics Dagger's method of unique naming. If there are three parameters named "foo", the
  * unique parameter names will be [foo, foo2, foo3].
  */
-internal fun String.uniqueParameterName(
-  vararg superParameters: List<Parameter>
-): String {
-  val numDuplicates = superParameters.sumOf { list ->
-    list.count { it.name == this }
-  }
+internal fun String.uniqueParameterName(vararg superParameters: List<Parameter>): String {
+  val numDuplicates =
+    superParameters.sumOf { list ->
+      list.count { it.name == this }
+    }
 
   return if (numDuplicates == 0) {
     this
@@ -137,14 +138,17 @@ fun PropertyDescriptor.hasAnnotation(annotationFqName: FqName): Boolean {
 }
 
 fun PropertyDescriptor.isNullable() = type.nullability() == NULLABLE
+
 fun KotlinType.isNullable() = nullability() == NULLABLE
 
-fun KotlinType.fqNameOrNull(): FqName? = classDescriptor()
-  .fqNameOrNull()
+fun KotlinType.fqNameOrNull(): FqName? =
+  classDescriptor()
+    .fqNameOrNull()
 
-fun TypeParameterDescriptor.boundClassName(): ClassName = representativeUpperBound
-  .classDescriptor()
-  .asClassName()
+fun TypeParameterDescriptor.boundClassName(): ClassName =
+  representativeUpperBound
+    .classDescriptor()
+    .asClassName()
 
 fun MemberPropertyReference.tangleParamNameOrNull(): String? {
   return annotations.find { it.fqName == FqNames.tangleParam }
@@ -185,44 +189,47 @@ fun ParameterReference.requireTangleParamName(): String {
 
 fun List<AnnotationDescriptor>.qualifierAnnotationSpecs(
   module: ModuleDescriptor
-): List<AnnotationSpec> = mapNotNull {
-  if (it.fqName == FqNames.inject) return@mapNotNull null
+): List<AnnotationSpec> =
+  mapNotNull {
+    if (it.fqName == FqNames.inject) return@mapNotNull null
 
-  val classDescriptor = it.annotationClass ?: return@mapNotNull null
+    val classDescriptor = it.annotationClass ?: return@mapNotNull null
 
-  val qualifierAnnotation = classDescriptor.annotations
-    .findAnnotation(FqNames.qualifier)
-    ?: return@mapNotNull null
+    val qualifierAnnotation =
+      classDescriptor.annotations
+        .findAnnotation(FqNames.qualifier)
+        ?: return@mapNotNull null
 
-  AnnotationSpec(classDescriptor.asClassName()) {
-    qualifierAnnotation.allValueArguments
-      .forEach { (name, value) ->
-        when (value) {
-          is KClassValue -> {
-            val className = value.argumentType(module)
-              .classDescriptor()
-              .asClassName()
-            addMember("${name.asString()} = %T::class", className)
+    AnnotationSpec(classDescriptor.asClassName()) {
+      qualifierAnnotation.allValueArguments
+        .forEach { (name, value) ->
+          when (value) {
+            is KClassValue -> {
+              val className =
+                value.argumentType(module)
+                  .classDescriptor()
+                  .asClassName()
+              addMember("${name.asString()} = %T::class", className)
+            }
+
+            is EnumValue -> {
+              val enumMember =
+                MemberName(
+                  enclosingClassName =
+                    value.enumClassId.asSingleFqName()
+                      .asClassName(module),
+                  simpleName = value.enumEntryName.asString()
+                )
+              addMember("${name.asString()} = %M", enumMember)
+            }
+            // String, int, long, ... other primitives.
+            else -> addMember("${name.asString()} = $value")
           }
-
-          is EnumValue -> {
-            val enumMember = MemberName(
-              enclosingClassName = value.enumClassId.asSingleFqName()
-                .asClassName(module),
-              simpleName = value.enumEntryName.asString()
-            )
-            addMember("${name.asString()} = %M", enumMember)
-          }
-          // String, int, long, ... other primitives.
-          else -> addMember("${name.asString()} = $value")
         }
-      }
+    }
   }
-}
 
-fun MemberPropertyReference.toMemberInjectParameter(
-  uniqueName: String
-): MemberInjectParameter {
+fun MemberPropertyReference.toMemberInjectParameter(uniqueName: String): MemberInjectParameter {
   val propertyReference = this
 
   val annotations = propertyReference.annotations
@@ -233,12 +240,16 @@ fun MemberPropertyReference.toMemberInjectParameter(
   val isWrappedInProvider = typeFqName == FqNames.provider
   val isWrappedInLazy = typeFqName == FqNames.daggerLazy
 
-  val unwrappedTypeOrSelf = if (isWrappedInLazy || isWrappedInProvider) {
-    type.unwrappedTypes.first()
-  } else type
+  val unwrappedTypeOrSelf =
+    if (isWrappedInLazy || isWrappedInProvider) {
+      type.unwrappedTypes.first()
+    } else {
+      type
+    }
 
-  val typeName = unwrappedTypeOrSelf.asTypeName()
-    .withJvmSuppressWildcardsIfNeeded(module, unwrappedTypeOrSelf)
+  val typeName =
+    unwrappedTypeOrSelf.asTypeName()
+      .withJvmSuppressWildcardsIfNeeded(module, unwrappedTypeOrSelf)
 
   val tangleParamName = propertyReference.tangleParamNameOrNull()
 
@@ -264,8 +275,9 @@ fun MemberPropertyReference.toMemberInjectParameter(
   )
 }
 
-fun DeclarationDescriptor.requireContainingPackage() = containingPackage()
-  ?: throw TangleCompilationException(
-    this,
-    "Cannot determine the package name for ${fqNameSafe.asString()}."
-  )
+fun DeclarationDescriptor.requireContainingPackage() =
+  containingPackage()
+    ?: throw TangleCompilationException(
+      this,
+      "Cannot determine the package name for ${fqNameSafe.asString()}."
+    )

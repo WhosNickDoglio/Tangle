@@ -50,43 +50,42 @@ import java.io.File
  * ```
  */
 internal object TangleInjector_ModuleGenerator : FileGenerator<MemberInjectParams> {
-
   override fun generate(
     codeGenDir: File,
     params: MemberInjectParams
   ): GeneratedFileWithSources {
-
     val scopeClassName = params.scopeClassName
     val packageName = params.packageName
 
     val moduleName = params.userScopeModuleName
 
-    val content = FileSpec.buildFile(packageName, moduleName) {
-      addType(
-        TypeSpec.interfaceBuilder(params.userScopeModuleClassName)
-          .addAnnotation(ClassNames.module)
-          .addContributesTo(scopeClassName)
-          .addFunction("bind${params.injectorName}") {
-            addAnnotation(ClassNames.binds)
-            addModifiers(KModifier.ABSTRACT)
-            addParameter("injector", params.injectorClassName)
-            returns(ClassNames.tangleInjector.parameterizedBy(params.injectedClassName))
-          }
-          .addFunction("multibind${params.injectorName}IntoMap") {
-            addAnnotation(ClassNames.binds)
-            addAnnotation(ClassNames.intoMap)
-              .addAnnotation(
-                AnnotationSpec.builder(ClassNames.classKey)
-                  .addMember("%T::class", params.injectedClassName)
-                  .build()
-              )
-            addModifiers(KModifier.ABSTRACT)
-            addParameter("injector", params.injectorClassName)
-            returns(ClassNames.tangleInjector.parameterizedBy(TypeVariableName("*")))
-          }
-          .build()
-      )
-    }
+    val content =
+      FileSpec.buildFile(packageName, moduleName) {
+        addType(
+          TypeSpec.interfaceBuilder(params.userScopeModuleClassName)
+            .addAnnotation(ClassNames.module)
+            .addContributesTo(scopeClassName)
+            .addFunction("bind${params.injectorName}") {
+              addAnnotation(ClassNames.binds)
+              addModifiers(KModifier.ABSTRACT)
+              addParameter("injector", params.injectorClassName)
+              returns(ClassNames.tangleInjector.parameterizedBy(params.injectedClassName))
+            }
+            .addFunction("multibind${params.injectorName}IntoMap") {
+              addAnnotation(ClassNames.binds)
+              addAnnotation(ClassNames.intoMap)
+                .addAnnotation(
+                  AnnotationSpec.builder(ClassNames.classKey)
+                    .addMember("%T::class", params.injectedClassName)
+                    .build()
+                )
+              addModifiers(KModifier.ABSTRACT)
+              addParameter("injector", params.injectorClassName)
+              returns(ClassNames.tangleInjector.parameterizedBy(TypeVariableName("*")))
+            }
+            .build()
+        )
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir = codeGenDir,

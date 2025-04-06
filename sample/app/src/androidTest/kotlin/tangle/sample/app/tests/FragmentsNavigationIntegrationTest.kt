@@ -29,21 +29,20 @@ import tangle.sample.ui.fragmentsWithArchNavigation.FragmentsArchNavigationMainA
 
 @RunWith(AndroidJUnit4::class)
 class FragmentsNavigationIntegrationTest {
-
   @Test
-  fun selected_item_is_passed_to_next_screen() = runBlocking {
+  fun selected_item_is_passed_to_next_screen() =
+    runBlocking {
+      ActivityScenario.launch(FragmentsArchNavigationMainActivity::class.java)
 
-    ActivityScenario.launch(FragmentsArchNavigationMainActivity::class.java)
+      retry {
+        Espresso.onView(ViewMatchers.withText("Goldendoodle"))
+          .perform(ViewActions.click())
+      }
 
-    retry {
-      Espresso.onView(ViewMatchers.withText("Goldendoodle"))
-        .perform(ViewActions.click())
+      retry {
+        Espresso.onView(ViewMatchers.withText("awesome temperament"))
+          .perform(ViewActions.scrollTo())
+          .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+      }
     }
-
-    retry {
-      Espresso.onView(ViewMatchers.withText("awesome temperament"))
-        .perform(ViewActions.scrollTo())
-        .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-    }
-  }
 }

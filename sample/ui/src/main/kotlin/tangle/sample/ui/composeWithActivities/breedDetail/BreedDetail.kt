@@ -44,7 +44,6 @@ internal fun BreedDetail(
   breedDetail: BreedDetail,
   onSelectText: (String) -> Unit
 ) {
-
   Surface(
     modifier = Modifier.fillMaxSize()
   ) {
@@ -54,14 +53,14 @@ internal fun BreedDetail(
         .verticalScroll(rememberScrollState()),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
       Image(
         painter = rememberAsyncImagePainter(breedDetail.imageUrl),
         contentDescription = "picture of ${breedDetail.name}",
-        modifier = Modifier
-          .padding(8.dp)
-          .sizeIn(minHeight = 240.dp)
-          .fillMaxWidth(),
+        modifier =
+          Modifier
+            .padding(8.dp)
+            .sizeIn(minHeight = 240.dp)
+            .fillMaxWidth(),
         contentScale = ContentScale.Fit
       )
 
@@ -97,11 +96,12 @@ internal fun BreedDetail(
         )
       }
 
-      val (height, weight) = if (useMetric) {
-        "${breedDetail.heightMetric} cm" to "${breedDetail.weightMetric} kg"
-      } else {
-        "${breedDetail.heightImperial} inches" to "${breedDetail.weightImperial} pounds"
-      }
+      val (height, weight) =
+        if (useMetric) {
+          "${breedDetail.heightMetric} cm" to "${breedDetail.weightMetric} kg"
+        } else {
+          "${breedDetail.heightImperial} inches" to "${breedDetail.weightImperial} pounds"
+        }
 
       SpokenText(
         height,

@@ -48,16 +48,20 @@ data class MergeComponentParams(
   val sourceFiles: Set<File>
 ) {
   companion object {
-    fun create(clazz: ClassReference, module: ModuleDescriptor): MergeComponentParams {
+    fun create(
+      clazz: ClassReference,
+      module: ModuleDescriptor
+    ): MergeComponentParams {
       val packageName = clazz.packageFqName.safePackageString()
 
       val scopeClass = clazz.annotations.find(FqNames.mergeComponent)!!.scope()
       val scopeFqName = scopeClass.fqName
       val scopeClassName = scopeClass.asClassName()
 
-      val scopeQualifier = AnnotationSpec(ClassNames.named) {
-        addMember("%S", "${clazz.fqName.asString()}--${scopeClassName.canonicalName}")
-      }
+      val scopeQualifier =
+        AnnotationSpec(ClassNames.named) {
+          addMember("%S", "${clazz.fqName.asString()}--${scopeClassName.canonicalName}")
+        }
 
       val localScope = scopeClassName.generateSimpleNameString()
       val tangleViewModelScope = ClassNames.tangleViewModelScope.generateSimpleNameString()

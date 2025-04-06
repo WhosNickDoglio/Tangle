@@ -44,7 +44,6 @@ data class BreedEntity(
   @Embedded(prefix = "weight_")
   val weight: Weight
 ) {
-
   data class Image(
     @ColumnInfo(name = "height")
     val height: Int,

@@ -36,7 +36,6 @@ import javax.inject.Singleton
 @Module
 @ContributesTo(AppScope::class)
 object OkHttpClientModule {
-
   @Singleton
   @Provides
   fun provideOkHttpClient(
@@ -57,10 +56,11 @@ object OkHttpClientModule {
         }.also { it.level = NONE }
       )
       .addInterceptor { chain ->
-        val request = chain.request()
-          .newBuilder()
-          .addHeader("x-api-key", apiKey)
-          .build()
+        val request =
+          chain.request()
+            .newBuilder()
+            .addHeader("x-api-key", apiKey)
+            .build()
         chain.proceed(request)
       }
       .build()

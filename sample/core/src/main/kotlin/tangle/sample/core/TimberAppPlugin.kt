@@ -21,9 +21,10 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @ContributesMultibinding(AppScope::class)
-class TimberAppPlugin @Inject constructor() : AppPlugin {
-
-  override fun apply(application: Application) {
-    Timber.plant(Timber.DebugTree())
+class TimberAppPlugin
+  @Inject
+  constructor() : AppPlugin {
+    override fun apply(application: Application) {
+      Timber.plant(Timber.DebugTree())
+    }
   }
-}

@@ -36,12 +36,12 @@ import java.io.File
 @Suppress("UNUSED")
 @AutoService(CodeGenerator::class)
 class MemberInjectCodeGenerator : TangleCodeGenerator() {
-
-  val fileGenerators = listOf(
-    TangleInjector_ModuleGenerator,
-    TangleAppScope_TangleInjector_Scope_ModuleGenerator,
-    TangleInjectorGenerator
-  )
+  val fileGenerators =
+    listOf(
+      TangleInjector_ModuleGenerator,
+      TangleAppScope_TangleInjector_Scope_ModuleGenerator,
+      TangleInjectorGenerator
+    )
 
   override fun generateTangleCode(
     codeGenDir: File,
@@ -52,13 +52,15 @@ class MemberInjectCodeGenerator : TangleCodeGenerator() {
       .classAndInnerClassReferences(module)
       .mapNotNull { clazz ->
 
-        val annotationEntry = clazz.annotations.find { it.fqName == FqNames.tangleScope }
-          ?: return@mapNotNull null
+        val annotationEntry =
+          clazz.annotations.find { it.fqName == FqNames.tangleScope }
+            ?: return@mapNotNull null
 
-        val injectConstructor = clazz.injectConstructor()
-          ?: clazz.fragmentInjectConstructor()
-          ?: clazz.assistedInjectConstructor()
-          ?: clazz.vmInjectConstructor()
+        val injectConstructor =
+          clazz.injectConstructor()
+            ?: clazz.fragmentInjectConstructor()
+            ?: clazz.assistedInjectConstructor()
+            ?: clazz.vmInjectConstructor()
 
         require(
           injectConstructor == null,

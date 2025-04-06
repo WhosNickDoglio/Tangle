@@ -27,11 +27,8 @@ import tangle.sample.data.DogApiKey
 @Module
 @ContributesTo(AppScope::class)
 object AppModule {
-
   @Provides
-  fun provideWorkManager(
-    context: Context
-  ): WorkManager = WorkManager.getInstance(context)
+  fun provideWorkManager(context: Context): WorkManager = WorkManager.getInstance(context)
 
   @DogApiKey
   @Provides

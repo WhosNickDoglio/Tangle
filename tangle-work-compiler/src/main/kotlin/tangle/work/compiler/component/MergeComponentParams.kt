@@ -46,47 +46,56 @@ data class MergeComponentParams(
   val sourceFiles: Set<File>
 ) {
   companion object {
-    fun create(clazz: ClassReference, module: ModuleDescriptor): MergeComponentParams {
+    fun create(
+      clazz: ClassReference,
+      module: ModuleDescriptor
+    ): MergeComponentParams {
       val packageName = clazz.packageFqName.safePackageString()
 
       val scopeClass = clazz.annotations.find(FqNames.mergeComponent)!!.scope()
       val scopeFqName = scopeClass.fqName
       val scopeClassName = scopeClass.asClassName()
-      val scopeQualifier = AnnotationSpec(ClassNames.named) {
-        addMember("%S", "${clazz.fqName.asString()}--${scopeClassName.canonicalName}")
-      }
+      val scopeQualifier =
+        AnnotationSpec(ClassNames.named) {
+          addMember("%S", "${clazz.fqName.asString()}--${scopeClassName.canonicalName}")
+        }
 
       val localScope = scopeClassName.generateSimpleNameString()
       val tangleAppScope = ClassNames.tangleAppScope.generateSimpleNameString()
 
-      val mapSubcomponentClassName = ClassName(
-        packageName,
-        "${tangleAppScope}_Tangle_Worker_Map_Subcomponent"
-      )
+      val mapSubcomponentClassName =
+        ClassName(
+          packageName,
+          "${tangleAppScope}_Tangle_Worker_Map_Subcomponent"
+        )
 
       val mapSubcomponentFactoryClassName = mapSubcomponentClassName.nestedClass("Factory")
 
-      val componentClassName = ClassName(
-        packageName,
-        "${localScope}_Tangle_Worker_Component"
-      )
+      val componentClassName =
+        ClassName(
+          packageName,
+          "${localScope}_Tangle_Worker_Component"
+        )
 
-      val mergeComponentModuleClassName = ClassName(
-        packageName,
-        "${localScope}_Tangle_Worker_Module"
-      )
+      val mergeComponentModuleClassName =
+        ClassName(
+          packageName,
+          "${localScope}_Tangle_Worker_Module"
+        )
 
-      val mergeComponentWorkerFactoryModuleClassName = ClassName(
-        packageName,
-        "${localScope}_Tangle_WorkerFactory_Module"
-      )
+      val mergeComponentWorkerFactoryModuleClassName =
+        ClassName(
+          packageName,
+          "${localScope}_Tangle_WorkerFactory_Module"
+        )
 
       val subcomponentModulePackageName = "tangle.worker"
 
-      val subcomponentModuleClassName = ClassName(
-        subcomponentModulePackageName,
-        "${localScope}_Tangle_Worker_SubcomponentFactory_Module"
-      )
+      val subcomponentModuleClassName =
+        ClassName(
+          subcomponentModulePackageName,
+          "${localScope}_Tangle_Worker_SubcomponentFactory_Module"
+        )
 
       return MergeComponentParams(
         module = module,

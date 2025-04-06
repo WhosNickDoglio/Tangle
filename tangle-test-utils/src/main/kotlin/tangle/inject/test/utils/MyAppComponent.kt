@@ -24,7 +24,6 @@ import dagger.Component
 interface MyAppComponent {
   @Component.Factory
   fun interface Factory {
-
     fun create(
       @BindsInstance
       application: Application
@@ -37,10 +36,10 @@ open class Application {
 }
 
 object DaggerAppComponent : MyAppComponent {
-
-  fun factory() = MyAppComponent.Factory {
-    DaggerAppComponent
-  }
+  fun factory() =
+    MyAppComponent.Factory {
+      DaggerAppComponent
+    }
 }
 
 interface MyApplicationComponent {

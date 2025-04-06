@@ -45,65 +45,67 @@ import javax.inject.Inject
  * candidate.
  */
 @TangleWorker
-class BreedDownloaderWorker @AssistedInject constructor(
-  /**
-   * Context doesn't technically need to be @Assisted, assuming that the Dagger graph has a Context
-   * binding for an **application** context.  This is common, however.
-   */
-  @Assisted
-  context: Context,
-  @Assisted
-  params: WorkerParameters,
-  private val service: DogService,
-  private val dao: BreedDao
-) : CoroutineWorker(context, params) {
+class BreedDownloaderWorker
+  @AssistedInject
+  constructor(
+    /**
+     * Context doesn't technically need to be @Assisted, assuming that the Dagger graph has a Context
+     * binding for an **application** context.  This is common, however.
+     */
+    @Assisted
+    context: Context,
+    @Assisted
+    params: WorkerParameters,
+    private val service: DogService,
+    private val dao: BreedDao
+  ) : CoroutineWorker(context, params) {
+    override suspend fun doWork(): Result {
+      var pageIndex = 1
 
-  override suspend fun doWork(): Result {
-    var pageIndex = 1
+      while (pageIndex > 0) {
+        try {
+          val breeds =
+            service.getAllBreedsPaged(
+              page = pageIndex,
+              limit = NETWORK_PAGE_SIZE
+            )
 
-    while (pageIndex > 0) {
-      try {
-        val breeds = service.getAllBreedsPaged(
-          page = pageIndex,
-          limit = NETWORK_PAGE_SIZE
-        )
+          dao.insertAll(breeds.map { it.toBreedEntity() })
 
-        dao.insertAll(breeds.map { it.toBreedEntity() })
-
-        if (breeds.size == NETWORK_PAGE_SIZE) {
-          pageIndex++
-        } else {
-          pageIndex = 0
+          if (breeds.size == NETWORK_PAGE_SIZE) {
+            pageIndex++
+          } else {
+            pageIndex = 0
+          }
+        } catch (exception: IOException) {
+          Result.failure()
+        } catch (exception: HttpException) {
+          Result.failure()
         }
-      } catch (exception: IOException) {
-        Result.failure()
-      } catch (exception: HttpException) {
-        Result.failure()
       }
+
+      return Result.success()
     }
 
-    return Result.success()
+    companion object {
+      const val NETWORK_PAGE_SIZE = 20
+    }
   }
-
-  companion object {
-    const val NETWORK_PAGE_SIZE = 20
-  }
-}
 
 /**
  * Automatically enqueues [BreedDownloaderWorker]'s execution upon app launch.
  */
 @ContributesMultibinding(AppScope::class)
-class BreedDownloaderScheduler @Inject constructor() : WorkerScheduler {
+class BreedDownloaderScheduler
+  @Inject
+  constructor() : WorkerScheduler {
+    override fun isApplicable(): Boolean = true
 
-  override fun isApplicable(): Boolean = true
-
-  override fun enqueue(workManager: WorkManager) {
-
-    workManager.enqueueUniqueWork(
-      "breed-downloader",
-      REPLACE,
-      OneTimeWorkRequestBuilder<BreedDownloaderWorker>().build()
-    )
+    override fun enqueue(workManager: WorkManager) {
+      workManager.enqueueUniqueWork(
+        "breed-downloader",
+        REPLACE,
+        OneTimeWorkRequestBuilder<BreedDownloaderWorker>().build()
+      )
+    }
   }
-}

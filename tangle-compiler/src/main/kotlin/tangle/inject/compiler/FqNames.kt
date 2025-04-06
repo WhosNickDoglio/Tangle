@@ -27,7 +27,6 @@ import javax.inject.Provider
 import javax.inject.Qualifier
 
 object FqNames {
-
   val context = FqName("android.content.Context")
   val workerParameters = FqName("androidx.work.WorkerParameters")
 

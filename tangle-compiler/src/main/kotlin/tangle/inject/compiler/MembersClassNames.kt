@@ -40,12 +40,13 @@ internal val ClassNames.tangleScopeMapProvider: ClassName
   get() = ClassName("tangle.inject.internal", "TangleScopeMapProvider")
 
 internal val ClassNames.tangleInjectorMap
-  get() = Map::class.asClassName()
-    .parameterizedBy(
-      javaClassWildcard,
-      tangleInjector.parameterizedBy(TypeVariableName("*"))
-        .jvmSuppressWildcards()
-    )
+  get() =
+    Map::class.asClassName()
+      .parameterizedBy(
+        javaClassWildcard,
+        tangleInjector.parameterizedBy(TypeVariableName("*"))
+          .jvmSuppressWildcards()
+      )
 
 internal val ClassNames.memberInjector: ClassName
   get() = ClassName("dagger", "MembersInjector")

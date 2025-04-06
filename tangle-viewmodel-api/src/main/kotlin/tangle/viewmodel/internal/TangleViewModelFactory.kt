@@ -34,7 +34,6 @@ public class TangleViewModelFactory(
   private val tangleViewModelKeys: Set<Class<*>>,
   private val delegateFactory: ViewModelProvider.Factory
 ) : ViewModelProvider.Factory {
-
   /** @suppress */
   private val tangleFactory: AbstractSavedStateViewModelFactory =
     object : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
@@ -43,20 +42,22 @@ public class TangleViewModelFactory(
         modelClass: Class<T>,
         handle: SavedStateHandle
       ): T {
-        val subcomponent = TangleGraph
-          .get<TangleViewModelComponent>()
-          .tangleViewModelMapSubcomponentFactory
-          .create(handle)
+        val subcomponent =
+          TangleGraph
+            .get<TangleViewModelComponent>()
+            .tangleViewModelMapSubcomponentFactory
+            .create(handle)
 
-        val provider = subcomponent.viewModelProviderMap[modelClass]
-          ?: throw IllegalStateException(
-            "A ${ClassKey::class.java.simpleName} exists for ${modelClass.name}, " +
-              "but it can't be found in the map.\n\n" +
-              "Bound viewModels:\n" +
-              subcomponent.viewModelProviderMap.keys.joinToString {
-                it.canonicalName?.toString() ?: "null"
-              }
-          )
+        val provider =
+          subcomponent.viewModelProviderMap[modelClass]
+            ?: throw IllegalStateException(
+              "A ${ClassKey::class.java.simpleName} exists for ${modelClass.name}, " +
+                "but it can't be found in the map.\n\n" +
+                "Bound viewModels:\n" +
+                subcomponent.viewModelProviderMap.keys.joinToString {
+                  it.canonicalName?.toString() ?: "null"
+                }
+            )
         @Suppress("UNCHECKED_CAST")
         return provider.get() as T
       }
@@ -73,18 +74,17 @@ public class TangleViewModelFactory(
 
   /** @suppress */
   public companion object {
-
     /** @suppress */
     public operator fun invoke(
       owner: SavedStateRegistryOwner,
       defaultArgs: Bundle?,
       defaultFactory: ViewModelProvider.Factory
     ): ViewModelProvider.Factory {
-
-      val keys = TangleGraph.get<TangleViewModelComponent>()
-        .tangleViewModelKeysSubcomponentFactory
-        .create()
-        .viewModelKeys
+      val keys =
+        TangleGraph.get<TangleViewModelComponent>()
+          .tangleViewModelKeysSubcomponentFactory
+          .create()
+          .viewModelKeys
 
       return TangleViewModelFactory(
         owner,

@@ -89,29 +89,32 @@ fun Class<*>.tangleInjector(): Class<*> {
   )
 }
 
-fun Class<*>.packageName(): String = `package`.name.let {
-  if (it.isBlank()) "" else "$it."
-}
+fun Class<*>.packageName(): String =
+  `package`.name.let {
+    if (it.isBlank()) "" else "$it."
+  }
 
 val Class<*>.daggerComponent: Component
-  get() = annotations.filterIsInstance<Component>()
-    .also { it.size shouldBe 1 }
-    .first()
+  get() =
+    annotations.filterIsInstance<Component>()
+      .also { it.size shouldBe 1 }
+      .first()
 
 val Class<*>.daggerSubcomponent: Subcomponent
-  get() = annotations.filterIsInstance<Subcomponent>()
-    .also { it.size shouldBe 1 }
-    .first()
+  get() =
+    annotations.filterIsInstance<Subcomponent>()
+      .also { it.size shouldBe 1 }
+      .first()
 
 val Class<*>.daggerModule: Module
-  get() = annotations.filterIsInstance<Module>()
-    .also { it.size shouldBe 1 }
-    .first()
+  get() =
+    annotations.filterIsInstance<Module>()
+      .also { it.size shouldBe 1 }
+      .first()
 
 infix fun Class<*>.extends(other: Class<*>): Boolean = other.isAssignableFrom(this)
 
-infix fun KClass<*>.extends(other: KClass<*>): Boolean =
-  other.java.isAssignableFrom(this.java)
+infix fun KClass<*>.extends(other: KClass<*>): Boolean = other.java.isAssignableFrom(this.java)
 
 fun Array<KClass<*>>.withoutAnvilModule(): List<KClass<*>> = toList().withoutAnvilModule()
 
@@ -125,7 +128,6 @@ fun Any.invokeGet(vararg args: Any?): Any {
 
 @Suppress("NewApi")
 fun Any.invokeCreate(vararg args: Any?): Any {
-
   return this::class.java.methods.first { it.name == "create" }
     .use { it.invoke(this@invokeCreate, *args) }
 }

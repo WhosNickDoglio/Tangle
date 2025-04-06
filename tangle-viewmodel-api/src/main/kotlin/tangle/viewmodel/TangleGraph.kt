@@ -24,14 +24,16 @@ import tangle.inject.TangleGraph as NewTangleGraph
  * so this object exists purely for IDE support.
  */
 @Deprecated(
-  message = "TangleGraph has been moved to `tangle.inject.TangleGraph`.  " +
-    "This breadcrumb object will be removed in a future version of Tangle.",
+  message =
+    "TangleGraph has been moved to `tangle.inject.TangleGraph`.  " +
+      "This breadcrumb object will be removed in a future version of Tangle.",
   replaceWith = ReplaceWith("TangleGraph", "tangle.inject.TangleGraph")
 )
 public object TangleGraph {
   @Deprecated(
-    message = "TangleGraph has been moved to `tangle.inject.TangleGraph`.  " +
-      "This breadcrumb object will be removed in a future version of Tangle.",
+    message =
+      "TangleGraph has been moved to `tangle.inject.TangleGraph`.  " +
+        "This breadcrumb object will be removed in a future version of Tangle.",
     replaceWith = ReplaceWith("TangleGraph.add(any)", "tangle.inject.TangleGraph")
   )
   public fun init(any: Any) {

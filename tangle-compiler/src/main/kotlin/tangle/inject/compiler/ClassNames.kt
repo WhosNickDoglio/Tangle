@@ -39,7 +39,6 @@ import javax.inject.Named
 import javax.inject.Provider
 
 object ClassNames {
-
   val androidContext = ClassName("android.content", "Context")
   val string = String::class.asClassName()
 
@@ -50,11 +49,13 @@ object ClassNames {
 
   val provider = Provider::class.asClassName()
 
-  val javaClassWildcard = Class::class.asClassName()
-    .parameterizedBy(TypeVariableName("*"))
+  val javaClassWildcard =
+    Class::class.asClassName()
+      .parameterizedBy(TypeVariableName("*"))
 
-  val javaClassToClassMap = Map::class.asClassName()
-    .parameterizedBy(javaClassWildcard, javaClassWildcard)
+  val javaClassToClassMap =
+    Map::class.asClassName()
+      .parameterizedBy(javaClassWildcard, javaClassWildcard)
 
   val binds = Binds::class.asClassName()
   val bindsInstance = BindsInstance::class.asClassName()

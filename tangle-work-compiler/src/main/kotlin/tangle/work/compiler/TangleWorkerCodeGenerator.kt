@@ -29,38 +29,41 @@ import java.io.File
 @Suppress("UNUSED")
 @AutoService(CodeGenerator::class)
 class TangleWorkerCodeGenerator : TangleCodeGenerator() {
-
   override fun generateTangleCode(
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
   ): Collection<GeneratedFileWithSources> {
-    val workerParamsList = projectFiles
-      .classAndInnerClassReferences(module)
-      .filter { it.isAnnotatedWith(FqNames.tangleWorker) }
-      .mapNotNull { workerClass ->
+    val workerParamsList =
+      projectFiles
+        .classAndInnerClassReferences(module)
+        .filter { it.isAnnotatedWith(FqNames.tangleWorker) }
+        .mapNotNull { workerClass ->
 
-        val constructor = workerClass.assistedInjectConstructor() ?: return@mapNotNull null
+          val constructor = workerClass.assistedInjectConstructor() ?: return@mapNotNull null
 
-        WorkerParams.create(module, workerClass, constructor)
-      }
-      .toList()
+          WorkerParams.create(module, workerClass, constructor)
+        }
+        .toList()
 
-    val factoryInterfaces = workerParamsList
-      .map { AssistedWorkerFactoryGenerator.generate(codeGenDir, it) }
+    val factoryInterfaces =
+      workerParamsList
+        .map { AssistedWorkerFactoryGenerator.generate(codeGenDir, it) }
 
-    val moduleParams = workerParamsList
-      .groupBy { it.packageName }
-      .map { (packageName, byPackageName) ->
+    val moduleParams =
+      workerParamsList
+        .groupBy { it.packageName }
+        .map { (packageName, byPackageName) ->
 
-        TangleAppScopeModule(
-          packageName = packageName,
-          workerParamsList = byPackageName
-        )
-      }
+          TangleAppScopeModule(
+            packageName = packageName,
+            workerParamsList = byPackageName
+          )
+        }
 
-    val moduleInterfaces = moduleParams
-      .map { AssistedWorkerFactoryModuleGenerator.generate(codeGenDir, it) }
+    val moduleInterfaces =
+      moduleParams
+        .map { AssistedWorkerFactoryModuleGenerator.generate(codeGenDir, it) }
 
     return factoryInterfaces + moduleInterfaces
   }

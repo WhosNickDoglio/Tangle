@@ -38,11 +38,9 @@ import javax.inject.Singleton
 )
 @RewriteQueriesToDropUnusedColumns
 abstract class TangleDatabase : RoomDatabase() {
-
   abstract val breedDao: BreedDao
 
   companion object {
-
     const val DATABASE_NAME = "tangleDatabase.db"
   }
 }
@@ -50,7 +48,6 @@ abstract class TangleDatabase : RoomDatabase() {
 @Module
 @ContributesTo(AppScope::class)
 object RoomModule {
-
   @Singleton
   @Provides
   fun provideRoom(
@@ -59,7 +56,9 @@ object RoomModule {
     dispatcherProvider: DispatcherProvider
   ): TangleDatabase {
     return Room.databaseBuilder(
-      context, TangleDatabase::class.java, TangleDatabase.DATABASE_NAME
+      context,
+      TangleDatabase::class.java,
+      TangleDatabase.DATABASE_NAME
     )
       .setQueryExecutor(dispatcherProvider.io.asExecutor())
       .setTransactionExecutor(dispatcherProvider.io.asExecutor())

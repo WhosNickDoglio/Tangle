@@ -35,47 +35,49 @@ import java.io.File
 @Suppress("UNUSED")
 @AutoService(CodeGenerator::class)
 class TangleInjectorMergeComponentCodeGenerator : TangleCodeGenerator() {
-
-  val fileGenerators = listOf(
-    UserScope_TangleInjectorComponent_Generator,
-    UserScope_Default_TangleInjectorMap_Module_Generator,
-    UserScope_Default_TangleScopeToComponentMap_Module_Generator,
-    UserScope_Default_InjectedClassToScopeClass_Module_Generator,
-    UserScope_TangleScopeMapProviderComponent_Generator,
-    TangleAppScope_TangleInjectorMapProvider_Subcomponent_Generator,
-    TangleAppScope_UserScope_to_Component_Module_Generator
-  )
+  val fileGenerators =
+    listOf(
+      UserScope_TangleInjectorComponent_Generator,
+      UserScope_Default_TangleInjectorMap_Module_Generator,
+      UserScope_Default_TangleScopeToComponentMap_Module_Generator,
+      UserScope_Default_InjectedClassToScopeClass_Module_Generator,
+      UserScope_TangleScopeMapProviderComponent_Generator,
+      TangleAppScope_TangleInjectorMapProvider_Subcomponent_Generator,
+      TangleAppScope_UserScope_to_Component_Module_Generator
+    )
 
   override fun generateTangleCode(
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
-  ): Collection<GeneratedFileWithSources> = projectFiles
-    .classAndInnerClassReferences(module)
-    .mapNotNull { clazz ->
+  ): Collection<GeneratedFileWithSources> =
+    projectFiles
+      .classAndInnerClassReferences(module)
+      .mapNotNull { clazz ->
 
-      val (annotation, forSubcomponent) = clazz.annotations
-        .find { it.fqName == FqNames.mergeComponent }
-        ?.let { it to false }
-        ?: clazz.annotations.find { it.fqName == FqNames.mergeSubcomponent }
-          ?.let { it to true }
-        ?: return@mapNotNull null
+        val (annotation, forSubcomponent) =
+          clazz.annotations
+            .find { it.fqName == FqNames.mergeComponent }
+            ?.let { it to false }
+            ?: clazz.annotations.find { it.fqName == FqNames.mergeSubcomponent }
+              ?.let { it to true }
+            ?: return@mapNotNull null
 
-      val scopeFqName = annotation.scope(parameterIndex = 0).fqName
+        val scopeFqName = annotation.scope(parameterIndex = 0).fqName
 
-      // don't generate code for the internal scopes
-      when (scopeFqName) {
-        FqNames.tangleAppScope -> return@mapNotNull null
-        FqNames.tangleViewModelScope -> return@mapNotNull null
+        // don't generate code for the internal scopes
+        when (scopeFqName) {
+          FqNames.tangleAppScope -> return@mapNotNull null
+          FqNames.tangleViewModelScope -> return@mapNotNull null
+        }
+
+        MergeComponentParams.create(module, scopeFqName, clazz.clazz, forSubcomponent)
       }
-
-      MergeComponentParams.create(module, scopeFqName, clazz.clazz, forSubcomponent)
-    }
-    .distinctBy { it.scopeFqName }
-    .flatMap { params ->
-      fileGenerators.mapNotNull { generator ->
-        generator.generate(codeGenDir, params)
+      .distinctBy { it.scopeFqName }
+      .flatMap { params ->
+        fileGenerators.mapNotNull { generator ->
+          generator.generate(codeGenDir, params)
+        }
       }
-    }
-    .toList()
+      .toList()
 }

@@ -30,7 +30,6 @@ import tangle.sample.core.AppScope
 @Module
 @ContributesTo(AppScope::class)
 object CoroutineScopeModule {
-
   @Provides
   fun provideCoroutineScope(): CoroutineScope = DefaultCoroutineScope()
 

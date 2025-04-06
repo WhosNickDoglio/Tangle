@@ -31,7 +31,6 @@ import androidx.fragment.app.FragmentManager
 import tangle.sample.core.safeAs
 
 abstract class BaseComposeFragment : Fragment() {
-
   abstract val ui: @Composable () -> Unit
 
   override fun onCreateView(
@@ -39,20 +38,17 @@ abstract class BaseComposeFragment : Fragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-
     activity.safeAs<AppCompatActivity>()
       ?.supportActionBar
       ?.hide()
 
     return ComposeView(requireContext()).apply {
-
       // Dispose the Composition when viewLifecycleOwner is destroyed
       setViewCompositionStrategy(
         DisposeOnLifecycleDestroyed(viewLifecycleOwner)
       )
 
       setContent {
-
         CompositionLocalProvider(
           // sets the parentFragmentManager in the scoped LocalFragmentManager instance.
           // This can be accessed by any compose function with this `ui.invoke()` in its callstack
@@ -67,6 +63,7 @@ abstract class BaseComposeFragment : Fragment() {
   }
 }
 
-val LocalFragmentManager = staticCompositionLocalOf<FragmentManager> {
-  error("FragmentManager not provided")
-}
+val LocalFragmentManager =
+  staticCompositionLocalOf<FragmentManager> {
+    error("FragmentManager not provided")
+  }

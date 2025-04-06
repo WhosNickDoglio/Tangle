@@ -26,20 +26,18 @@ import tangle.inject.test.utils.Timber
 import javax.inject.Inject
 
 class MemberInjectSample {
-
   @Sample
   fun memberInjectSample() {
-
     @TangleScope(AppScope::class) // dependencies will come from the AppScope
     class MyApplication : Application() {
-
       @Inject lateinit var logger: MyLogger
 
       override fun onCreate() {
         super.onCreate()
 
-        val appComponent = DaggerAppComponent.factory()
-          .create(this)
+        val appComponent =
+          DaggerAppComponent.factory()
+            .create(this)
 
         // connect the app's Dagger graph to Tangle
         TangleGraph.add(appComponent)

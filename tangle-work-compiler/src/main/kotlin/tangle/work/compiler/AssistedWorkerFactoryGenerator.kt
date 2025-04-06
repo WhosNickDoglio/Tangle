@@ -32,84 +32,92 @@ import tangle.inject.compiler.buildFile
 import java.io.File
 
 object AssistedWorkerFactoryGenerator : FileGenerator<WorkerParams> {
-
   override fun generate(
     codeGenDir: File,
     params: WorkerParams
   ): GeneratedFileWithSources {
+    val content =
+      FileSpec.buildFile(
+        params.packageName,
+        params.workerClassNameString
+      ) {
+        addType(
+          TypeSpec.classBuilder(params.assistedFactoryClassName)
+            .apply {
+              addSuperinterface(
+                ClassNames.assistedWorkerFactory
+                  .parameterizedBy(params.workerClassName)
+              )
 
-    val content = FileSpec.buildFile(
-      params.packageName, params.workerClassNameString
-    ) {
-      addType(
-        TypeSpec.classBuilder(params.assistedFactoryClassName)
-          .apply {
-            addSuperinterface(
-              ClassNames.assistedWorkerFactory
-                .parameterizedBy(params.workerClassName)
-            )
+              val constructorParams =
+                params.constructorParams
+                  .filterNot { it.isDaggerAssisted }
 
-            val constructorParams = params.constructorParams
-              .filterNot { it.isDaggerAssisted }
+              primaryConstructor(
+                FunSpec.constructorBuilder().apply {
+                  addAnnotation(ClassNames.inject)
 
-            primaryConstructor(
-              FunSpec.constructorBuilder().apply {
-                addAnnotation(ClassNames.inject)
-
-                constructorParams.forEach { param ->
-                  addParameter(
-                    ParameterSpec.builder(param.name, param.providerTypeName)
-                      .applyEach(param.qualifiers) { addAnnotation(it) }
-                      .build()
-                  )
+                  constructorParams.forEach { param ->
+                    addParameter(
+                      ParameterSpec.builder(param.name, param.providerTypeName)
+                        .applyEach(param.qualifiers) { addAnnotation(it) }
+                        .build()
+                    )
+                  }
                 }
-              }
-                .build()
-            )
-            constructorParams.forEach { param ->
+                  .build()
+              )
+              constructorParams.forEach { param ->
 
-              addProperty(
-                PropertySpec.builder(param.name, param.providerTypeName)
-                  .initializer(param.name)
-                  .addModifiers(PRIVATE)
+                addProperty(
+                  PropertySpec.builder(param.name, param.providerTypeName)
+                    .initializer(param.name)
+                    .addModifiers(PRIVATE)
+                    .build()
+                )
+              }
+
+              val delegateFactoryCreateArgs =
+                constructorParams.asArgumentList(
+                  asProvider = false,
+                  includeModule = false
+                )
+
+              val contextFirst =
+                params.assistedArgs
+                  .first()
+                  .typeName == ClassNames.androidContext
+
+              val getArguments =
+                if (contextFirst) {
+                  "context,·params"
+                } else {
+                  "params,·context"
+                }
+
+              addFunction(
+                FunSpec.builder("create")
+                  .addModifiers(OVERRIDE)
+                  .returns(params.workerClassName)
+                  .addParameter("context", ClassNames.androidContext)
+                  .addParameter("params", ClassNames.androidxWorkerParameters)
+                  .addStatement(
+                    "val·delegateFactory·=·%T.create($delegateFactoryCreateArgs)",
+                    params.delegateFactoryClassName
+                  )
+                  .addStatement("return·delegateFactory.get($getArguments)")
                   .build()
               )
             }
-
-            val delegateFactoryCreateArgs = constructorParams.asArgumentList(
-              asProvider = false,
-              includeModule = false
-            )
-
-            val contextFirst = params.assistedArgs
-              .first()
-              .typeName == ClassNames.androidContext
-
-            val getArguments = if (contextFirst) {
-              "context,·params"
-            } else {
-              "params,·context"
-            }
-
-            addFunction(
-              FunSpec.builder("create")
-                .addModifiers(OVERRIDE)
-                .returns(params.workerClassName)
-                .addParameter("context", ClassNames.androidContext)
-                .addParameter("params", ClassNames.androidxWorkerParameters)
-                .addStatement(
-                  "val·delegateFactory·=·%T.create($delegateFactoryCreateArgs)",
-                  params.delegateFactoryClassName
-                )
-                .addStatement("return·delegateFactory.get($getArguments)")
-                .build()
-            )
-          }
-          .build()
-      )
-    }
+            .build()
+        )
+      }
     return createGeneratedFileWithSources(
-      codeGenDir, params.packageName, params.assistedFactoryClassNameString, content, params.sources
+      codeGenDir,
+      params.packageName,
+      params.assistedFactoryClassNameString,
+      content,
+      params.sources
     )
   }
 }

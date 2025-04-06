@@ -31,25 +31,25 @@ import tangle.work.compiler.tangleWorkerFactory
 import java.io.File
 
 object WorkerFactoryModuleGenerator : FileGenerator<MergeComponentParams> {
-
   override fun generate(
     codeGenDir: File,
     params: MergeComponentParams
   ): GeneratedFileWithSources? {
-
-    val moduleFqName = FqName(
-      "${params.subcomponentModulePackageName}." +
-        params.mergeComponentWorkerFactoryModuleClassName.simpleName
-    )
+    val moduleFqName =
+      FqName(
+        "${params.subcomponentModulePackageName}." +
+          params.mergeComponentWorkerFactoryModuleClassName.simpleName
+      )
 
     // If the (Dagger) Module for this scope already exists in a different Gradle module,
     // it can't be created again here without creating a duplicate binding
     // for the TangleWorkerFactory.
-    val alreadyCreated = listOf(params.module)
-      .plus(params.module.allDependencyModules)
-      .any { depMod ->
-        depMod.resolveClassByFqName(moduleFqName, NoLookupLocation.FROM_BACKEND) != null
-      }
+    val alreadyCreated =
+      listOf(params.module)
+        .plus(params.module.allDependencyModules)
+        .any { depMod ->
+          depMod.resolveClassByFqName(moduleFqName, NoLookupLocation.FROM_BACKEND) != null
+        }
 
     if (alreadyCreated) {
       return null
@@ -59,21 +59,22 @@ object WorkerFactoryModuleGenerator : FileGenerator<MergeComponentParams> {
 
     val className = params.mergeComponentWorkerFactoryModuleClassName
 
-    val content = FileSpec.buildFile(packageName, className.simpleName) {
-      TypeSpec.objectBuilder(className)
-        .addContributesTo(params.scopeClassName)
-        .addAnnotation(ClassNames.module)
-        .addFunction(
-          "provide_${ClassNames.tangleWorkerFactory.generateSimpleNameString()}"
-        ) {
-          returns(ClassNames.tangleWorkerFactory)
-          addAnnotation(ClassNames.provides)
-          addStatement("return·%T()", ClassNames.tangleWorkerFactory)
-          build()
-        }
-        .build()
-        .let { addType(it) }
-    }
+    val content =
+      FileSpec.buildFile(packageName, className.simpleName) {
+        TypeSpec.objectBuilder(className)
+          .addContributesTo(params.scopeClassName)
+          .addAnnotation(ClassNames.module)
+          .addFunction(
+            "provide_${ClassNames.tangleWorkerFactory.generateSimpleNameString()}"
+          ) {
+            returns(ClassNames.tangleWorkerFactory)
+            addAnnotation(ClassNames.provides)
+            addStatement("return·%T()", ClassNames.tangleWorkerFactory)
+            build()
+          }
+          .build()
+          .let { addType(it) }
+      }
 
     return createGeneratedFileWithSources(
       codeGenDir,

@@ -26,21 +26,27 @@ import tangle.sample.data.breed.DogService
 import javax.inject.Inject
 
 @ContributesBinding(AppScope::class, rank = RANK_HIGHEST)
-class FakeDogService @Inject constructor() : DogService {
-  override suspend fun getAllBreedsPaged(page: Int, limit: Int): List<BreedResponse> {
-    return listOf(GoldendoodleResponse)
+class FakeDogService
+  @Inject
+  constructor() : DogService {
+    override suspend fun getAllBreedsPaged(
+      page: Int,
+      limit: Int
+    ): List<BreedResponse> {
+      return listOf(GoldendoodleResponse)
+    }
   }
-}
 
-val GoldendoodleResponse = BreedResponse(
-  id = 1,
-  name = "Goldendoodle",
-  bredFor = "sporting",
-  breedGroup = "sporting",
-  lifeSpan = "13-15 years",
-  referenceImageId = "reference",
-  temperament = "awesome temperament",
-  image = ImageResponse(height = 1, id = "image-id", url = "puppy.png", width = 2),
-  height = HeightResponse(imperial = "17 - 24 inches", metric = "43 - 61 cm"),
-  weight = WeightResponse(imperial = "45 - 80 pounds", metric = "20.4 - 36.3 kg")
-)
+val GoldendoodleResponse =
+  BreedResponse(
+    id = 1,
+    name = "Goldendoodle",
+    bredFor = "sporting",
+    breedGroup = "sporting",
+    lifeSpan = "13-15 years",
+    referenceImageId = "reference",
+    temperament = "awesome temperament",
+    image = ImageResponse(height = 1, id = "image-id", url = "puppy.png", width = 2),
+    height = HeightResponse(imperial = "17 - 24 inches", metric = "43 - 61 cm"),
+    weight = WeightResponse(imperial = "45 - 80 pounds", metric = "20.4 - 36.3 kg")
+  )

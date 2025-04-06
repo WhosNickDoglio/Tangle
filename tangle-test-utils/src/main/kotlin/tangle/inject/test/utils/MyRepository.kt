@@ -17,4 +17,6 @@ package tangle.inject.test.utils
 
 import javax.inject.Inject
 
-class MyRepository @Inject constructor()
+class MyRepository
+  @Inject
+  constructor()

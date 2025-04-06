@@ -20,17 +20,16 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.BasePlugin
 
 public open class TanglePlugin : BasePlugin() {
-
   override fun apply(target: Project) {
-    val extension = target.extensions
-      .create(EXTENSION_NAME, TangleExtension::class.java)
+    val extension =
+      target.extensions
+        .create(EXTENSION_NAME, TangleExtension::class.java)
 
     if (!target.pluginManager.hasPlugin(ANVIL_ID)) {
       target.pluginManager.apply(ANVIL_ID)
     }
 
     target.afterEvaluate {
-
       val hasAndroid = target.extensions.findByName("android") != null
 
       if (!hasAndroid) {
@@ -49,10 +48,7 @@ public open class TanglePlugin : BasePlugin() {
     }
   }
 
-  private fun Project.addFeatureDependencies(
-    extension: TangleExtension
-  ) {
-
+  private fun Project.addFeatureDependencies(extension: TangleExtension) {
     val viewModelOptions = extension.viewModelOptions
 
     projectAndroidDependencyConfigs()
@@ -101,7 +97,6 @@ public open class TanglePlugin : BasePlugin() {
   }
 
   internal companion object {
-
     const val EXTENSION_NAME = "tangle"
     const val ANVIL_ID = "com.squareup.anvil"
   }

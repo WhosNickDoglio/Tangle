@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 @RewriteQueriesToDropUnusedColumns
 abstract class BreedDao {
-
   @Insert
   abstract suspend fun insert(entity: BreedEntity)
 

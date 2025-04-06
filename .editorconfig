@@ -996,6 +996,10 @@ ij_groovy_wrap_long_lines = false
 kotlin_imports_layout = *,java.**,javax.**,kotlin.**,^
 
 [{*.kt,*.kts}]
+ktlint_standard_filename = disabled
+ktlint_standard_max-line-length = disabled
+ktlint_standard_class-naming = disabled
+ktlint_function_naming_ignore_when_annotated_with=Composable
 indent_size = 2
 tab_width = 2
 ij_continuation_indent_size = 2

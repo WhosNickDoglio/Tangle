@@ -1,6 +1,6 @@
 [versions]
 androidTools = "8.9.1"
-coil = "2.2.0"
+coil = "2.6.0"
 dependencyAnalysis = "2.8.2"
 dispatch = "1.0.0-beta10"
 detekt = "1.23.8"

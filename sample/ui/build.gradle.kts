@@ -16,6 +16,7 @@
 plugins {
   id("dev.whosnickdoglio.convention.tangle.androidLibrary")
   alias(libs.plugins.anvil)
+  alias(libs.plugins.kotlin.compose)
 }
 
 anvil {
@@ -27,10 +28,6 @@ android {
 
   buildFeatures {
     viewBinding = true
-    compose = true
-  }
-  composeOptions {
-    kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
   }
 }
 
@@ -77,11 +74,7 @@ dependencies {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>()
   .configureEach {
-
-    kotlinOptions {
-
-      freeCompilerArgs = freeCompilerArgs + listOf(
-        "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
-      )
+    compilerOptions {
+      freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
     }
   }

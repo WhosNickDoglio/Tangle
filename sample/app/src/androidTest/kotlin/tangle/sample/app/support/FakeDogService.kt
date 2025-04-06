@@ -16,7 +16,7 @@
 package tangle.sample.app.support
 
 import com.squareup.anvil.annotations.ContributesBinding
-import com.squareup.anvil.annotations.ContributesBinding.Priority.HIGHEST
+import com.squareup.anvil.annotations.ContributesBinding.Companion.RANK_HIGHEST
 import tangle.sample.core.AppScope
 import tangle.sample.data.breed.BreedResponse
 import tangle.sample.data.breed.BreedResponse.HeightResponse
@@ -25,7 +25,7 @@ import tangle.sample.data.breed.BreedResponse.WeightResponse
 import tangle.sample.data.breed.DogService
 import javax.inject.Inject
 
-@ContributesBinding(AppScope::class, priority = HIGHEST)
+@ContributesBinding(AppScope::class, rank = RANK_HIGHEST)
 class FakeDogService @Inject constructor() : DogService {
   override suspend fun getAllBreedsPaged(page: Int, limit: Int): List<BreedResponse> {
     return listOf(GoldendoodleResponse)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,47 +15,29 @@
 
 package tangle.inject.gradle
 
+import com.autonomousapps.kit.GradleBuilder
 import org.junit.jupiter.api.TestFactory
 
-class WorkPluginTest : BasePluginTest() {
+class WorkPluginTest {
   @TestFactory
   fun `disabling work in config should disable its dependencies`() =
-    test {
-      module(
+    test(
+      dslAdditions =
         """
-        plugins {
-          id("com.android.library")
-          kotlin("android")
-          id("com.rickbusarow.tangle")
-        }
-
-        android {
-          compileSdk = 30
-          namespace = "foo"
-
-          defaultConfig {
-            minSdk = 23
-            targetSdk = 30
-          }
-        }
-
         tangle {
           workEnabled = false // default is null
         }
-
-        dependencies {
-          $activities
-          $fragments
-          $viewModels
-          $compose
-          $workManager
-        }
-
-        ${listDepsTasks()}
-        """.trimIndent()
-      )
-
-      build("deps").tangleDeps() shouldBe
+        """.trimIndent(),
+      additionalDependencies =
+        listOf(
+          activities,
+          fragments,
+          viewModels,
+          compose,
+          workManager
+        )
+    ) {
+      GradleBuilder.build(it.rootDir, "deps").tangleDeps() shouldBe
         listOf(
           "anvil com.rickbusarow.tangle:tangle-compiler",
           "anvil com.rickbusarow.tangle:tangle-fragment-compiler",
@@ -71,34 +53,13 @@ class WorkPluginTest : BasePluginTest() {
 
   @TestFactory
   fun `work compiler and api should be automatically enabled with androidx work dependencies`() =
-    test {
-      module(
-        """
-        plugins {
-          id("com.android.library")
-          kotlin("android")
-          id("com.rickbusarow.tangle")
-        }
-
-        android {
-          compileSdk = 30
-          namespace = "foo"
-
-          defaultConfig {
-            minSdk = 23
-            targetSdk = 30
-          }
-        }
-
-        dependencies {
-          $workManager
-        }
-
-        ${listDepsTasks()}
-        """.trimIndent()
-      )
-
-      build("deps").tangleDeps() shouldBe
+    test(
+      additionalDependencies =
+        listOf(
+          workManager
+        )
+    ) {
+      GradleBuilder.build(it.rootDir, "deps").tangleDeps() shouldBe
         listOf(
           "anvil com.rickbusarow.tangle:tangle-compiler",
           "anvil com.rickbusarow.tangle:tangle-work-compiler",
@@ -106,20 +67,4 @@ class WorkPluginTest : BasePluginTest() {
           "implementation com.rickbusarow.tangle:tangle-work-api"
         )
     }
-
-  fun listDepsTasks() =
-    """
-    tasks.register("deps") {
-      doLast {
-        listOf("anvil", "api", "implementation")
-          .forEach { config ->
-            project.configurations
-              .named(config)
-              .get()
-              .dependencies
-              .forEach { println("${'$'}config ${'$'}{it.group}:${'$'}{it.name}") }
-          }
-      }
-    }
-    """.trimIndent()
 }

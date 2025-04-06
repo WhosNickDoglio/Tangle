@@ -41,7 +41,7 @@ data class BreedResponse(
   @Json(name = "temperament")
   val temperament: String?,
   @Json(name = "image")
-  val image: ImageResponse,
+  val image: ImageResponse?,
   @Json(name = "height")
   val height: HeightResponse,
   @Json(name = "weight")
@@ -85,7 +85,7 @@ fun BreedResponse.toBreedEntity() =
     lifeSpan = lifeSpan,
     referenceImageId = referenceImageId,
     temperament = temperament,
-    image = image.toImageEntity(),
+    image = image?.toImageEntity(),
     height = height.toHeightEntity(),
     weight = weight.toWeightEntity()
   )

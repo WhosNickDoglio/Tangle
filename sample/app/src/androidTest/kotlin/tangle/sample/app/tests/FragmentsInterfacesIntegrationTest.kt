@@ -21,7 +21,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import tangle.sample.app.support.retry
@@ -31,7 +31,7 @@ import tangle.sample.ui.fragmentsWithManualNavigation.FragmentsManualNavigationM
 class FragmentsInterfacesIntegrationTest {
   @Test
   fun selected_item_is_passed_to_next_screen() =
-    runBlocking {
+    runTest {
       ActivityScenario.launch(FragmentsManualNavigationMainActivity::class.java)
 
       retry {

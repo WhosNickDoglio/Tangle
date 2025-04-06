@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,23 +13,21 @@
  * limitations under the License.
  */
 
-package tangle.sample.core.di
+package tangle.sample.data
 
-import android.app.Application
-import android.content.Context
-import com.squareup.anvil.annotations.ContributesTo
-import dagger.Binds
-import dagger.Module
+import com.squareup.anvil.annotations.ContributesBinding
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import tangle.sample.core.AppScope
-import javax.inject.Qualifier
+import javax.inject.Inject
 
-@Qualifier
-annotation class ApplicationContext
-
-@Module
-@ContributesTo(AppScope::class)
-interface ContextModule {
-  @Binds
-  @ApplicationContext
-  fun bindContext(application: Application): Context
+interface CoroutineDispatcherProvider {
+  val io: CoroutineDispatcher
 }
+
+@ContributesBinding(AppScope::class)
+class CoroutineDispatcherProviderImpl
+  @Inject
+  constructor() : CoroutineDispatcherProvider {
+    override val io: CoroutineDispatcher = Dispatchers.IO
+  }

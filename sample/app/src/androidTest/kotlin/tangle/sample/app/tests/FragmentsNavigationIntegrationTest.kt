@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,7 +21,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import tangle.sample.app.support.retry
@@ -31,7 +31,7 @@ import tangle.sample.ui.fragmentsWithArchNavigation.FragmentsArchNavigationMainA
 class FragmentsNavigationIntegrationTest {
   @Test
   fun selected_item_is_passed_to_next_screen() =
-    runBlocking {
+    runTest {
       ActivityScenario.launch(FragmentsArchNavigationMainActivity::class.java)
 
       retry {

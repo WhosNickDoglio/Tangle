@@ -39,6 +39,7 @@ dependencies {
   api(libs.square.anvil.compiler.api)
   api(libs.square.anvil.compiler.core)
   api(libs.square.anvil.compiler.utils)
+  api(testFixtures(libs.square.anvil.compiler.utils))
   api(libs.square.kotlinPoet)
 
   api(projects.tangleApi)

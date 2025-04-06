@@ -15,6 +15,7 @@
 
 package tangle.inject.test.utils
 
+import com.squareup.anvil.compiler.internal.testing.compileAnvil
 import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.COMPILATION_ERROR
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.OK
@@ -22,6 +23,7 @@ import io.kotest.assertions.asClue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import org.intellij.lang.annotations.Language
+import org.jetbrains.kotlin.config.JvmTarget
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestInfo
@@ -66,14 +68,15 @@ abstract class BaseTest {
 
     val workingDir = File("build/test-builds/$className/$testName")
 
-    compileTangle(
+    compileAnvil(
       sources = sources,
       enableDaggerAnnotationProcessor = true,
       generateDaggerFactories = false,
       // Many constructor parameters are unused.
       allWarningsAsErrors = false,
       block = { checkExitCode(shouldFail).block() },
-      workingDir = workingDir
+      workingDir = workingDir,
+      jvmTarget = JvmTarget.JVM_11
     )
   }
 
@@ -97,14 +100,15 @@ abstract class BaseTest {
 
     val workingDir = File("build/test-builds/$className/$compilerType/$testName")
 
-    return compileTangle(
+    return compileAnvil(
       sources = sources,
       enableDaggerAnnotationProcessor = !useAnvilFactories,
       generateDaggerFactories = useAnvilFactories,
       // Many constructor parameters are unused.
       allWarningsAsErrors = false,
       block = { checkExitCode(shouldFail).block() },
-      workingDir = workingDir
+      workingDir = workingDir,
+      jvmTarget = JvmTarget.JVM_11
     )
   }
 

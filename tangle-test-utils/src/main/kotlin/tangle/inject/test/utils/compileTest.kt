@@ -15,102 +15,13 @@
 
 package tangle.inject.test.utils
 
-import com.squareup.anvil.compiler.AnvilCommandLineProcessor
-import com.squareup.anvil.compiler.AnvilComponentRegistrar
 import com.squareup.anvil.compiler.internal.capitalize
-import com.tschuchort.compiletesting.JvmCompilationResult
-import com.tschuchort.compiletesting.KotlinCompilation
-import com.tschuchort.compiletesting.PluginOption
-import com.tschuchort.compiletesting.SourceFile
 import dagger.Component
 import dagger.Module
 import dagger.Subcomponent
-import dagger.internal.codegen.ComponentProcessor
 import io.kotest.matchers.shouldBe
-import org.jetbrains.kotlin.config.JvmTarget
-import java.io.File
-import java.io.OutputStream
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
-
-/**
- * Borrowed from Anvil with some slight adaptations
- * https://github.com/square/anvil/blob/399fcae9bd4bbf6f76ab675743848b0f06af7c11/compiler-utils/src/testFixtures/java/com/squareup/anvil/compiler/internal/testing/TestUtils.kt#L27
- */
-@Suppress("LongParameterList")
-fun compileTangle(
-  vararg sources: String,
-  enableDaggerAnnotationProcessor: Boolean = false,
-  generateDaggerFactories: Boolean = false,
-  generateDaggerFactoriesOnly: Boolean = false,
-  disableComponentMerging: Boolean = false,
-  allWarningsAsErrors: Boolean = true,
-  messageOutputStream: OutputStream = System.out,
-  workingDir: File? = null,
-  block: JvmCompilationResult.() -> Unit = { }
-): JvmCompilationResult {
-  return KotlinCompilation()
-    .apply {
-      componentRegistrars = listOf(AnvilComponentRegistrar())
-      inheritClassPath = true
-      jvmTarget = JvmTarget.JVM_11.description
-      verbose = false
-      this.allWarningsAsErrors = allWarningsAsErrors
-      this.messageOutputStream = messageOutputStream
-
-      if (workingDir != null) {
-        this.workingDir = workingDir
-      }
-
-      if (enableDaggerAnnotationProcessor) {
-        annotationProcessors = listOf(ComponentProcessor())
-      }
-
-      val anvilCommandLineProcessor = AnvilCommandLineProcessor()
-      commandLineProcessors = listOf(anvilCommandLineProcessor)
-
-      pluginOptions = listOf(
-        PluginOption(
-          pluginId = anvilCommandLineProcessor.pluginId,
-          optionName = "src-gen-dir",
-          optionValue = File(workingDir, "build/anvil").absolutePath
-        ),
-        PluginOption(
-          pluginId = anvilCommandLineProcessor.pluginId,
-          optionName = "generate-dagger-factories",
-          optionValue = generateDaggerFactories.toString()
-        ),
-        PluginOption(
-          pluginId = anvilCommandLineProcessor.pluginId,
-          optionName = "generate-dagger-factories-only",
-          optionValue = generateDaggerFactoriesOnly.toString()
-        ),
-        PluginOption(
-          pluginId = anvilCommandLineProcessor.pluginId,
-          optionName = "disable-component-merging",
-          optionValue = disableComponentMerging.toString()
-        )
-      )
-
-      this.sources = sources.map { content ->
-        val packageDir = content.lines()
-          .firstOrNull { it.trim().startsWith("package ") }
-          ?.substringAfter("package ")
-          ?.replace('.', '/')
-          ?.let { "$it/" }
-          ?: ""
-
-        val name = "${this.workingDir.absolutePath}/sources/src/main/kotlin/$packageDir/Source.kt"
-        with(File(name).parentFile) {
-          check(exists() || mkdirs())
-        }
-
-        SourceFile.kotlin(name, contents = content, trimIndent = true)
-      }
-    }
-    .compile()
-    .also(block)
-}
 
 fun Class<*>.moduleFactoryClass(
   providerMethodName: String,

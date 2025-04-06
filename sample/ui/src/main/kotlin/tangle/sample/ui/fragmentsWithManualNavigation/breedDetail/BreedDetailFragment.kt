@@ -20,17 +20,16 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import coil.load
-import dispatch.android.lifecycle.withViewLifecycle
-import dispatch.core.MainImmediateCoroutineScope
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 import tangle.fragment.ContributesFragment
 import tangle.fragment.FragmentInject
 import tangle.fragment.FragmentInjectFactory
 import tangle.inject.TangleParam
 import tangle.sample.core.AppScope
 import tangle.sample.core.isMetric
-import tangle.sample.core.onEachLatest
 import tangle.sample.core.viewBinding
 import tangle.sample.data.breed.BreedDetail
 import tangle.sample.ui.R
@@ -41,19 +40,16 @@ import java.util.Locale
 @ContributesFragment(AppScope::class)
 class BreedDetailFragment
   @FragmentInject
-  constructor(
-    private val coroutineScope: MainImmediateCoroutineScope
-  ) : Fragment(R.layout.fragment_breed_detail) {
+  constructor() : Fragment(R.layout.fragment_breed_detail) {
     val binding by viewBinding(FragmentBreedDetailBinding::bind)
 
     val viewModel: BreedDetailViewModel by tangleViewModel()
 
     init {
-      coroutineScope.withViewLifecycle(this) {
+      viewLifecycleOwner.lifecycleScope.launch {
         viewModel.itemDeferred
           .filterNotNull()
-          .onEachLatest { binding.updateView(it) }
-          .launchOnStart()
+          .collect { binding.updateView(it) }
       }
     }
 

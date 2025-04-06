@@ -21,7 +21,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,7 +35,7 @@ class ComposeActivitiesIntegrationTest {
 
   @Test
   fun selected_item_is_passed_to_next_screen() =
-    runBlocking {
+    runTest {
       retry {
         testRule.onNodeWithText(
           text = "Goldendoodle",

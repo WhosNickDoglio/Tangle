@@ -17,7 +17,7 @@ package tangle.fragment.compiler
 
 import com.google.auto.service.AutoService
 import com.squareup.anvil.compiler.api.CodeGenerator
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.anvil.compiler.api.createGeneratedFile
 import com.squareup.anvil.compiler.internal.asClassName
 import com.squareup.anvil.compiler.internal.reference.ClassReference
@@ -84,7 +84,7 @@ class ContributesFragmentGenerator : TangleCodeGenerator() {
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
-  ): Collection<GeneratedFile> {
+  ): Collection<GeneratedFileWithSources> {
     val bindings = projectFiles
       .classAndInnerClassReferences(module)
       .mapNotNull { clazz ->
@@ -145,7 +145,7 @@ class ContributesFragmentGenerator : TangleCodeGenerator() {
     codeGenDir: File,
     packageName: String,
     bindingList: List<Binding>
-  ): GeneratedFile {
+  ): GeneratedFileWithSources {
     val moduleName = "Tangle_${scopeClassName.generateSimpleNameString()}_Fragment_Module"
 
     val fragmentInjected = bindingList.filter { it.fragmentInject }
@@ -237,7 +237,8 @@ class ContributesFragmentGenerator : TangleCodeGenerator() {
       codeGenDir = codeGenDir,
       packageName = packageName,
       fileName = moduleName,
-      content = content
+      content = content,
+      sourceFiles = bindingList.map { it.fragmentClass.containingFileAsJavaFile }.toSet()
     )
   }
 

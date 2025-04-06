@@ -17,7 +17,7 @@ package tangle.fragment.compiler
 
 import com.google.auto.service.AutoService
 import com.squareup.anvil.compiler.api.CodeGenerator
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.anvil.compiler.internal.asClassName
 import com.squareup.anvil.compiler.internal.reference.asClassName
 import com.squareup.anvil.compiler.internal.reference.classAndInnerClassReferences
@@ -42,7 +42,7 @@ class FragmentInjectGenerator : TangleCodeGenerator() {
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
-  ): Collection<GeneratedFile> {
+  ): Collection<GeneratedFileWithSources> {
     val paramsList = projectFiles
       .flatMap { file ->
 
@@ -101,7 +101,7 @@ class FragmentInjectGenerator : TangleCodeGenerator() {
       .map { Fragment_Factory_Generator.generate(codeGenDir, it) }
 
     val daggerModules = paramsList
-      .filterIsInstance<FragmentInjectParams.Factory>()
+      .filterIsInstance<Factory>()
       .groupBy { it.packageName }
       .flatMap { (packageName, byPackageName) ->
         byPackageName

@@ -15,7 +15,7 @@
 
 package tangle.fragment.compiler
 
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -64,7 +64,7 @@ internal object FragmentAssisted_Factory_Impl_Generator : FileGenerator<Factory>
   override fun generate(
     codeGenDir: File,
     params: Factory
-  ): GeneratedFile {
+  ): GeneratedFileWithSources {
 
     val factoryParams = params
     val fragmentParams = params.fragmentParams
@@ -156,11 +156,12 @@ internal object FragmentAssisted_Factory_Impl_Generator : FileGenerator<Factory>
         .build()
         .let { addType(it) }
     }
-    return createGeneratedFile(
+    return createGeneratedFileWithSources(
       codeGenDir = codeGenDir,
       packageName = packageName,
       fileName = factoryImplClassName.simpleName,
-      content = content
+      content = content,
+      sources = setOf(params.factoryClass.containingFileAsJavaFile)
     )
   }
 }

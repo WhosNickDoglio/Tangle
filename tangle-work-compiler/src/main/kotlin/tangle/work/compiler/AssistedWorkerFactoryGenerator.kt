@@ -15,7 +15,7 @@
 
 package tangle.work.compiler
 
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
@@ -36,7 +36,7 @@ object AssistedWorkerFactoryGenerator : FileGenerator<WorkerParams> {
   override fun generate(
     codeGenDir: File,
     params: WorkerParams
-  ): GeneratedFile {
+  ): GeneratedFileWithSources {
 
     val content = FileSpec.buildFile(
       params.packageName, params.workerClassNameString
@@ -108,8 +108,8 @@ object AssistedWorkerFactoryGenerator : FileGenerator<WorkerParams> {
           .build()
       )
     }
-    return createGeneratedFile(
-      codeGenDir, params.packageName, params.assistedFactoryClassNameString, content
+    return createGeneratedFileWithSources(
+      codeGenDir, params.packageName, params.assistedFactoryClassNameString, content, params.sources
     )
   }
 }

@@ -15,7 +15,7 @@
 
 package tangle.viewmodel.compiler
 
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -33,7 +33,7 @@ class ViewModelTangleAppScopeModuleGenerator : FileGenerator<TangleScopeModule> 
   override fun generate(
     codeGenDir: File,
     params: TangleScopeModule
-  ): GeneratedFile {
+  ): GeneratedFileWithSources {
 
     val packageName = params.packageName
 
@@ -61,6 +61,12 @@ class ViewModelTangleAppScopeModuleGenerator : FileGenerator<TangleScopeModule> 
 
       )
     }
-    return createGeneratedFile(codeGenDir, packageName, moduleName, content)
+    return createGeneratedFileWithSources(
+      codeGenDir,
+      packageName,
+      moduleName,
+      content,
+      params.viewModelParamsList.flatMap { it.sourceFiles }.toSet()
+    )
   }
 }

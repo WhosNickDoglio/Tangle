@@ -28,6 +28,7 @@ import tangle.inject.compiler.FqNames
 import tangle.inject.compiler.find
 import tangle.inject.compiler.generateSimpleNameString
 import tangle.viewmodel.compiler.tangleViewModelScope
+import java.io.File
 
 data class MergeComponentParams(
   val module: ModuleDescriptor,
@@ -43,7 +44,8 @@ data class MergeComponentParams(
   val componentClassName: ClassName,
   val mergeComponentModuleClassName: ClassName,
   val subcomponentModuleClassName: ClassName,
-  val scopeQualifier: AnnotationSpec
+  val scopeQualifier: AnnotationSpec,
+  val sourceFiles: Set<File>
 ) {
   companion object {
     fun create(clazz: ClassReference, module: ModuleDescriptor): MergeComponentParams {
@@ -99,7 +101,8 @@ data class MergeComponentParams(
         componentClassName = componentClassName,
         mergeComponentModuleClassName = mergeComponentModuleClassName,
         subcomponentModuleClassName = subcomponentModuleClassName,
-        scopeQualifier = scopeQualifier
+        scopeQualifier = scopeQualifier,
+        sourceFiles = setOf(clazz.containingFileAsJavaFile)
       )
     }
   }

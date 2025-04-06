@@ -17,7 +17,7 @@ package tangle.work.compiler.component
 
 import com.google.auto.service.AutoService
 import com.squareup.anvil.compiler.api.CodeGenerator
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.anvil.compiler.internal.reference.classAndInnerClassReferences
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.psi.KtFile
@@ -41,7 +41,7 @@ class WorkerMergeComponentCodeGenerator : TangleCodeGenerator() {
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
-  ): Collection<GeneratedFile> = projectFiles
+  ): Collection<GeneratedFileWithSources> = projectFiles
     .classAndInnerClassReferences(module)
     .filter { it.isAnnotatedWith(FqNames.mergeComponent) }
     .map { MergeComponentParams.create(it, module) }

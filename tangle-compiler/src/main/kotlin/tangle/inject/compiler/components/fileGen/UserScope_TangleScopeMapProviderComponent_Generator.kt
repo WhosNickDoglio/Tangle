@@ -15,7 +15,7 @@
 
 package tangle.inject.compiler.components.fileGen
 
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.anvil.compiler.internal.asClassName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -51,7 +51,7 @@ internal object UserScope_TangleScopeMapProviderComponent_Generator :
   override fun generate(
     codeGenDir: File,
     params: MergeComponentParams
-  ): GeneratedFile? {
+  ): GeneratedFileWithSources? {
 
     if (params.forSubcomponent) {
       // This module binds the subcomponent factory for the main component's scope.
@@ -83,8 +83,7 @@ internal object UserScope_TangleScopeMapProviderComponent_Generator :
           classNameString = "$baseName${++count}"
           replaced.add(resolved.asClassName())
           false
-        }
-        ?: true
+        } != false
     } while (!unique)
 
     val className = ClassName(packageName, classNameString)
@@ -113,6 +112,12 @@ internal object UserScope_TangleScopeMapProviderComponent_Generator :
         .let { addType(it) }
     }
 
-    return createGeneratedFile(codeGenDir, packageName, classNameString, content)
+    return createGeneratedFileWithSources(
+      codeGenDir,
+      packageName,
+      classNameString,
+      content,
+      sources = params.sources
+    )
   }
 }

@@ -15,7 +15,7 @@
 
 package tangle.inject.compiler.components.fileGen
 
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.anvil.compiler.internal.asClassName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -45,7 +45,7 @@ internal object UserScope_TangleInjectorComponent_Generator : FileGenerator<Merg
   override fun generate(
     codeGenDir: File,
     params: MergeComponentParams
-  ): GeneratedFile? {
+  ): GeneratedFileWithSources? {
 
     val packageName = "tangle.inject"
 
@@ -71,8 +71,7 @@ internal object UserScope_TangleInjectorComponent_Generator : FileGenerator<Merg
           classNameString = "$baseName${++count}"
           replaced.add(resolved.asClassName())
           false
-        }
-        ?: true
+        } != false
     } while (!unique)
 
     val className = ClassName(packageName, classNameString)
@@ -93,6 +92,12 @@ internal object UserScope_TangleInjectorComponent_Generator : FileGenerator<Merg
         .let { addType(it) }
     }
 
-    return createGeneratedFile(codeGenDir, packageName, classNameString, content)
+    return createGeneratedFileWithSources(
+      codeGenDir,
+      packageName,
+      classNameString,
+      content,
+      sources = params.sources
+    )
   }
 }

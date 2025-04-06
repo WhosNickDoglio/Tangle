@@ -15,7 +15,7 @@
 
 package tangle.viewmodel.compiler.components
 
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
@@ -38,7 +38,7 @@ class ViewModelSubcomponentFactoryModuleGenerator : FileGenerator<MergeComponent
   override fun generate(
     codeGenDir: File,
     params: MergeComponentParams
-  ): GeneratedFile? {
+  ): GeneratedFileWithSources? {
 
     val moduleFqName =
       FqName(
@@ -100,6 +100,12 @@ class ViewModelSubcomponentFactoryModuleGenerator : FileGenerator<MergeComponent
         .let { addType(it) }
     }
 
-    return createGeneratedFile(codeGenDir, packageName, className.simpleName, content)
+    return createGeneratedFileWithSources(
+      codeGenDir,
+      packageName,
+      className.simpleName,
+      content,
+      params.sourceFiles
+    )
   }
 }

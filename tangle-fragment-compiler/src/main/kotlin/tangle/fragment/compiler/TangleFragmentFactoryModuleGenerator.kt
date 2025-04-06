@@ -17,7 +17,7 @@ package tangle.fragment.compiler
 
 import com.google.auto.service.AutoService
 import com.squareup.anvil.compiler.api.CodeGenerator
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.anvil.compiler.api.createGeneratedFile
 import com.squareup.anvil.compiler.internal.reference.ClassReference
 import com.squareup.anvil.compiler.internal.reference.asClassName
@@ -50,7 +50,7 @@ class TangleFragmentFactoryModuleGenerator : TangleCodeGenerator() {
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
-  ): Collection<GeneratedFile> = projectFiles
+  ): Collection<GeneratedFileWithSources> = projectFiles
     .classAndInnerClassReferences(module)
     .filter { it.isAnnotatedWith(FqNames.mergeComponent) }
     // fast path for excluding duplicate binding modules if they're in the same source
@@ -62,7 +62,7 @@ class TangleFragmentFactoryModuleGenerator : TangleCodeGenerator() {
     codeGenDir: File,
     module: ModuleDescriptor,
     clazz: ClassReference
-  ): GeneratedFile? {
+  ): GeneratedFileWithSources? {
     // Every single instance of this generated Module will have the same FqName,
     // except for the scope name which is prepended to the interface name.
     // This is crucial because we can only ever have one TangleFragmentFactory binding declaration
@@ -130,6 +130,12 @@ class TangleFragmentFactoryModuleGenerator : TangleCodeGenerator() {
         .let { addType(it) }
     }
 
-    return createGeneratedFile(codeGenDir, packageName, moduleClassNameString, content)
+    return createGeneratedFile(
+      codeGenDir,
+      packageName,
+      moduleClassNameString,
+      content,
+      sourceFile = clazz.containingFileAsJavaFile
+    )
   }
 }

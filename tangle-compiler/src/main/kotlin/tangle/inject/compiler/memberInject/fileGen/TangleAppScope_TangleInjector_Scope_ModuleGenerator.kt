@@ -15,7 +15,7 @@
 
 package tangle.inject.compiler.memberInject.fileGen
 
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -52,7 +52,7 @@ internal object TangleAppScope_TangleInjector_Scope_ModuleGenerator : FileGenera
   override fun generate(
     codeGenDir: File,
     params: MemberInjectParams
-  ): GeneratedFile {
+  ): GeneratedFileWithSources {
 
     val packageName = params.packageName
 
@@ -79,11 +79,12 @@ internal object TangleAppScope_TangleInjector_Scope_ModuleGenerator : FileGenera
       )
     }
 
-    return createGeneratedFile(
+    return createGeneratedFileWithSources(
       codeGenDir = codeGenDir,
       packageName = packageName,
       fileName = moduleName,
-      content = content
+      content = content,
+      sources = params.sourceFiles
     )
   }
 }

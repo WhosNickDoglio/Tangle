@@ -17,7 +17,7 @@ package tangle.viewmodel.compiler
 
 import com.google.auto.service.AutoService
 import com.squareup.anvil.compiler.api.CodeGenerator
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.anvil.compiler.internal.reference.classAndInnerClassReferences
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.psi.KtFile
@@ -33,7 +33,7 @@ class VMInjectCodeGenerator : TangleCodeGenerator() {
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
-  ): Collection<GeneratedFile> {
+  ): Collection<GeneratedFileWithSources> {
     val viewModelParamsList = projectFiles
       .classAndInnerClassReferences(module)
       .mapNotNull {

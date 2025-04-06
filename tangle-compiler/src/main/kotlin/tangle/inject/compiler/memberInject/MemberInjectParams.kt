@@ -21,6 +21,7 @@ import com.squareup.anvil.compiler.internal.reference.asClassName
 import com.squareup.kotlinpoet.ClassName
 import tangle.inject.compiler.generateSimpleNameString
 import tangle.inject.compiler.memberInjectedParameters
+import java.io.File
 
 data class MemberInjectParams(
   val scopeClassName: ClassName,
@@ -31,7 +32,8 @@ data class MemberInjectParams(
   val tangleAppScopeModuleClassName: ClassName,
   val injectorName: String,
   val injectorClassName: ClassName,
-  val hasInjectedMembers: Boolean
+  val hasInjectedMembers: Boolean,
+  val sourceFiles: Set<File>
 ) {
   companion object {
     fun create(
@@ -70,7 +72,8 @@ data class MemberInjectParams(
         tangleAppScopeModuleClassName = ClassName(packageName, tangleAppScopeModuleClassName),
         injectorName = injectorName,
         injectorClassName = injectorClassName,
-        hasInjectedMembers = injectedParams.isNotEmpty()
+        hasInjectedMembers = injectedParams.isNotEmpty(),
+        sourceFiles = setOf(clazz.containingFileAsJavaFile)
       )
     }
   }

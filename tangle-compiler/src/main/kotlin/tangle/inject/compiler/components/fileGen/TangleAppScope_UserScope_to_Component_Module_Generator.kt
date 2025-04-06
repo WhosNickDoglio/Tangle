@@ -15,7 +15,7 @@
 
 package tangle.inject.compiler.components.fileGen
 
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.anvil.compiler.internal.asClassName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -57,7 +57,7 @@ internal object TangleAppScope_UserScope_to_Component_Module_Generator : FileGen
   override fun generate(
     codeGenDir: File,
     params: MergeComponentParams
-  ): GeneratedFile {
+  ): GeneratedFileWithSources {
 
     val packageName = CONSTANT_PACKAGE_NAME
 
@@ -83,8 +83,7 @@ internal object TangleAppScope_UserScope_to_Component_Module_Generator : FileGen
           classNameString = "$baseName${++count}"
           replaced.add(resolved.asClassName())
           false
-        }
-        ?: true
+        } != false
     } while (!unique)
 
     val className = ClassName(packageName, classNameString)
@@ -118,11 +117,12 @@ internal object TangleAppScope_UserScope_to_Component_Module_Generator : FileGen
       )
     }
 
-    return TangleAppScope_TangleInjector_Scope_ModuleGenerator.createGeneratedFile(
+    return TangleAppScope_TangleInjector_Scope_ModuleGenerator.createGeneratedFileWithSources(
       codeGenDir = codeGenDir,
       packageName = packageName,
       fileName = classNameString,
-      content = content
+      content = content,
+      sources = params.sources
     )
   }
 }

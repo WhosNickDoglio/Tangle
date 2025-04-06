@@ -17,17 +17,17 @@ package tangle.inject.compiler
 
 import com.squareup.anvil.compiler.api.AnvilContext
 import com.squareup.anvil.compiler.api.CodeGenerator
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.psi.KtFile
 import java.io.File
 
 /**
- * Wraps all code generation in [delegateToAnvilUnsafe], which catches Anvil exceptions
- * and rethrows them as TangleCompilationException.
+ * Wraps all code generation in [delegateToAnvilUnsafe], which catches Anvil exceptions and rethrows
+ * them as TangleCompilationException.
  *
- * Anvil can be pretty sensitive to attempts to resolve types in generated code,
- * and Tangle generates a lot of code which then needs further code-gen.
+ * Anvil can be pretty sensitive to attempts to resolve types in generated code, and Tangle
+ * generates a lot of code which then needs further code-gen.
  *
  * If an Anvil exception occurs during Tangle's compilation, it's probably a Tangle in that Tangle's
  * attempting to use an unsupported Anvil API.
@@ -42,7 +42,7 @@ abstract class TangleCodeGenerator : CodeGenerator {
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
-  ): Collection<GeneratedFile> {
+  ): Collection<GeneratedFileWithSources> {
     return delegateToAnvilUnsafe {
       generateTangleCode(codeGenDir, module, projectFiles)
     }
@@ -52,5 +52,5 @@ abstract class TangleCodeGenerator : CodeGenerator {
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
-  ): Collection<GeneratedFile>
+  ): Collection<GeneratedFileWithSources>
 }

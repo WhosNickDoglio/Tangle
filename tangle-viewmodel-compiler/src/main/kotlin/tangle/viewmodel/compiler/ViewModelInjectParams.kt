@@ -47,6 +47,7 @@ import tangle.inject.compiler.requireTangleParamName
 import tangle.inject.compiler.uniqueName
 import tangle.inject.compiler.wrapInLazy
 import tangle.inject.compiler.wrapInProvider
+import java.io.File
 
 data class TangleScopeModule(
   val packageName: String,
@@ -73,7 +74,8 @@ data class ViewModelParams(
   val typeParameters: List<TypeVariableName>,
   val viewModelClassSimpleName: String,
   val viewModelTypeName: TypeName,
-  val savedStateParam: Parameter?
+  val savedStateParam: Parameter?,
+  val sourceFiles: Set<File>
 ) : ViewModelInjectParams {
   companion object {
     fun create(
@@ -142,7 +144,8 @@ data class ViewModelParams(
         typeParameters = typeParameters,
         viewModelClassSimpleName = viewModelClassSimpleName,
         viewModelTypeName = viewModelTypeName,
-        savedStateParam = finalSavedStateParam
+        savedStateParam = finalSavedStateParam,
+        sourceFiles = setOf(viewModelClass.containingFileAsJavaFile)
       )
     }
 

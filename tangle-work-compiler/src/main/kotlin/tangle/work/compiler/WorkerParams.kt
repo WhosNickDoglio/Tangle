@@ -24,6 +24,7 @@ import tangle.inject.compiler.ConstructorInjectParameter
 import tangle.inject.compiler.FqNames
 import tangle.inject.compiler.mapToParameters
 import tangle.inject.compiler.require
+import java.io.File
 
 data class WorkerParams(
   val module: ModuleDescriptor,
@@ -34,7 +35,8 @@ data class WorkerParams(
   val assistedFactoryClassNameString: String,
   val assistedFactoryClassName: ClassName,
   val constructorParams: List<ConstructorInjectParameter>,
-  val assistedArgs: List<ConstructorInjectParameter>
+  val assistedArgs: List<ConstructorInjectParameter>,
+  val sources: Set<File>
 ) {
   companion object {
 
@@ -94,7 +96,8 @@ data class WorkerParams(
         assistedFactoryClassNameString = assistedFactoryClassNameString,
         assistedFactoryClassName = assistedFactoryClassName,
         constructorParams = constructorParams,
-        assistedArgs = assistedArgs
+        assistedArgs = assistedArgs,
+        sources = setOf(workerClass.containingFileAsJavaFile)
       )
     }
   }

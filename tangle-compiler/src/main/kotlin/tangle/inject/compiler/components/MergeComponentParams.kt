@@ -16,6 +16,7 @@
 package tangle.inject.compiler.components
 
 import com.squareup.anvil.compiler.internal.asClassName
+import com.squareup.anvil.compiler.internal.containingFileAsJavaFile
 import com.squareup.anvil.compiler.internal.requireFqName
 import com.squareup.anvil.compiler.internal.safePackageString
 import com.squareup.kotlinpoet.AnnotationSpec
@@ -26,6 +27,7 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 import tangle.inject.compiler.AnnotationSpec
 import tangle.inject.compiler.ClassNames
 import tangle.inject.compiler.generateSimpleNameString
+import java.io.File
 
 data class MergeComponentParams(
   val module: ModuleDescriptor,
@@ -40,7 +42,8 @@ data class MergeComponentParams(
   val scopeToComponentModuleClassName: ClassName,
   val originalComponentClassName: ClassName,
   val scopeQualifier: AnnotationSpec,
-  val forSubcomponent: Boolean
+  val forSubcomponent: Boolean,
+  val sources: Set<File>
 ) {
   companion object {
     fun create(
@@ -94,7 +97,8 @@ data class MergeComponentParams(
         scopeToComponentModuleClassName = scopeToComponentModuleClassName,
         originalComponentClassName = originalComponentClassName,
         scopeQualifier = scopeQualifier,
-        forSubcomponent = forSubcomponent
+        forSubcomponent = forSubcomponent,
+        sources = setOf(clazz.containingFileAsJavaFile())
       )
     }
   }

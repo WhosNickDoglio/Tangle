@@ -15,7 +15,7 @@
 
 package tangle.work.compiler
 
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
@@ -37,7 +37,7 @@ object AssistedWorkerFactoryModuleGenerator : FileGenerator<TangleAppScopeModule
   override fun generate(
     codeGenDir: File,
     params: TangleAppScopeModule
-  ): GeneratedFile {
+  ): GeneratedFileWithSources {
 
     val packageName = params.packageName
 
@@ -83,6 +83,12 @@ object AssistedWorkerFactoryModuleGenerator : FileGenerator<TangleAppScopeModule
 
       )
     }
-    return createGeneratedFile(codeGenDir, packageName, moduleName, content)
+    return createGeneratedFileWithSources(
+      codeGenDir,
+      packageName,
+      moduleName,
+      content,
+      params.workerParamsList.flatMap { it.sources }.toSet()
+    )
   }
 }

@@ -17,7 +17,7 @@ package tangle.inject.compiler.components
 
 import com.google.auto.service.AutoService
 import com.squareup.anvil.compiler.api.CodeGenerator
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import com.squareup.anvil.compiler.internal.reference.classAndInnerClassReferences
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.psi.KtFile
@@ -50,7 +50,7 @@ class TangleInjectorMergeComponentCodeGenerator : TangleCodeGenerator() {
     codeGenDir: File,
     module: ModuleDescriptor,
     projectFiles: Collection<KtFile>
-  ): Collection<GeneratedFile> = projectFiles
+  ): Collection<GeneratedFileWithSources> = projectFiles
     .classAndInnerClassReferences(module)
     .mapNotNull { clazz ->
 

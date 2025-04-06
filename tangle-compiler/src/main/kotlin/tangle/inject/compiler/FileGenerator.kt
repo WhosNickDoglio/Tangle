@@ -16,12 +16,12 @@
 package tangle.inject.compiler
 
 import com.squareup.anvil.annotations.ExperimentalAnvilApi
-import com.squareup.anvil.compiler.api.GeneratedFile
+import com.squareup.anvil.compiler.api.GeneratedFileWithSources
 import java.io.File
 
 fun interface FileGenerator<T> {
 
-  fun generate(codeGenDir: File, params: T): GeneratedFile?
+  fun generate(codeGenDir: File, params: T): GeneratedFileWithSources?
 
   /**
    * Write [content] into a new file for the given [packageName] and [fileName]. [fileName] usually
@@ -29,12 +29,13 @@ fun interface FileGenerator<T> {
    */
   @ExperimentalAnvilApi
   @Suppress("unused")
-  fun createGeneratedFile(
+  fun createGeneratedFileWithSources(
     codeGenDir: File,
     packageName: String,
     fileName: String,
-    content: String
-  ): GeneratedFile {
+    content: String,
+    sources: Set<File>
+  ): GeneratedFileWithSources {
     val directory = File(codeGenDir, packageName.replace('.', File.separatorChar))
     val file = File(directory, "$fileName.kt")
     check(file.parentFile.exists() || file.parentFile.mkdirs()) {
@@ -42,7 +43,7 @@ fun interface FileGenerator<T> {
     }
     file.writeText(content)
 
-    return GeneratedFile(file, content)
+    return GeneratedFileWithSources(file, content, sources)
   }
 
   companion object {

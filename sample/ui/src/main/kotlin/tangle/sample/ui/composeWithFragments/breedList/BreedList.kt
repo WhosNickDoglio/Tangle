@@ -39,7 +39,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import coil.compose.rememberAsyncImagePainter
 import tangle.sample.core.isMetric
 import tangle.sample.data.breed.BreedSummary
@@ -63,7 +62,8 @@ internal fun BreedList(
       Modifier.fillMaxSize(),
       verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-      items(breedListItems) { summary ->
+      items(count = breedListItems.itemCount) { index ->
+        val summary = breedListItems[index]
         if (summary != null) {
           tangle.sample.ui.composeWithActivities.breedList.BreedListItem(
             Locale.getDefault()

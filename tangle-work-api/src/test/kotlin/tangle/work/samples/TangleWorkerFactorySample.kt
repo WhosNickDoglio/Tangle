@@ -32,6 +32,13 @@ class TangleWorkerFactorySample {
 
       @Inject lateinit var workerFactory: TangleWorkerFactory
 
+      // now the WorkManager instances will use TangleWorkerFactory
+      override val workManagerConfiguration: Configuration by lazy {
+        Configuration.Builder()
+          .setWorkerFactory(workerFactory)
+          .build()
+      }
+
       override fun onCreate() {
         super.onCreate()
 
@@ -42,13 +49,6 @@ class TangleWorkerFactorySample {
 
         // inject your application class after initializing TangleGraph
         (myAppComponent as MyApplicationComponent).inject(this)
-      }
-
-      // now the WorkManager instances will use TangleWorkerFactory
-      override fun getWorkManagerConfiguration(): Configuration {
-        return Configuration.Builder()
-          .setWorkerFactory(workerFactory)
-          .build()
       }
     }
   }

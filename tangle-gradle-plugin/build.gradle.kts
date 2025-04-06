@@ -195,7 +195,6 @@ tasks.withType<CodeSourceExploderTask>().configureEach {
   dependsOn(generateBuildProperties, generateTestVersions)
 }
 
-
 tasks.withType<KotlinCompile>().configureEach {
   dependsOn(generateBuildProperties)
 }

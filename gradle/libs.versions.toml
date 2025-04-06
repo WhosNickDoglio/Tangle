@@ -209,7 +209,7 @@ rickBusarow-dispatch-espresso = { module = "com.rickbusarow.dispatch:dispatch-an
 rickBusarow-dispatch-lifecycle = { module = "com.rickbusarow.dispatch:dispatch-android-lifecycle", version.ref = "dispatch" }
 rickBusarow-dispatch-lifecycleExtensions = { module = "com.rickbusarow.dispatch:dispatch-android-lifecycle-extensions", version.ref = "dispatch" }
 
-robolectric = "org.robolectric:robolectric:4.9.2"
+robolectric = "org.robolectric:robolectric:4.14.1"
 
 square-anvil-annotations = { module = "com.squareup.anvil:annotations", version.ref = "square-anvil" }
 square-anvil-compiler-api = { module = "com.squareup.anvil:compiler-api", version.ref = "square-anvil" }

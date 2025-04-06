@@ -16,6 +16,7 @@
 plugins {
   id("dev.whosnickdoglio.convention.tangle.androidLibrary")
   id("dev.whosnickdoglio.convention.tangle.published")
+  alias(libs.plugins.kotlin.compose)
 }
 
 android { namespace = "tangle.viewmodel.compose" }
@@ -24,20 +25,7 @@ tanglePublishing {
   artifactId.set("tangle-viewmodel-compose")
 }
 
-android {
-
-  buildFeatures {
-    compose = true
-  }
-  composeOptions {
-    kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
-  }
-}
-
 dependencies {
-
-  api(libs.androidx.compose.compiler)
-
   compileOnly(libs.androidx.annotations)
 
   implementation(libs.androidx.activity.core)

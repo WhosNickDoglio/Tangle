@@ -18,6 +18,7 @@ import java.util.Locale
 plugins {
   id("dev.whosnickdoglio.convention.tangle.androidApplication")
   alias(libs.plugins.anvil)
+  alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.kotlin.kapt)
 }
 
@@ -49,11 +50,7 @@ android {
 
   buildFeatures {
     viewBinding = true
-    compose = true
     buildConfig = true
-  }
-  composeOptions {
-    kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
   }
   packaging {
     resources.excludes.add("META-INF/*.kotlin_module")
@@ -142,11 +139,8 @@ dependencies {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>()
   .configureEach {
 
-    kotlinOptions {
-
-      freeCompilerArgs = freeCompilerArgs + listOf(
-        "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
-      )
+    compilerOptions {
+      freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
     }
   }
 

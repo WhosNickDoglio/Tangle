@@ -18,27 +18,19 @@ import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import org.jlleitschuh.gradle.ktlint.tasks.BaseKtLintCheckTask
 
-buildscript {
-  repositories {
-    mavenLocal()
-    mavenCentral()
-    google()
-  }
-  dependencies {
-    classpath(libs.android.gradle)
-    classpath(libs.square.anvil.gradle)
-    classpath(libs.google.ksp)
-    classpath(libs.kotlin.gradle.plug)
-    classpath(libs.ktlint.gradle)
-  }
-}
-
 plugins {
+  base
   alias(libs.plugins.dependencyAnalysis)
   alias(libs.plugins.detekt)
   alias(libs.plugins.kotlinx.binaryCompatibility)
+  alias(libs.plugins.android.application) apply false
+  alias(libs.plugins.android.library) apply false
+  alias(libs.plugins.anvil) apply false
+  alias(libs.plugins.google.ksp) apply false
+  alias(libs.plugins.kotlin.android) apply false
   alias(libs.plugins.kotlin.jvm) apply false
-  base
+  alias(libs.plugins.kotlin.kapt) apply false
+  alias(libs.plugins.ktlint) apply false
 }
 
 allprojects {

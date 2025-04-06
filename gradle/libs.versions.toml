@@ -48,13 +48,17 @@ square-retrofit = "2.9.0"
 vanniktech-publish = "0.31.0"
 
 [plugins]
-
+android-application = { id = "com.android.application", version.ref = "androidTools" }
+android-library = { id = "com.android.library", version.ref = "androidTools" }
 anvil = { id = "com.squareup.anvil", version.ref = "square-anvil" }
 dependencyAnalysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependencyAnalysis" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 dropbox-dependencyGuard = { id = "com.dropbox.dependency-guard", version.ref = "dropbox-dependencyGuard" }
 gradleDoctor = { id = "com.osacky.doctor", version.ref = "gradleDoctor" }
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "google-ksp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-gradle" }
 
 kotlinx-binaryCompatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlinx-binaryCompatibility" }

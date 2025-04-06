@@ -19,7 +19,6 @@ import android.content.Context
 import androidx.work.WorkerParameters
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
-import io.mockk.MockK
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import org.junit.jupiter.api.AfterEach

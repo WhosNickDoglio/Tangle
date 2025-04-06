@@ -48,6 +48,5 @@ dependencies {
 
   implementation(libs.vanniktech.publish)
   implementation(libs.android.gradle)
-  implementation(libs.dokka.gradle)
   implementation(libs.dropbox.dependencyGuard)
 }

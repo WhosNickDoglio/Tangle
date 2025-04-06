@@ -17,12 +17,10 @@
 package dev.whosnickdoglio.convention.tangle
 
 import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
-import com.vanniktech.maven.publish.JavadocJar.Dokka
 import com.vanniktech.maven.publish.KotlinJvm
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost.Companion.DEFAULT
 import com.vanniktech.maven.publish.tasks.JavadocJar
-import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import dev.whosnickdoglio.convention.tangle.builds.GROUP
 import dev.whosnickdoglio.convention.tangle.builds.SOURCE_WEBSITE
 import dev.whosnickdoglio.convention.tangle.builds.VERSION_NAME
@@ -31,7 +29,6 @@ import kotlin.reflect.KProperty
 
 plugins {
   id("com.vanniktech.maven.publish.base")
-  id("dev.whosnickdoglio.convention.tangle.dokka")
   id("dev.whosnickdoglio.convention.tangle.dependency-guard")
 }
 
@@ -44,7 +41,6 @@ val settings = extensions.create<TanglePublishingExtension>("tanglePublishing")
 
 version = VERSION_NAME
 
-var skipDokka = false
 
 when {
   pluginManager.hasPlugin("java-gradle-plugin") -> {
@@ -90,7 +86,7 @@ fun configurePublish(android: Boolean) {
     if (android) {
       configure(AndroidSingleVariantLibrary(sourcesJar = true))
     } else {
-      configure(KotlinJvm(javadocJar = Dokka(taskName = "dokkaHtml"), sourcesJar = true))
+      configure(KotlinJvm(sourcesJar = true))
     }
   }
   afterEvaluate {
@@ -136,26 +132,6 @@ tasks.withType(Sign::class.java).configureEach {
   onlyIf {
     !VERSION_NAME.endsWith("SNAPSHOT") && !VERSION_NAME.endsWith("LOCAL")
   }
-}
-tasks.matching { it.name == "javaDocReleaseGeneration" }.configureEach {
-  onlyIf { !skipDokka }
-}
-tasks.withType(AbstractDokkaLeafTask::class.java) {
-  onlyIf { !skipDokka }
-}
-
-// Integration tests require `publishToMavenLocal`, but they definitely don't need Dokka output,
-// and generating kdoc for everything takes forever -- especially on a GitHub Actions server.
-// So for integration tests, skip Dokka tasks.
-val publishToMavenLocalNoDokka = tasks.register("publishToMavenLocalNoDokka") {
-
-  doFirst { skipDokka = true }
-
-  finalizedBy(rootProject.tasks.matching { it.name == "publishToMavenLocal" })
-}
-
-tasks.matching { it.name == "publishToMavenLocal" }.all {
-  mustRunAfter(publishToMavenLocalNoDokka)
 }
 
 inline fun <reified T : Any> propertyDelegate(name: String): ReadWriteProperty<Any, T> {

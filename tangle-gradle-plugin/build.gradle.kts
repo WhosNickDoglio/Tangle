@@ -52,12 +52,6 @@ idea {
   }
 }
 
-tasks.named("dokkaHtml").configure {
-  dependsOn(tasks.named("pluginDescriptors"))
-  dependsOn(tasks.named("pluginUnderTestMetadata"))
-  dependsOn(tasks.named("test"))
-}
-
 val integrationTestCompile by configurations.registering {
   extendsFrom(configurations["testCompileOnly"])
 }
@@ -230,7 +224,6 @@ val integrationTestTask = tasks.register("integrationTest", Test::class) {
   val integrationTestSourceSet = java.sourceSets["integrationTest"]
   testClassesDirs = integrationTestSourceSet.output.classesDirs
   classpath = integrationTestSourceSet.runtimeClasspath
-  dependsOn(rootProject.tasks.matching { it.name == "publishToMavenLocalNoDokka" })
 }
 
 tasks.matching { it.name == "check" }.all { dependsOn(integrationTestTask) }

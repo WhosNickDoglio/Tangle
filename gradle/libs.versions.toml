@@ -4,7 +4,6 @@ coil = "2.2.0"
 dependencyAnalysis = "1.13.1"
 dispatch = "1.0.0-beta10"
 detekt = "1.23.8"
-dokka = "1.9.20"
 dropbox-dependencyGuard = "0.3.1"
 gradleDoctor = "0.10.0"
 jUnit = "5.11.4"
@@ -58,7 +57,6 @@ gradleDoctor = { id = "com.osacky.doctor", version.ref = "gradleDoctor" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-gradle" }
 
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kotlinx-binaryCompatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlinx-binaryCompatibility" }
 
 [libraries]
@@ -150,8 +148,6 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coil-core = { module = "io.coil-kt:coil", version.ref = "coil" }
 coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coil" }
 
-dokka-core = { module = "org.jetbrains.dokka:dokka-core", version.ref = "dokka" }
-dokka-gradle = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 
 dropbox-dependencyGuard = { module = "com.dropbox.dependency-guard:dependency-guard", version.ref = "dropbox-dependencyGuard" }
 

@@ -23,8 +23,6 @@ buildscript {
     mavenLocal()
     mavenCentral()
     google()
-    maven("https://plugins.gradle.org/m2/")
-    maven("https://oss.sonatype.org/content/repositories/snapshots")
   }
   dependencies {
     classpath(libs.android.gradle)
@@ -41,7 +39,6 @@ plugins {
   alias(libs.plugins.kotlinx.binaryCompatibility)
   alias(libs.plugins.kotlin.jvm) apply false
   base
-  id("dev.whosnickdoglio.convention.tangle.dokka")
 }
 
 allprojects {
@@ -183,10 +180,5 @@ allprojects {
 val publishToMavenLocal by tasks.registering {
   subprojects.forEach { sub ->
     dependsOn(sub.tasks.matching { it.name == "publishToMavenLocal" })
-  }
-}
-val publishToMavenLocalNoDokka by tasks.registering {
-  subprojects.forEach { sub ->
-    dependsOn(sub.tasks.matching { it.name == "publishToMavenLocalNoDokka" })
   }
 }

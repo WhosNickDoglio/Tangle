@@ -50,9 +50,11 @@ fun Project.common() {
       }
     }
   tasks.withType<Test> {
+    maxHeapSize = "4g"
     useJUnitPlatform()
     // https://github.com/ZacSweers/kotlin-compile-testing?tab=readme-ov-file#java-16-compatibility
     jvmArgs(
+      "-Xms512m",
       "--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
       "--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
       "--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",

@@ -16,6 +16,8 @@
 package dev.whosnickdoglio.convention.tangle
 
 import org.gradle.api.Project
+import org.gradle.api.artifacts.VersionCatalog
+import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
@@ -25,7 +27,13 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.File
 
+@Suppress("LongMethod")
 fun Project.common() {
+  val versionCatalog = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
+  dependencies.add(
+    "implementation",
+    dependencies.platform(versionCatalog.findLibrary("kotlin-bom").get())
+  )
 
   tasks.withType<KotlinCompile>()
     .configureEach {

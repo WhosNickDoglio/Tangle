@@ -36,10 +36,10 @@ buildscript {
 }
 
 plugins {
-  kotlin("jvm")
   alias(libs.plugins.dependencyAnalysis)
   alias(libs.plugins.detekt)
   alias(libs.plugins.kotlinx.binaryCompatibility)
+  alias(libs.plugins.kotlin.jvm) apply false
   base
   id("dev.whosnickdoglio.convention.tangle.dokka")
 }

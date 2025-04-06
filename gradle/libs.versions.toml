@@ -158,8 +158,8 @@ dropbox-dependencyGuard = { module = "com.dropbox.dependency-guard:dependency-gu
 
 google-auto-common = "com.google.auto:auto-common:1.2.1"
 
-google-auto-service-annotations = "com.google.auto.service:auto-service-annotations:1.0.1"
-google-auto-service-processor = "com.google.auto.service:auto-service:1.0.1"
+google-auto-service-annotations = "com.google.auto.service:auto-service-annotations:1.1.1"
+google-auto-service-processor = "com.google.auto.service:auto-service:1.1.1"
 
 google-dagger-api = { module = "com.google.dagger:dagger", version.ref = "google-dagger" }
 google-dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "google-dagger" }
@@ -234,7 +234,7 @@ timber = "com.jakewharton.timber:timber:5.0.1"
 
 vanniktech-publish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "vanniktech-publish" }
 
-zacSweers-auto-service-ksp = "dev.zacsweers.autoservice:auto-service-ksp:1.0.0"
+zacSweers-auto-service-ksp = "dev.zacsweers.autoservice:auto-service-ksp:1.1.0"
 
 [bundles]
 jUnit = ["junit-api", "junit-params", "junit-engine"]

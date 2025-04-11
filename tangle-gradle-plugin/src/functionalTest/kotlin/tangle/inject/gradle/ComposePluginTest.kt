@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,13 +15,52 @@
 
 package tangle.inject.gradle
 
-import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.TestFactory
-import java.io.File
 
-class TanglePluginTest : BasePluginTest() {
+class ComposePluginTest : BasePluginTest() {
   @TestFactory
-  fun `default application should apply Anvil`() =
+  fun `viewmodel compose api should be automatically enabled with androidx viewmodel and compose dependencies`() =
+    test {
+      module(
+        """
+        plugins {
+          id("com.android.library")
+          kotlin("android")
+          id("com.rickbusarow.tangle")
+        }
+
+        android {
+          compileSdk = 30
+          namespace = "foo"
+
+
+          defaultConfig {
+            minSdk = 23
+            targetSdk = 30
+          }
+        }
+
+        dependencies {
+          $compose
+          $viewModels
+        }
+
+        ${listDepsTasks()}
+        """.trimIndent()
+      )
+
+      build("deps").tangleDeps() shouldBe
+        listOf(
+          "anvil com.rickbusarow.tangle:tangle-compiler",
+          "anvil com.rickbusarow.tangle:tangle-viewmodel-compiler",
+          "implementation com.rickbusarow.tangle:tangle-api",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-api",
+          "implementation com.rickbusarow.tangle:tangle-viewmodel-compose"
+        )
+    }
+
+  @TestFactory
+  fun `disabling viewModels compose in config should disable the viewmodel compose api dependency`() =
     test {
       module(
         """
@@ -41,47 +80,9 @@ class TanglePluginTest : BasePluginTest() {
           }
         }
 
-        ${listDepsTasks()}
-        """.trimIndent()
-      )
-
-      File(testProjectDir, "module/src/main/java/tangle/inject/tests/Component.kt")
-        .also { it.parentFile.mkdirs() }
-        .writeText(
-          """
-          package tangle.inject.tests
-
-          import com.squareup.anvil.annotations.ContributesTo
-
-          @ContributesTo(Unit::class)
-          interface Component
-          """.trimIndent()
-        )
-
-      tasks("assembleDebug")
-        .build()
-        .task(":module:assembleDebug")!!
-        .outcome shouldBe SUCCESS
-    }
-
-  @TestFactory
-  fun `default application should add Tangle dependencies`() =
-    test {
-      module(
-        """
-        plugins {
-          id("com.android.library")
-          kotlin("android")
-          id("com.rickbusarow.tangle")
-        }
-
-        android {
-          compileSdk = 30
-          namespace = "foo"
-
-          defaultConfig {
-            minSdk = 23
-            targetSdk = 30
+        tangle {
+          viewModelOptions {
+            composeEnabled = false // default is null
           }
         }
 
@@ -107,72 +108,9 @@ class TanglePluginTest : BasePluginTest() {
           "implementation com.rickbusarow.tangle:tangle-fragment-api",
           "implementation com.rickbusarow.tangle:tangle-viewmodel-activity",
           "implementation com.rickbusarow.tangle:tangle-viewmodel-api",
-          "implementation com.rickbusarow.tangle:tangle-viewmodel-compose",
           "implementation com.rickbusarow.tangle:tangle-viewmodel-fragment",
           "implementation com.rickbusarow.tangle:tangle-work-api"
         )
-    }
-
-  @TestFactory
-  fun `only base compiler and api should be enabled without corresponding androidx dependencies`() =
-    test {
-      module(
-        """
-        plugins {
-          id("com.android.library")
-          kotlin("android")
-          id("com.rickbusarow.tangle")
-        }
-
-        android {
-          compileSdk = 30
-          namespace = "foo"
-
-          defaultConfig {
-            minSdk = 23
-            targetSdk = 30
-          }
-        }
-
-        dependencies {
-        }
-
-        ${listDepsTasks()}
-        """.trimIndent()
-      )
-
-      build("deps").tangleDeps() shouldBe
-        listOf(
-          "anvil com.rickbusarow.tangle:tangle-compiler",
-          "implementation com.rickbusarow.tangle:tangle-api"
-        )
-    }
-
-  @TestFactory
-  fun `build will fail if applied to a module without AGP`() =
-    test {
-      module(
-        """
-        plugins {
-          kotlin("jvm")
-          id("com.rickbusarow.tangle")
-        }
-
-        tangle {
-          viewModelOptions {
-            composeEnabled = true // default is null
-          }
-        }
-
-        ${listDepsTasks()}
-        """.trimIndent()
-      )
-
-      tasks("test").shouldFailWithMessage(
-        "A problem occurred configuring project ':module'.\n" +
-          "> Tangle is applied to project ':module', but no Android plugin has been applied.  " +
-          "Tangle serves no purpose unless the project is Android and the Kotlin plugin is applied."
-      )
     }
 
   fun listDepsTasks() =

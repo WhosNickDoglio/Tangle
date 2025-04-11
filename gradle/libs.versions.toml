@@ -48,6 +48,7 @@ vanniktech-publish = "0.31.0"
 android-application = { id = "com.android.application", version.ref = "androidTools" }
 android-library = { id = "com.android.library", version.ref = "androidTools" }
 anvil = { id = "com.squareup.anvil", version.ref = "square-anvil" }
+buildConfig = { id = "com.github.gmazzo.buildconfig", version = "5.5.1" }
 dependencyAnalysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependencyAnalysis" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 dropbox-dependencyGuard = { id = "com.dropbox.dependency-guard", version.ref = "dropbox-dependencyGuard" }
@@ -58,8 +59,8 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-gradle" }
-
 kotlinx-binaryCompatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlinx-binaryCompatibility" }
+testkit = { id = "com.autonomousapps.testkit", version = "0.12" }
 
 [libraries]
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "androidTools" }

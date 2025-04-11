@@ -99,7 +99,7 @@ jobs:
       - name: all tests
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: testJvm
+          arguments: test functionalTest
           cache-read-only: false
 
   instrumented-tests:

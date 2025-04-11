@@ -1,3 +1,9 @@
+public final class tangle/inject/gradle/BuildProperties {
+	public static final field GROUP Ljava/lang/String;
+	public static final field INSTANCE Ltangle/inject/gradle/BuildProperties;
+	public static final field VERSION Ljava/lang/String;
+}
+
 public abstract class tangle/inject/gradle/TangleExtension {
 	public fun <init> (Lorg/gradle/api/model/ObjectFactory;)V
 	public final fun getFragmentsEnabled ()Ljava/lang/Boolean;

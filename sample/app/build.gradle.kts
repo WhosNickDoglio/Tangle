@@ -88,7 +88,6 @@ dependencies {
   androidTestImplementation(libs.androidx.test.jUnit)
   androidTestImplementation(libs.androidx.test.rules)
   androidTestImplementation(libs.androidx.test.runner)
-  androidTestImplementation(libs.rickBusarow.dispatch.espresso)
 
   anvil(projects.tangleCompiler)
   anvil(projects.tangleFragmentCompiler)

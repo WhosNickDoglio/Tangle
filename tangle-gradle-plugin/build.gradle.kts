@@ -12,14 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import com.autonomousapps.tasks.CodeSourceExploderTask
-import dev.whosnickdoglio.convention.tangle.builds.GROUP
 import dev.whosnickdoglio.convention.tangle.builds.VERSION_NAME
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   id("dev.whosnickdoglio.convention.tangle.javaLibrary")
   id("dev.whosnickdoglio.convention.tangle.published")
+  alias(libs.plugins.buildConfig)
   `java-gradle-plugin`
   idea
 }
@@ -53,13 +51,6 @@ idea {
   }
 }
 
-val integrationTestCompile by configurations.registering {
-  extendsFrom(configurations["testCompileOnly"])
-}
-val integrationTestRuntime by configurations.registering {
-  extendsFrom(configurations["testRuntimeOnly"])
-}
-
 dependencies {
 
   compileOnly(libs.android.gradle)
@@ -90,6 +81,32 @@ gradlePlugin {
   }
 }
 
+buildConfig {
+  forClass("BuildProperties") {
+    packageName = "tangle.inject.gradle"
+    buildConfigField("VERSION", provider { version.toString() })
+    buildConfigField("GROUP", provider { group.toString() })
+  }
+
+  sourceSets.named("integrationTest") {
+    forClass("TestVersions") {
+      packageName = "tangle.inject.gradle"
+      buildConfigField("AGP", provider { libs.versions.androidTools.get() })
+      buildConfigField("ANVIL", provider { libs.versions.square.anvil.get() })
+      buildConfigField("GRADLE", provider { gradle.gradleVersion })
+      buildConfigField("KOTLIN", provider { libs.versions.kotlin.get() })
+      buildConfigField("ACTIVITY", provider { libs.versions.androidx.activity.get() })
+      buildConfigField(
+        "FRAGMENT",
+        provider { libs.versions.androidx.fragment.version.get() }
+      )
+      buildConfigField("LIFECYCLE", provider { libs.versions.androidx.lifecycle.get() })
+      buildConfigField("COMPOSE", provider { libs.versions.androidx.compose.runtime.get() })
+      buildConfigField("WORK", provider { libs.versions.androidx.work.version.get() })
+    }
+  }
+}
+
 tasks.register("setupPluginUploadFromEnvironment") {
   doLast {
     val key = System.getenv("GRADLE_PUBLISH_KEY")
@@ -105,136 +122,6 @@ tasks.register("setupPluginUploadFromEnvironment") {
     System.setProperty("gradle.publish.secret", secret)
   }
 }
-
-val generatedDirPath =
-  "${layout.buildDirectory.get().asFile.path}/generated/sources/build-properties/kotlin/main"
-sourceSets {
-  main.configure {
-    java.srcDir(project.file(generatedDirPath))
-  }
-}
-
-val generateBuildProperties by tasks.registering {
-
-  val version = VERSION_NAME
-  val group = GROUP
-
-  val buildPropertiesDir = File(generatedDirPath)
-  val buildPropertiesFile =
-    File(
-      buildPropertiesDir,
-      "tangle/inject/gradle/BuildProperties.kt"
-    )
-
-  inputs.file(
-    rootProject.file(
-      "build-logic/src/main/kotlin/dev/whosnickdoglio/convention/tangle/builds/Versions.kt"
-    )
-  )
-  inputs.properties(mapOf("version" to version, "group" to group))
-  outputs.file(buildPropertiesFile)
-
-  doLast {
-
-    buildPropertiesDir.deleteRecursively()
-    buildPropertiesFile.parentFile.mkdirs()
-
-    buildPropertiesFile.writeText(
-      """package tangle.inject.gradle
-      |
-      |internal object BuildProperties {
-      |  const val VERSION = "$version"
-      |  const val GROUP = "$group"
-      |}
-      |
-      """.trimMargin()
-    )
-  }
-}
-
-val generatedTestDirPath = "${layout.buildDirectory.asFile.get().path}/generated/sources/build-properties/kotlin/test"
-sourceSets {
-  test.configure {
-    java.srcDir(project.file(generatedTestDirPath))
-  }
-  integrationTest.configure {
-    java.srcDir(project.file(generatedTestDirPath))
-  }
-}
-val generateTestVersions by tasks.registering {
-
-  val testVersionsDir = File(generatedTestDirPath)
-  val testVersionsFile = File(testVersionsDir, "tangle/inject/gradle/TestVersions.kt")
-
-  inputs.file(
-    rootProject.file(
-      "build-logic/src/main/kotlin/dev/whosnickdoglio/convention/tangle/builds/Versions.kt"
-    )
-  )
-  inputs.file(rootProject.file("gradle/libs.versions.toml"))
-  outputs.file(testVersionsFile)
-
-  doLast {
-
-    testVersionsDir.deleteRecursively()
-    testVersionsFile.parentFile.mkdirs()
-
-    testVersionsFile.writeText(
-      """package tangle.inject.gradle
-      |
-      |object TestVersions {
-      |  const val AGP = "${libs.versions.androidTools.get()}"
-      |  const val ANVIL = "${libs.versions.square.anvil.get()}"
-      |  const val GRADLE = "${gradle.gradleVersion}"
-      |  const val KOTLIN = "${libs.versions.kotlin.get()}"
-      |
-      |  const val ACTIVITY = "${libs.versions.androidx.activity.get()}"
-      |  const val FRAGMENT = "${libs.versions.androidx.fragment.version.get()}"
-      |  const val LIFECYCLE = "${libs.versions.androidx.lifecycle.get()}"
-      |  const val COMPOSE = "${libs.versions.androidx.compose.runtime.get()}"
-      |  const val WORK = "${libs.versions.androidx.work.version.get()}"
-      |}
-      |
-      """.trimMargin()
-    )
-  }
-}
-
-tasks.withType<CodeSourceExploderTask>().configureEach {
-  dependsOn(generateBuildProperties, generateTestVersions)
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-  dependsOn(generateBuildProperties)
-}
-
-tasks.matching {
-  it.name in
-    setOf(
-      "javaSourcesJar",
-      "sourcesJar",
-      "runKtlintCheckOverMainSourceSet",
-      "runKtlintFormatOverMainSourceSet"
-    )
-}
-  .configureEach {
-    dependsOn(generateBuildProperties)
-  }
-
-tasks.matching {
-  it.name in
-    setOf(
-      "compileIntegrationTestKotlin",
-      "compileTestKotlin",
-      "runKtlintCheckOverIntegrationTestSourceSet",
-      "runKtlintCheckOverTestSourceSet",
-      "runKtlintFormatOverIntegrationTestSourceSet",
-      "runKtlintFormatOverTestSourceSet"
-    )
-}
-  .configureEach {
-    dependsOn(generateTestVersions)
-  }
 
 val integrationTestTask =
   tasks.register("integrationTest", Test::class) {

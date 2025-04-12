@@ -48,6 +48,7 @@ vanniktech-publish = "0.31.0"
 android-application = { id = "com.android.application", version.ref = "androidTools" }
 android-library = { id = "com.android.library", version.ref = "androidTools" }
 anvil = { id = "com.squareup.anvil", version.ref = "square-anvil" }
+buildConfig = { id = "com.github.gmazzo.buildconfig", version = "5.5.1" }
 dependencyAnalysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependencyAnalysis" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 dropbox-dependencyGuard = { id = "com.dropbox.dependency-guard", version.ref = "dropbox-dependencyGuard" }

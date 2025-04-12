@@ -11,11 +11,11 @@ push-new-branches = false
 
 [hosting]
 dev-remote = "origin"
-platform = "github"
+forge-type = "github"
 # origin-hostname = ""
 
 [ship]
-delete-tracking-branch = true
+delete-tracking-branch = false
 strategy = "api"
 
 [sync]
@@ -24,4 +24,4 @@ perennial-strategy = "rebase"
 prototype-strategy = "rebase"
 push-hook = true
 tags = true
-upstream = true
+upstream = false

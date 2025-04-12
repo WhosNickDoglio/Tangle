@@ -50,7 +50,6 @@ fun Project.common() {
         freeCompilerArgs.set(
           freeCompilerArgs.get() + listOf(
             "-Xjvm-default=all",
-            "-Xallow-result-return-type",
             "-opt-in=kotlin.contracts.ExperimentalContracts",
             "-opt-in=kotlin.Experimental",
             "-opt-in=kotlin.time.ExperimentalTime",

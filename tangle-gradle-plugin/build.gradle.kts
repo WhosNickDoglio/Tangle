@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,51 +18,12 @@ plugins {
   id("dev.whosnickdoglio.convention.tangle.javaLibrary")
   id("dev.whosnickdoglio.convention.tangle.published")
   alias(libs.plugins.buildConfig)
+  alias(libs.plugins.testkit)
   `java-gradle-plugin`
-  idea
 }
 
 tanglePublishing {
   artifactId.set("tangle-gradle-plugin")
-}
-
-val main by sourceSets.getting
-val test by sourceSets.getting
-
-val integrationTest by java.sourceSets.registering {
-  kotlin.apply {
-    compileClasspath +=
-      main.output
-        .plus(test.output)
-        .plus(configurations.testRuntimeClasspath.get())
-    runtimeClasspath += output + compileClasspath
-  }
-}
-
-// mark the integrationTest directory as a test directory in the IDE
-idea {
-  module {
-    integrationTest.configure {
-      allSource.srcDirs
-        .forEach { srcDir ->
-          module.testSourceDirs.add(srcDir)
-        }
-    }
-  }
-}
-
-dependencies {
-
-  compileOnly(libs.android.gradle)
-  compileOnly(libs.kotlin.reflect)
-
-  implementation(libs.kotlin.stdlib.jdk8)
-
-  "integrationTestImplementation"(libs.bundles.jUnit)
-  "integrationTestImplementation"(libs.bundles.kotest)
-
-  testImplementation(libs.bundles.jUnit)
-  testImplementation(libs.bundles.kotest)
 }
 
 gradlePlugin {
@@ -82,13 +43,14 @@ gradlePlugin {
 }
 
 buildConfig {
+  useKotlinOutput { internalVisibility = false }
   forClass("BuildProperties") {
     packageName = "tangle.inject.gradle"
     buildConfigField("VERSION", provider { version.toString() })
     buildConfigField("GROUP", provider { group.toString() })
   }
 
-  sourceSets.named("integrationTest") {
+  sourceSets.named("functionalTest") {
     forClass("TestVersions") {
       packageName = "tangle.inject.gradle"
       buildConfigField("AGP", provider { libs.versions.androidTools.get() })
@@ -123,19 +85,11 @@ tasks.register("setupPluginUploadFromEnvironment") {
   }
 }
 
-val integrationTestTask =
-  tasks.register("integrationTest", Test::class) {
-    val integrationTestSourceSet = java.sourceSets["integrationTest"]
-    testClassesDirs = integrationTestSourceSet.output.classesDirs
-    classpath = integrationTestSourceSet.runtimeClasspath
-  }
+dependencies {
+  compileOnly(libs.android.gradle)
 
-tasks.matching { it.name == "check" }.all { dependsOn(integrationTestTask) }
-
-kotlin {
-  val compilations = target.compilations
-
-  compilations.getByName("integrationTest") {
-    associateWith(compilations.getByName("main"))
-  }
+  functionalTestImplementation(projects.tangleGradlePlugin)
+  functionalTestImplementation(libs.testkit.support)
+  functionalTestImplementation(libs.bundles.jUnit)
+  functionalTestImplementation(libs.bundles.kotest)
 }

@@ -23,10 +23,12 @@ plugins {
   alias(libs.plugins.dependencyAnalysis)
   alias(libs.plugins.detekt)
   alias(libs.plugins.kotlinx.binaryCompatibility)
+  alias(libs.plugins.gradleDoctor)
   alias(libs.plugins.android.application) apply false
   alias(libs.plugins.android.library) apply false
   alias(libs.plugins.anvil) apply false
   alias(libs.plugins.buildConfig) apply false
+  alias(libs.plugins.dropbox.dependencyGuard) apply false
   alias(libs.plugins.google.ksp) apply false
   alias(libs.plugins.kotlin.android) apply false
   alias(libs.plugins.kotlin.compose) apply false
@@ -34,6 +36,11 @@ plugins {
   alias(libs.plugins.kotlin.kapt) apply false
   alias(libs.plugins.ktlint) apply false
 }
+
+doctor {
+  warnWhenNotUsingParallelGC = false
+}
+
 
 allprojects {
   configurations.all {

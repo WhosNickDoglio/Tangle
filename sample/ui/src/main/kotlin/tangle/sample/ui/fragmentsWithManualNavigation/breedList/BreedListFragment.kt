@@ -18,11 +18,12 @@ package tangle.sample.ui.fragmentsWithManualNavigation.breedList
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import dispatch.android.lifecycle.withViewLifecycle
-import dispatch.core.MainImmediateCoroutineScope
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 import tangle.fragment.ContributesFragment
 import tangle.sample.core.AppScope
-import tangle.sample.core.onEachLatest
 import tangle.sample.core.viewBinding
 import tangle.sample.ui.R
 import tangle.sample.ui.databinding.FragmentBreedListBinding
@@ -34,35 +35,31 @@ import javax.inject.Inject
 class BreedListFragment
   @Inject
   constructor(
-    private val coroutineScope: MainImmediateCoroutineScope,
     val breedListNavigation: BreedListNavigation
   ) : Fragment(R.layout.fragment_breed_list) {
     val binding by viewBinding(FragmentBreedListBinding::bind)
 
     val viewModel by tangleViewModel<BreedListViewModel>()
 
-    val pagingAdapter =
-      BreedListAdapter {
-
-        breedListNavigation.breedDetail(it.id, this)
-      }
-
     init {
-      coroutineScope.withViewLifecycle(this) {
-
-        viewModel.pagingDataFlow
-          .onEachLatest { pagingData ->
+      lifecycleScope.launch {
+        repeatOnLifecycle(Lifecycle.State.CREATED) {
+          viewModel.pagingDataFlow.collect { pagingData ->
             pagingAdapter.submitData(pagingData)
-          }.launchOnStart()
+          }
+        }
       }
     }
+
+    val pagingAdapter =
+      BreedListAdapter {
+        breedListNavigation.breedDetail(it.id, this)
+      }
 
     override fun onViewCreated(
       view: View,
       savedInstanceState: Bundle?
     ) {
-      super.onViewCreated(view, savedInstanceState)
-
       val recyclerView = binding.breedList
       recyclerView.adapter = pagingAdapter
     }

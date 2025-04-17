@@ -23,7 +23,6 @@ import androidx.room.RoomDatabase
 import com.squareup.anvil.annotations.ContributesTo
 import dagger.Module
 import dagger.Provides
-import dispatch.core.DispatcherProvider
 import kotlinx.coroutines.asExecutor
 import tangle.sample.core.AppScope
 import tangle.sample.core.di.ApplicationContext
@@ -53,7 +52,7 @@ object RoomModule {
   fun provideRoom(
     @ApplicationContext
     context: Context,
-    dispatcherProvider: DispatcherProvider
+    dispatcherProvider: CoroutineDispatcherProvider
   ): TangleDatabase {
     return Room.databaseBuilder(
       context,

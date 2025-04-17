@@ -16,7 +16,7 @@
 package tangle.sample.ui.composeWithFragments.breedDetail
 
 import androidx.lifecycle.ViewModel
-import dispatch.core.MainCoroutineScope
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
@@ -31,14 +31,13 @@ class BreedDetailViewModel
     private val breedDao: BreedDao,
     @TangleParam("breedId")
     private val breedId: Int,
-    private val textToSpeechDelegate: TextToSpeechDelegate,
-    coroutineScope: MainCoroutineScope
+    private val textToSpeechDelegate: TextToSpeechDelegate
   ) : ViewModel() {
     val detailFlow =
       flow {
         val summary = breedDao.getById(breedId)
         emit(summary)
-      }.stateIn(coroutineScope, SharingStarted.Eagerly, initialValue = null)
+      }.stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
 
     fun onTextSelected(text: String) {
       textToSpeechDelegate.speak(text)

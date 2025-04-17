@@ -38,7 +38,7 @@ data class BreedEntity(
   @ColumnInfo(name = "temperament")
   val temperament: String?,
   @Embedded(prefix = "image_")
-  val image: Image,
+  val image: Image?,
   @Embedded(prefix = "height_")
   val height: Height,
   @Embedded(prefix = "weight_")

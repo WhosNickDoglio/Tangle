@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,7 +21,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,7 +35,7 @@ class ComposeFragmentsIntegrationTest {
 
   @Test
   fun selected_item_is_passed_to_next_screen() =
-    runBlocking {
+    runTest {
       retry {
         testRule.onNodeWithText(
           text = "Goldendoodle",

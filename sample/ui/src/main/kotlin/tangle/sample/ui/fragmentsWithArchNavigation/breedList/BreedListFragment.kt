@@ -19,10 +19,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import dispatch.android.lifecycle.withViewLifecycle
-import dispatch.core.MainImmediateCoroutineScope
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import tangle.fragment.ContributesFragment
 import tangle.sample.core.AppScope
 import tangle.sample.core.viewBinding
@@ -34,9 +35,7 @@ import javax.inject.Inject
 @ContributesFragment(AppScope::class)
 class BreedListFragment
   @Inject
-  constructor(
-    private val coroutineScope: MainImmediateCoroutineScope
-  ) : Fragment(R.layout.fragment_breed_list) {
+  constructor() : Fragment(R.layout.fragment_breed_list) {
     val binding by viewBinding(FragmentBreedListBinding::bind)
 
     val viewModel by tangleViewModel<BreedListViewModel>()
@@ -51,12 +50,12 @@ class BreedListFragment
       }
 
     init {
-      coroutineScope.withViewLifecycle(this) {
-
-        viewModel.pagingDataFlow
-          .onEach { pagingData ->
+      lifecycleScope.launch {
+        repeatOnLifecycle(Lifecycle.State.CREATED) {
+          viewModel.pagingDataFlow.collect { pagingData ->
             pagingAdapter.submitData(pagingData)
-          }.launchOnStart()
+          }
+        }
       }
     }
 
@@ -65,7 +64,6 @@ class BreedListFragment
       savedInstanceState: Bundle?
     ) {
       super.onViewCreated(view, savedInstanceState)
-
       val recyclerView = binding.breedList
       recyclerView.adapter = pagingAdapter
     }

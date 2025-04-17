@@ -38,9 +38,6 @@ dependencies {
   anvil(projects.tangleWorkCompiler)
 
   api(libs.coil.core)
-  api(libs.rickBusarow.dispatch.core)
-  api(libs.rickBusarow.dispatch.lifecycle)
-  api(libs.rickBusarow.dispatch.lifecycleExtensions)
   api(libs.timber)
 
   api(projects.tangleWorkApi)

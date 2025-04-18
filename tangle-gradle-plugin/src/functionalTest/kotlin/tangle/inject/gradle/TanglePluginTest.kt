@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +15,8 @@
 
 package tangle.inject.gradle
 
+import com.autonomousapps.kit.GradleBuilder
+import com.autonomousapps.kit.Source
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.TestFactory
 import java.io.File
@@ -22,32 +24,9 @@ import java.io.File
 class TanglePluginTest : BasePluginTest() {
   @TestFactory
   fun `default application should apply Anvil`() =
-    test {
-      module(
-        """
-        plugins {
-          id("com.android.library")
-          kotlin("android")
-          id("com.rickbusarow.tangle")
-        }
-
-        android {
-          compileSdk = 30
-          namespace = "foo"
-
-          defaultConfig {
-            minSdk = 23
-            targetSdk = 30
-          }
-        }
-
-        ${listDepsTasks()}
-        """.trimIndent()
-      )
-
-      File(testProjectDir, "module/src/main/java/tangle/inject/tests/Component.kt")
-        .also { it.parentFile.mkdirs() }
-        .writeText(
+    test(
+      sourceFiles = listOf(
+        Source.kotlin(
           """
           package tangle.inject.tests
 
@@ -55,13 +34,14 @@ class TanglePluginTest : BasePluginTest() {
 
           @ContributesTo(Unit::class)
           interface Component
-          """.trimIndent()
+      """.trimIndent()
         )
-
-      tasks("assembleDebug")
-        .build()
-        .task(":module:assembleDebug")!!
-        .outcome shouldBe SUCCESS
+          .withPath("tangle/inject/tests/Component.kt", "Component")
+          .build()
+      )
+    ) { project ->
+      val result = GradleBuilder.build(project.rootDir, "assembleDebug")
+      result.task(":project:assembleDebug")!!.outcome shouldBe SUCCESS
     }
 
   @TestFactory

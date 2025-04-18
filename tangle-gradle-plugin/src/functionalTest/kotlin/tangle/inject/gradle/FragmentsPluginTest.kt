@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,47 +15,29 @@
 
 package tangle.inject.gradle
 
+import com.autonomousapps.kit.GradleBuilder
 import org.junit.jupiter.api.TestFactory
 
-class FragmentsPluginTest : BasePluginTest() {
+class FragmentsPluginTest {
   @TestFactory
   fun `disabling fragments in config should disable their dependencies`() =
-    test {
-      module(
+    test(
+      dslAdditions =
         """
-        plugins {
-          id("com.android.library")
-          kotlin("android")
-          id("com.rickbusarow.tangle")
-        }
-
-        android {
-          compileSdk = 30
-          namespace = "foo"
-
-          defaultConfig {
-            minSdk = 23
-            targetSdk = 30
-          }
-        }
-
         tangle {
           fragmentsEnabled = false // default is null
         }
-
-        dependencies {
-          $activities
-          $fragments
-          $viewModels
-          $compose
-          $workManager
-        }
-
-        ${listDepsTasks()}
-        """.trimIndent()
-      )
-
-      build("deps").tangleDeps() shouldBe
+        """.trimIndent(),
+      additionalDependencies =
+        listOf(
+          activities,
+          fragments,
+          viewModels,
+          compose,
+          workManager
+        )
+    ) {
+      GradleBuilder.build(it.rootDir, "deps").tangleDeps() shouldBe
         listOf(
           "anvil com.rickbusarow.tangle:tangle-compiler",
           "anvil com.rickbusarow.tangle:tangle-viewmodel-compiler",
@@ -71,34 +53,13 @@ class FragmentsPluginTest : BasePluginTest() {
 
   @TestFactory
   fun `fragment compiler and api should be automatically enabled with androidx fragment dependencies`() =
-    test {
-      module(
-        """
-        plugins {
-          id("com.android.library")
-          kotlin("android")
-          id("com.rickbusarow.tangle")
-        }
-
-        android {
-          compileSdk = 30
-          namespace = "foo"
-
-          defaultConfig {
-            minSdk = 23
-            targetSdk = 30
-          }
-        }
-
-        dependencies {
-          $fragments
-        }
-
-        ${listDepsTasks()}
-        """.trimIndent()
-      )
-
-      build("deps").tangleDeps() shouldBe
+    test(
+      additionalDependencies =
+        listOf(
+          fragments
+        )
+    ) {
+      GradleBuilder.build(it.rootDir, "deps").tangleDeps() shouldBe
         listOf(
           "anvil com.rickbusarow.tangle:tangle-compiler",
           "anvil com.rickbusarow.tangle:tangle-fragment-compiler",
@@ -109,34 +70,13 @@ class FragmentsPluginTest : BasePluginTest() {
 
   @TestFactory
   fun `viewmodel compiler and api should be automatically enabled with androidx viewmodel dependencies`() =
-    test {
-      module(
-        """
-        plugins {
-          id("com.android.library")
-          kotlin("android")
-          id("com.rickbusarow.tangle")
-        }
-
-        android {
-          compileSdk = 30
-          namespace = "foo"
-
-          defaultConfig {
-            minSdk = 23
-            targetSdk = 30
-          }
-        }
-
-        dependencies {
-          $viewModels
-        }
-
-        ${listDepsTasks()}
-        """.trimIndent()
-      )
-
-      build("deps").tangleDeps() shouldBe
+    test(
+      additionalDependencies =
+        listOf(
+          viewModels
+        )
+    ) {
+      GradleBuilder.build(it.rootDir, "deps").tangleDeps() shouldBe
         listOf(
           "anvil com.rickbusarow.tangle:tangle-compiler",
           "anvil com.rickbusarow.tangle:tangle-viewmodel-compiler",
@@ -147,35 +87,14 @@ class FragmentsPluginTest : BasePluginTest() {
 
   @TestFactory
   fun `viewmodel fragment api should be automatically enabled with androidx viewmodel and fragment dependencies`() =
-    test {
-      module(
-        """
-        plugins {
-          id("com.android.library")
-          kotlin("android")
-          id("com.rickbusarow.tangle")
-        }
-
-        android {
-          compileSdk = 30
-          namespace = "foo"
-
-          defaultConfig {
-            minSdk = 23
-            targetSdk = 30
-          }
-        }
-
-        dependencies {
-          $fragments
-          $viewModels
-        }
-
-        ${listDepsTasks()}
-        """.trimIndent()
-      )
-
-      build("deps").tangleDeps() shouldBe
+    test(
+      additionalDependencies =
+        listOf(
+          fragments,
+          viewModels
+        )
+    ) {
+      GradleBuilder.build(it.rootDir, "deps").tangleDeps() shouldBe
         listOf(
           "anvil com.rickbusarow.tangle:tangle-compiler",
           "anvil com.rickbusarow.tangle:tangle-fragment-compiler",
@@ -189,35 +108,14 @@ class FragmentsPluginTest : BasePluginTest() {
 
   @TestFactory
   fun `viewmodel compose api should be automatically enabled with androidx viewmodel and compose dependencies`() =
-    test {
-      module(
-        """
-        plugins {
-          id("com.android.library")
-          kotlin("android")
-          id("com.rickbusarow.tangle")
-        }
-
-        android {
-          compileSdk = 30
-          namespace = "foo"
-
-          defaultConfig {
-            minSdk = 23
-            targetSdk = 30
-          }
-        }
-
-        dependencies {
-          $compose
-          $viewModels
-        }
-
-        ${listDepsTasks()}
-        """.trimIndent()
-      )
-
-      build("deps").tangleDeps() shouldBe
+    test(
+      additionalDependencies =
+        listOf(
+          compose,
+          viewModels
+        )
+    ) {
+      GradleBuilder.build(it.rootDir, "deps").tangleDeps() shouldBe
         listOf(
           "anvil com.rickbusarow.tangle:tangle-compiler",
           "anvil com.rickbusarow.tangle:tangle-viewmodel-compiler",
@@ -229,34 +127,13 @@ class FragmentsPluginTest : BasePluginTest() {
 
   @TestFactory
   fun `work compiler and api should be automatically enabled with androidx work dependencies`() =
-    test {
-      module(
-        """
-        plugins {
-          id("com.android.library")
-          kotlin("android")
-          id("com.rickbusarow.tangle")
-        }
-
-        android {
-          compileSdk = 30
-          namespace = "foo"
-
-          defaultConfig {
-            minSdk = 23
-            targetSdk = 30
-          }
-        }
-
-        dependencies {
-          $workManager
-        }
-
-        ${listDepsTasks()}
-        """.trimIndent()
-      )
-
-      build("deps").tangleDeps() shouldBe
+    test(
+      additionalDependencies =
+        listOf(
+          workManager
+        )
+    ) {
+      GradleBuilder.build(it.rootDir, "deps").tangleDeps() shouldBe
         listOf(
           "anvil com.rickbusarow.tangle:tangle-compiler",
           "anvil com.rickbusarow.tangle:tangle-work-compiler",
@@ -264,20 +141,4 @@ class FragmentsPluginTest : BasePluginTest() {
           "implementation com.rickbusarow.tangle:tangle-work-api"
         )
     }
-
-  fun listDepsTasks() =
-    """
-    tasks.register("deps") {
-      doLast {
-        listOf("anvil", "api", "implementation")
-          .forEach { config ->
-            project.configurations
-              .named(config)
-              .get()
-              .dependencies
-              .forEach { println("${'$'}config ${'$'}{it.group}:${'$'}{it.name}") }
-          }
-      }
-    }
-    """.trimIndent()
 }

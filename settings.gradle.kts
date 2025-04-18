@@ -19,7 +19,6 @@ pluginManagement {
     gradlePluginPortal()
     mavenCentral()
     google()
-    mavenLocal()
   }
 }
 
@@ -27,7 +26,6 @@ dependencyResolutionManagement {
   repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
   repositories {
     google()
-    mavenLocal()
     mavenCentral()
   }
 }

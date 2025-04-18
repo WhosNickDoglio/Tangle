@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,41 +15,23 @@
 
 package tangle.inject.gradle
 
+import com.autonomousapps.kit.GradleBuilder
 import org.junit.jupiter.api.TestFactory
 
-class ComposePluginTest : BasePluginTest() {
+class ComposePluginTest {
   @TestFactory
   fun `viewmodel compose api should be automatically enabled with androidx viewmodel and compose dependencies`() =
-    test {
-      module(
-        """
-        plugins {
-          id("com.android.library")
-          kotlin("android")
-          id("com.rickbusarow.tangle")
-        }
+    test(
+      additionalDependencies =
+        listOf(
+          compose,
+          viewModels
+        )
+    ) { project ->
 
-        android {
-          compileSdk = 30
-          namespace = "foo"
+      val result = GradleBuilder.build(project.rootDir, "deps")
 
-
-          defaultConfig {
-            minSdk = 23
-            targetSdk = 30
-          }
-        }
-
-        dependencies {
-          $compose
-          $viewModels
-        }
-
-        ${listDepsTasks()}
-        """.trimIndent()
-      )
-
-      build("deps").tangleDeps() shouldBe
+      result.tangleDeps() shouldBe
         listOf(
           "anvil com.rickbusarow.tangle:tangle-compiler",
           "anvil com.rickbusarow.tangle:tangle-viewmodel-compiler",
@@ -61,44 +43,27 @@ class ComposePluginTest : BasePluginTest() {
 
   @TestFactory
   fun `disabling viewModels compose in config should disable the viewmodel compose api dependency`() =
-    test {
-      module(
+    test(
+      dslAdditions =
         """
-        plugins {
-          id("com.android.library")
-          kotlin("android")
-          id("com.rickbusarow.tangle")
-        }
-
-        android {
-          compileSdk = 30
-          namespace = "foo"
-
-          defaultConfig {
-            minSdk = 23
-            targetSdk = 30
-          }
-        }
-
         tangle {
-          viewModelOptions {
-            composeEnabled = false // default is null
+            viewModelOptions {
+              composeEnabled = false // default is null
+            }
           }
-        }
+        """.trimIndent(),
+      additionalDependencies =
+        listOf(
+          activities,
+          compose,
+          fragments,
+          viewModels,
+          workManager
+        )
+    ) { projec ->
+      val result = GradleBuilder.build(projec.rootDir, "deps")
 
-        dependencies {
-          $activities
-          $fragments
-          $viewModels
-          $compose
-          $workManager
-        }
-
-        ${listDepsTasks()}
-        """.trimIndent()
-      )
-
-      build("deps").tangleDeps() shouldBe
+      result.tangleDeps() shouldBe
         listOf(
           "anvil com.rickbusarow.tangle:tangle-compiler",
           "anvil com.rickbusarow.tangle:tangle-fragment-compiler",
@@ -112,20 +77,4 @@ class ComposePluginTest : BasePluginTest() {
           "implementation com.rickbusarow.tangle:tangle-work-api"
         )
     }
-
-  fun listDepsTasks() =
-    """
-    tasks.register("deps") {
-      doLast {
-        listOf("anvil", "api", "implementation")
-          .forEach { config ->
-            project.configurations
-              .named(config)
-              .get()
-              .dependencies
-              .forEach { println("${'$'}config ${'$'}{it.group}:${'$'}{it.name}") }
-          }
-      }
-    }
-    """.trimIndent()
 }
